@@ -100,6 +100,7 @@ const styles = StyleSheet.create({
   number: {
     fontSize: 16,
     fontWeight: 'bold',
+    fontFamily: 'Nunito-Bold',
   },
   dot: {
     width: 8,

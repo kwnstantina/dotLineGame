@@ -9,6 +9,7 @@ import {
   Animated,
   StatusBar,
   Dimensions,
+  ScrollView,
 } from 'react-native';
 import GameGrid from '../components/GameGrid';
 import {GameState} from '../types';
@@ -21,7 +22,7 @@ const GameScreen: React.FC = () => {
     puzzle: null,
     drawnPath: [],
     isCompleted: false,
-    isLoading: false,
+    isLoading: true,
   });
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -188,95 +189,100 @@ const GameScreen: React.FC = () => {
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#F0F4FF" />
       
-      <Animated.View 
-        style={[
-          styles.content,
-          {
-            opacity: fadeAnim,
-            transform: [{translateY: slideAnim}],
-          }
-        ]}>
-        
-        {/* Header */}
-        <View style={styles.header}>
-          <Text style={styles.title}>🎯 Dot Line</Text>
-          <Text style={styles.subtitle}>Connect • Fill • Win</Text>
-        </View>
-        
-        {/* Instructions */}
-        <View style={styles.instructionsContainer}>
-          <Text style={styles.instructions}>
-            Draw a continuous line connecting numbers 1→2→3→4→5 that fills all cells
-          </Text>
-        </View>
-
-        {/* Progress Bar */}
-        <View style={styles.progressContainer}>
-          <Text style={styles.progressLabel}>Progress: {progressPercentage}%</Text>
-          <View style={styles.progressBarBackground}>
-            <Animated.View 
-              style={[
-                styles.progressBarFill,
-                {
-                  width: progressAnim.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: ['0%', '100%'],
-                  }),
-                  backgroundColor: getProgressColor(),
-                }
-              ]} 
-            />
+      <ScrollView 
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}>
+        <Animated.View 
+          style={[
+            styles.content,
+            {
+              opacity: fadeAnim,
+              transform: [{translateY: slideAnim}],
+            }
+          ]}>
+          
+          {/* Header */}
+          <View style={styles.header}>
+            <Text style={styles.title}>🎯 Dot Line</Text>
+            <Text style={styles.subtitle}>Connect • Fill • Win</Text>
           </View>
-        </View>
-
-        {/* Game Grid */}
-        <GameGrid
-          cells={gameState.puzzle.cells}
-          gridSize={gameState.puzzle.gridSize}
-          onPathUpdate={handlePathUpdate}
-          drawnPath={gameState.drawnPath}
-        />
-
-        {/* Controls */}
-        <View style={styles.controls}>
-          <TouchableOpacity
-            style={[styles.button, styles.resetButton]}
-            onPress={handleReset}
-            disabled={gameState.drawnPath.length === 0}>
-            <Text style={styles.buttonText}>🔄 Reset</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[
-              styles.button, 
-              styles.submitButton,
-              gameState.drawnPath.length === 0 && styles.disabledButton
-            ]}
-            onPress={handleSubmit}
-            disabled={gameState.drawnPath.length === 0}>
-            <Text style={[
-              styles.buttonText,
-              gameState.drawnPath.length === 0 && styles.disabledButtonText
-            ]}>
-              ✓ Check
+          
+          {/* Instructions */}
+          <View style={styles.instructionsContainer}>
+            <Text style={styles.instructions}>
+              Draw a continuous line connecting numbers 1→2→3→4→5 that fills all cells
             </Text>
-          </TouchableOpacity>
-        </View>
+          </View>
 
-        {/* Stats */}
-        <View style={styles.statsContainer}>
-          <View style={styles.statItem}>
-            <Text style={styles.statValue}>{gameState.drawnPath.length}</Text>
-            <Text style={styles.statLabel}>Cells Filled</Text>
+          {/* Progress Bar */}
+          <View style={styles.progressContainer}>
+            <Text style={styles.progressLabel}>Progress: {progressPercentage}%</Text>
+            <View style={styles.progressBarBackground}>
+              <Animated.View 
+                style={[
+                  styles.progressBarFill,
+                  {
+                    width: progressAnim.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: ['0%', '100%'],
+                    }),
+                    backgroundColor: getProgressColor(),
+                  }
+                ]} 
+              />
+            </View>
           </View>
-          <View style={styles.statDivider} />
-          <View style={styles.statItem}>
-            <Text style={styles.statValue}>{totalCells}</Text>
-            <Text style={styles.statLabel}>Total Cells</Text>
+
+          {/* Game Grid */}
+          <GameGrid
+            cells={gameState.puzzle.cells}
+            gridSize={gameState.puzzle.gridSize}
+            onPathUpdate={handlePathUpdate}
+            drawnPath={gameState.drawnPath}
+          />
+
+          {/* Controls */}
+          <View style={styles.controls}>
+            <TouchableOpacity
+              style={[styles.button, styles.resetButton]}
+              onPress={handleReset}
+              disabled={gameState.drawnPath.length === 0}>
+              <Text style={styles.buttonText}>🔄 Reset</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[
+                styles.button, 
+                styles.submitButton,
+                gameState.drawnPath.length === 0 && styles.disabledButton
+              ]}
+              onPress={handleSubmit}
+              disabled={gameState.drawnPath.length === 0}>
+              <Text style={[
+                styles.buttonText,
+                gameState.drawnPath.length === 0 && styles.disabledButtonText
+              ]}>
+                ✓ Check
+              </Text>
+            </TouchableOpacity>
           </View>
-        </View>
-        
-      </Animated.View>
+
+          {/* Stats */}
+          <View style={styles.statsContainer}>
+            <View style={styles.statItem}>
+              <Text style={styles.statValue}>{gameState.drawnPath.length}</Text>
+              <Text style={styles.statLabel}>Cells Filled</Text>
+            </View>
+            <View style={styles.statDivider} />
+            <View style={styles.statItem}>
+              <Text style={styles.statValue}>{totalCells}</Text>
+              <Text style={styles.statLabel}>Total Cells</Text>
+            </View>
+          </View>
+          
+        </Animated.View>
+      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -286,8 +292,14 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F0F4FF',
   },
-  content: {
+  scrollView: {
     flex: 1,
+  },
+  scrollContent: {
+    flexGrow: 1,
+    paddingBottom: 20,
+  },
+  content: {
     paddingHorizontal: 20,
   },
   header: {
@@ -298,6 +310,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 32,
     fontWeight: 'bold',
+    fontFamily: 'Nunito-Bold',
     color: '#1565C0',
     textShadowColor: 'rgba(0,0,0,0.1)',
     textShadowOffset: {width: 0, height: 2},
@@ -307,6 +320,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#424242',
     fontWeight: '500',
+    fontFamily: 'Nunito-Medium',
     marginTop: 5,
   },
   instructionsContainer: {
@@ -325,6 +339,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: '#666',
     lineHeight: 20,
+    fontFamily: 'Nunito-Regular',
   },
   progressContainer: {
     marginBottom: 20,
@@ -335,6 +350,7 @@ const styles = StyleSheet.create({
     color: '#424242',
     marginBottom: 8,
     textAlign: 'center',
+    fontFamily: 'Nunito-SemiBold',
   },
   progressBarBackground: {
     height: 8,
@@ -382,9 +398,11 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 16,
     fontWeight: 'bold',
+    fontFamily: 'Nunito-Bold',
   },
   disabledButtonText: {
     color: '#757575',
+    fontFamily: 'Nunito-Regular',
   },
   statsContainer: {
     flexDirection: 'row',
@@ -408,11 +426,13 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     color: '#1565C0',
+    fontFamily: 'Nunito-Bold',
   },
   statLabel: {
     fontSize: 12,
     color: '#666',
     marginTop: 4,
+    fontFamily: 'Nunito-Regular',
   },
   statDivider: {
     width: 1,
@@ -436,6 +456,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: '#666',
     fontWeight: '500',
+    fontFamily: 'Nunito-Medium',
   },
   errorContainer: {
     flex: 1,
@@ -448,6 +469,7 @@ const styles = StyleSheet.create({
     color: '#F44336',
     textAlign: 'center',
     marginBottom: 20,
+    fontFamily: 'Nunito-Medium',
   },
 });
 

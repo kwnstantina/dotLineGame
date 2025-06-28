@@ -123,7 +123,7 @@ const GameGrid: React.FC<GameGridProps> = ({
         
         animateScale(1.05);
         animateGridOpacity(0.95);
-        Vibration.vibrate(10);
+        Vibration.vibrate([0, 10]);
       }
     },
     
@@ -140,7 +140,7 @@ const GameGrid: React.FC<GameGridProps> = ({
           onPathUpdate(newPath);
           setSvgPath(createSvgPath(newPath));
           setActiveCell(cell.id);
-          Vibration.vibrate(5);
+          Vibration.vibrate([0, 5]);
         }
       } else {
         setHighlightedCell(null);
