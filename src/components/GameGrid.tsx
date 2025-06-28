@@ -10,6 +10,7 @@ import {
 import Svg, {Path} from 'react-native-svg';
 import GridCell from './GridCell';
 import {Cell, Position} from '../types';
+import {colors, designTokens} from '../theme/colors';
 
 interface GameGridProps {
   cells: Cell[];
@@ -38,11 +39,17 @@ const GameGrid: React.FC<GameGridProps> = ({
   
   const scaleAnim = useRef(new Animated.Value(1)).current;
   const gridOpacity = useRef(new Animated.Value(1)).current;
+  const gridRef = useRef<View>(null);
 
   const getCellAtPosition = (x: number, y: number): Cell | null => {
-    const row = Math.floor(y / cellSize);
-    const col = Math.floor(x / cellSize);
+    // Account for cell padding and ensure we're within grid bounds
+    const adjustedX = Math.max(0, Math.min(x, GRID_WIDTH - 1));
+    const adjustedY = Math.max(0, Math.min(y, GRID_WIDTH - 1));
     
+    const col = Math.floor(adjustedX / cellSize);
+    const row = Math.floor(adjustedY / cellSize);
+    
+    // Ensure we're within grid bounds
     if (row >= 0 && row < gridSize && col >= 0 && col < gridSize) {
       return cells.find(cell => cell.row === row && cell.col === col) || null;
     }
@@ -108,6 +115,7 @@ const GameGrid: React.FC<GameGridProps> = ({
   const panResponder = PanResponder.create({
     onStartShouldSetPanResponder: () => true,
     onMoveShouldSetPanResponder: () => true,
+    onPanResponderTerminationRequest: () => false,
     
     onPanResponderGrant: (evt) => {
       const {locationX, locationY} = evt.nativeEvent;
@@ -128,20 +136,26 @@ const GameGrid: React.FC<GameGridProps> = ({
     },
     
     onPanResponderMove: (evt) => {
+      if (!isDragging) return;
+      
       const {locationX, locationY} = evt.nativeEvent;
       const cell = getCellAtPosition(locationX, locationY);
       
       if (cell) {
         setHighlightedCell(cell.id);
         
-        if (canAddToPath(cell.id, currentPath)) {
-          const newPath = [...currentPath, cell.id];
-          setCurrentPath(newPath);
-          onPathUpdate(newPath);
-          setSvgPath(createSvgPath(newPath));
-          setActiveCell(cell.id);
-          Vibration.vibrate([0, 5]);
-        }
+        // Use a callback to ensure we have the latest currentPath state
+        setCurrentPath(prevPath => {
+          if (canAddToPath(cell.id, prevPath)) {
+            const newPath = [...prevPath, cell.id];
+            onPathUpdate(newPath);
+            setSvgPath(createSvgPath(newPath));
+            setActiveCell(cell.id);
+            Vibration.vibrate([0, 5]);
+            return newPath;
+          }
+          return prevPath;
+        });
       } else {
         setHighlightedCell(null);
       }
@@ -156,7 +170,7 @@ const GameGrid: React.FC<GameGridProps> = ({
     },
   });
 
-  const updatedCells = cells.map((cell, index) => {
+  const updatedCells = cells.map((cell) => {
     const pathIndex = currentPath.indexOf(cell.id);
     return {
       ...cell,
@@ -175,6 +189,7 @@ const GameGrid: React.FC<GameGridProps> = ({
           }
         ]}>
         <View
+          ref={gridRef}
           style={[styles.grid, {width: GRID_WIDTH, height: GRID_WIDTH}]}
           {...panResponder.panHandlers}>
           
@@ -184,15 +199,28 @@ const GameGrid: React.FC<GameGridProps> = ({
             width={GRID_WIDTH} 
             height={GRID_WIDTH}>
             {svgPath && (
-              <Path
-                d={svgPath}
-                stroke="#4CAF50"
-                strokeWidth="4"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                fill="none"
-                opacity={0.8}
-              />
+              <>
+                {/* Glow effect */}
+                <Path
+                  d={svgPath}
+                  stroke={colors.game.pathGlow}
+                  strokeWidth="8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  fill="none"
+                  opacity={0.6}
+                />
+                {/* Main path */}
+                <Path
+                  d={svgPath}
+                  stroke={colors.game.pathStroke}
+                  strokeWidth="3"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  fill="none"
+                  opacity={0.95}
+                />
+              </>
             )}
           </Svg>
           
@@ -232,27 +260,26 @@ const styles = StyleSheet.create({
     padding: GRID_PADDING,
   },
   gridContainer: {
-    borderRadius: 12,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 8,
+    borderRadius: designTokens.borderRadius.xl,
+    backgroundColor: colors.background.card,
+    padding: designTokens.spacing.md,
+    borderWidth: 1,
+    borderColor: colors.border.subtle,
+    ...designTokens.elevation.medium,
   },
   grid: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    borderWidth: 3,
-    borderColor: '#E3F2FD',
+    backgroundColor: colors.game.gridBackground,
+    borderRadius: designTokens.borderRadius.lg,
+    borderWidth: 1,
+    borderColor: colors.border.secondary,
+    overflow: 'hidden',
   },
   svgOverlay: {
     position: 'absolute',
     top: 0,
     left: 0,
     zIndex: 1,
+    borderRadius: designTokens.borderRadius.lg,
   },
   cellContainer: {
     zIndex: 2,

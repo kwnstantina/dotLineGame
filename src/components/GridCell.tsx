@@ -1,6 +1,7 @@
-import React from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import React, {useEffect, useRef} from 'react';
+import {View, Text, StyleSheet, Animated} from 'react-native';
 import {Cell} from '../types';
+import {colors, designTokens, withOpacity} from '../theme/colors';
 
 interface GridCellProps {
   cell: Cell;
@@ -17,22 +18,63 @@ const GridCell: React.FC<GridCellProps> = ({
   isActive = false,
   pathIndex
 }) => {
+  const scaleAnim = useRef(new Animated.Value(1)).current;
+  const glowAnim = useRef(new Animated.Value(0)).current;
+  
+  useEffect(() => {
+    if (isActive) {
+      Animated.parallel([
+        Animated.spring(scaleAnim, {
+          toValue: 1.05,
+          useNativeDriver: true,
+          tension: 300,
+          friction: 10,
+        }),
+        Animated.timing(glowAnim, {
+          toValue: 1,
+          duration: 200,
+          useNativeDriver: false,
+        }),
+      ]).start();
+    } else if (isHighlighted) {
+      Animated.spring(scaleAnim, {
+        toValue: 1.02,
+        useNativeDriver: true,
+        tension: 200,
+        friction: 8,
+      }).start();
+    } else {
+      Animated.parallel([
+        Animated.spring(scaleAnim, {
+          toValue: 1,
+          useNativeDriver: true,
+          tension: 200,
+          friction: 8,
+        }),
+        Animated.timing(glowAnim, {
+          toValue: 0,
+          duration: 150,
+          useNativeDriver: false,
+        }),
+      ]).start();
+    }
+  }, [isActive, isHighlighted, scaleAnim, glowAnim]);
   const getCellBackgroundColor = () => {
-    if (isActive) return '#FF6B6B';
+    if (isActive) return colors.game.cellActive;
     if (cell.isDrawn) {
       const opacity = pathIndex ? Math.max(0.3, 1 - (pathIndex * 0.03)) : 1;
-      return `rgba(76, 175, 80, ${opacity})`;
+      return withOpacity(colors.game.cellDrawn, opacity);
     }
-    if (isHighlighted) return '#FFE082';
-    if (cell.number) return '#E3F2FD';
-    return '#F8F9FA';
+    if (isHighlighted) return colors.game.cellHighlight;
+    if (cell.number) return colors.game.cellNumber;
+    return colors.game.cellDefault;
   };
 
   const getBorderColor = () => {
-    if (isActive) return '#FF1744';
-    if (cell.isDrawn) return '#388E3C';
-    if (cell.number) return '#1976D2';
-    return '#E0E0E0';
+    if (isActive) return colors.interactive.primary;
+    if (cell.isDrawn) return colors.game.cellDrawn;
+    if (cell.number) return colors.interactive.primary;
+    return colors.border.primary;
   };
 
   return (
@@ -44,7 +86,7 @@ const GridCell: React.FC<GridCellProps> = ({
           height: cellSize,
         },
       ]}>
-      <View
+      <Animated.View
         style={[
           styles.cell,
           {
@@ -53,22 +95,51 @@ const GridCell: React.FC<GridCellProps> = ({
             borderWidth: cell.number ? 2 : 1,
             shadowOpacity: cell.number ? 0.3 : 0.1,
             elevation: cell.number ? 4 : 2,
+            transform: [{scale: scaleAnim}],
           },
         ]}>
+        {isActive && (
+          <Animated.View
+            style={[
+              StyleSheet.absoluteFill,
+              {
+                backgroundColor: colors.game.pathGlow,
+                borderRadius: designTokens.borderRadius.lg,
+                opacity: glowAnim.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [0, 0.3],
+                }),
+              },
+            ]}
+          />
+        )}
         {cell.number && (
-          <View style={styles.numberContainer}>
+          <Animated.View 
+            style={[
+              styles.numberContainer,
+              {
+                transform: [{scale: isActive ? 1.1 : 1}],
+              }
+            ]}>
             <Text style={[
               styles.number,
-              {color: cell.isDrawn ? '#FFFFFF' : '#1976D2'}
+              {color: cell.isDrawn ? colors.text.inverse : colors.text.primary}
             ]}>
               {cell.number}
             </Text>
-          </View>
+          </Animated.View>
         )}
         {cell.isDrawn && !cell.number && (
-          <View style={styles.dot} />
+          <Animated.View 
+            style={[
+              styles.dot,
+              {
+                transform: [{scale: isActive ? 1.2 : 1}],
+              }
+            ]} 
+          />
         )}
-      </View>
+      </Animated.View>
     </View>
   );
 };
@@ -81,32 +152,35 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 8,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowRadius: 3,
+    borderRadius: designTokens.borderRadius.lg,
+    borderWidth: 1,
+    borderColor: 'transparent',
   },
   numberContainer: {
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
-    borderRadius: 15,
-    width: 30,
-    height: 30,
+    backgroundColor: colors.background.surface,
+    borderRadius: designTokens.borderRadius.full,
+    width: 32,
+    height: 32,
     justifyContent: 'center',
     alignItems: 'center',
+    ...designTokens.elevation.subtle,
+    borderWidth: 2,
+    borderColor: colors.border.subtle,
   },
   number: {
-    fontSize: 16,
-    fontWeight: 'bold',
+    fontSize: designTokens.typography.fontSizes.md,
+    fontWeight: '700',
     fontFamily: 'Nunito-Bold',
+    lineHeight: designTokens.typography.lineHeights.tight * designTokens.typography.fontSizes.md,
   },
   dot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: '#FFFFFF',
+    width: 10,
+    height: 10,
+    borderRadius: designTokens.borderRadius.full,
+    backgroundColor: colors.background.surface,
+    ...designTokens.elevation.subtle,
+    borderWidth: 2,
+    borderColor: colors.border.subtle,
   },
 });
 
