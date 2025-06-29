@@ -8,15 +8,16 @@ import {
   SafeAreaView,
   Animated,
   StatusBar,
-  Dimensions,
-  ScrollView,
 } from 'react-native';
+import {
+  GestureHandlerRootView,
+  ScrollView,
+} from 'react-native-gesture-handler';
 import GameGrid from '../components/GameGrid';
 import {GameState} from '../types';
 import {createSamplePuzzle, validatePath} from '../utils/puzzleUtils';
 import {colors, designTokens} from '../theme/colors';
 
-const {width: screenWidth} = Dimensions.get('window');
 
 const GameScreen: React.FC = () => {
   const [gameState, setGameState] = useState<GameState>({
@@ -187,13 +188,16 @@ const GameScreen: React.FC = () => {
   const progressPercentage = Math.round((gameState.drawnPath.length / totalCells) * 100);
 
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="dark-content" backgroundColor="#F0F4FF" />
-      
-      <ScrollView 
-        style={styles.scrollView}
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}>
+    <GestureHandlerRootView style={{flex: 1}}>
+      <SafeAreaView style={styles.container}>
+        <StatusBar barStyle="dark-content" backgroundColor={colors.background.primary} />
+        
+        <ScrollView 
+          style={styles.scrollView}
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+          scrollEnabled={true}
+          nestedScrollEnabled={true}>
         <Animated.View 
           style={[
             styles.content,
@@ -264,12 +268,14 @@ const GameScreen: React.FC = () => {
           </View>
 
           {/* Game Grid */}
-          <GameGrid
-            cells={gameState.puzzle.cells}
-            gridSize={gameState.puzzle.gridSize}
-            onPathUpdate={handlePathUpdate}
-            drawnPath={gameState.drawnPath}
-          />
+          <View style={styles.gameGridContainer}>
+            <GameGrid
+              cells={gameState.puzzle.cells}
+              gridSize={gameState.puzzle.gridSize}
+              onPathUpdate={handlePathUpdate}
+              drawnPath={gameState.drawnPath}
+            />
+          </View>
 
           {/* Modern Controls */}
           <View style={styles.controlsContainer}>
@@ -326,7 +332,8 @@ const GameScreen: React.FC = () => {
           
         </Animated.View>
       </ScrollView>
-    </SafeAreaView>
+      </SafeAreaView>
+    </GestureHandlerRootView>
   );
 };
 
@@ -344,6 +351,11 @@ const styles = StyleSheet.create({
   },
   content: {
     paddingHorizontal: designTokens.spacing.xl,
+  },
+  gameGridContainer: {
+    alignItems: 'center',
+    paddingHorizontal: designTokens.spacing.lg,
+    marginVertical: designTokens.spacing.lg,
   },
   header: {
     marginTop: designTokens.spacing.xl,
