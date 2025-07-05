@@ -1,0 +1,105 @@
+import React from 'react';
+import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import {colors, designTokens} from '../theme/colors';
+
+interface GameControlsProps {
+  drawnPathLength: number;
+  onReset: () => void;
+  onSubmit: () => void;
+}
+
+const GameControls: React.FC<GameControlsProps> = ({
+  drawnPathLength,
+  onReset,
+  onSubmit,
+}) => {
+  return (
+    <View style={styles.controlsContainer}>
+      <TouchableOpacity
+        style={[
+          styles.modernButton,
+          styles.secondaryButton,
+          drawnPathLength === 0 && styles.disabledButton
+        ]}
+        onPress={onReset}
+        disabled={drawnPathLength === 0}>
+        <View style={styles.buttonContent}>
+          <Text style={styles.buttonIcon}>🔄</Text>
+          <Text style={[styles.buttonText, styles.secondaryButtonText]}>Reset</Text>
+        </View>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={[
+          styles.modernButton, 
+          styles.primaryButton,
+          drawnPathLength === 0 && styles.disabledButton
+        ]}
+        onPress={onSubmit}
+        disabled={drawnPathLength === 0}>
+        <View style={styles.buttonContent}>
+          <Text style={styles.buttonIcon}>✓</Text>
+          <Text style={[
+            styles.buttonText,
+            styles.primaryButtonText,
+            drawnPathLength === 0 && styles.disabledButtonText
+          ]}>Check Solution</Text>
+        </View>
+      </TouchableOpacity>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  controlsContainer: {
+    flexDirection: 'row',
+    gap: designTokens.spacing.md,
+    marginVertical: designTokens.spacing.xxl,
+    paddingHorizontal: designTokens.spacing.xs,
+  },
+  modernButton: {
+    flex: 1,
+    paddingVertical: designTokens.spacing.lg,
+    paddingHorizontal: designTokens.spacing.xl,
+    borderRadius: designTokens.borderRadius.xl,
+    ...designTokens.elevation.low,
+  },
+  primaryButton: {
+    backgroundColor: colors.interactive.primary,
+  },
+  secondaryButton: {
+    backgroundColor: colors.background.card,
+    borderWidth: 1,
+    borderColor: colors.border.primary,
+  },
+  disabledButton: {
+    backgroundColor: colors.interactive.disabled,
+    borderColor: colors.interactive.disabled,
+    ...designTokens.elevation.none,
+  },
+  buttonContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: designTokens.spacing.sm,
+  },
+  buttonIcon: {
+    fontSize: designTokens.typography.fontSizes.lg,
+  },
+  buttonText: {
+    fontSize: designTokens.typography.fontSizes.md,
+    fontWeight: '600',
+    fontFamily: 'Nunito-SemiBold',
+  },
+  primaryButtonText: {
+    color: colors.text.inverse,
+  },
+  secondaryButtonText: {
+    color: colors.text.primary,
+  },
+  disabledButtonText: {
+    color: colors.text.muted,
+  },
+});
+
+export default GameControls;
