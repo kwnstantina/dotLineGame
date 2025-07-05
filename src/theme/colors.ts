@@ -1,57 +1,57 @@
 export const colors = {
-  // Primary palette - Modern nature-inspired tones
+  // Primary palette - Ocean and purple theme
   primary: {
-    moss: '#2D5A3D',      // Deep Moss Green - main brand color (darker, more sophisticated)
-    bark: '#8B4A2B',      // Rich Bark Brown - secondary accent
-    fern: '#4A7C59',      // Forest Fern - medium green for highlights
-    mushroom: '#F8F6F3',  // Light Mushroom Beige - clean background
-    pebble: '#8A9BA8',    // Cool Pebble Gray - modern borders/text
+    ocean: '#1e3a8a',     // Deep Ocean Blue - main brand color
+    purple: '#8b5cf6',    // Vibrant Purple - secondary accent
+    oceanLight: '#3b82f6', // Lighter ocean blue for highlights
+    purpleLight: '#a78bfa', // Light purple for backgrounds
+    neutral: '#8A9BA8',   // Cool neutral gray - modern borders/text
   },
   
   // Semantic colors based on primary palette
   background: {
     primary: '#FAFAFA',   // Almost white with warm undertone
-    secondary: '#F8F6F3', // Light mushroom
+    secondary: '#f8fafc', // Light blue-gray
     surface: '#FFFFFF',   // Pure white for contrast
     card: '#FFFFFF',      // Card background
-    overlay: 'rgba(45, 90, 61, 0.95)', // Dark moss overlay
+    overlay: 'rgba(30, 58, 138, 0.95)', // Dark ocean blue overlay
   },
   
   text: {
     primary: '#1F2937',   // Dark gray for excellent readability
-    secondary: '#2D5A3D', // Deep moss for secondary text
+    secondary: '#1e3a8a', // Deep ocean blue for secondary text
     muted: '#6B7280',     // Modern gray for disabled/subtle text
     inverse: '#FFFFFF',   // White text on dark backgrounds
-    accent: '#8B4A2B',    // Bark brown for accents
+    accent: '#8b5cf6',    // Vibrant purple for accents
   },
   
   border: {
     primary: '#E5E7EB',   // Light modern gray
     secondary: '#F3F4F6', // Very light gray
-    accent: '#2D5A3D',    // Deep moss for focus states
+    accent: '#1e3a8a',    // Deep ocean blue for focus states
     subtle: '#F9FAFB',    // Almost invisible border
   },
   
   interactive: {
-    primary: '#2D5A3D',     // Deep moss for buttons/active states
-    primaryHover: '#1F3A2A', // Even darker moss for hover
-    secondary: '#4A7C59',   // Forest fern for secondary actions
+    primary: '#1e3a8a',     // Deep ocean blue for buttons/active states
+    primaryHover: '#1e40af', // Darker ocean blue for hover
+    secondary: '#8b5cf6',   // Vibrant purple for secondary actions
     disabled: '#D1D5DB',    // Modern disabled gray
-    accent: '#8B4A2B',      // Bark brown accent
+    accent: '#a78bfa',      // Light purple accent
   },
   
   game: {
     // Game-specific colors - Modern and clean
     cellDefault: '#FFFFFF',      // Pure white for empty cells
-    cellNumber: '#F8F6F3',       // Very light mushroom for numbered cells
-    cellActive: '#4A7C59',       // Forest fern for currently selected cell
-    cellDrawn: '#2D5A3D',        // Deep moss for drawn path
-    cellHighlight: '#E6F3E9',    // Very light green for highlights
+    cellNumber: '#f8fafc',       // Very light blue-gray for numbered cells
+    cellActive: '#8b5cf6',       // Vibrant purple for currently selected cell
+    cellDrawn: '#1e3a8a',        // Deep ocean blue for drawn path
+    cellHighlight: '#e0e7ff',    // Very light blue for highlights
     
     // Path and line colors
-    pathStroke: '#2D5A3D',       // Deep moss for drawn lines
-    pathComplete: '#8B4A2B',     // Rich bark for completed paths
-    pathGlow: 'rgba(45, 90, 61, 0.3)', // Subtle glow effect
+    pathStroke: '#1e3a8a',       // Deep ocean blue for drawn lines
+    pathComplete: '#8b5cf6',     // Vibrant purple for completed paths
+    pathGlow: 'rgba(30, 58, 138, 0.3)', // Subtle ocean blue glow effect
     
     // UI elements
     gridBackground: '#FFFFFF',    // Pure white grid background
@@ -74,11 +74,11 @@ export const colors = {
   
   // Opacity variants for overlays and states
   opacity: {
-    overlay: 'rgba(45, 90, 61, 0.95)',     // Deep moss overlay
-    highlight: 'rgba(74, 124, 89, 0.15)',  // Forest fern highlight
+    overlay: 'rgba(30, 58, 138, 0.95)',     // Deep ocean blue overlay
+    highlight: 'rgba(139, 92, 246, 0.15)',  // Vibrant purple highlight
     disabled: 'rgba(107, 114, 128, 0.5)',  // Modern gray disabled
-    hover: 'rgba(45, 90, 61, 0.08)',       // Subtle hover state
-    pressed: 'rgba(45, 90, 61, 0.12)',     // Pressed state
+    hover: 'rgba(30, 58, 138, 0.08)',       // Subtle ocean blue hover state
+    pressed: 'rgba(30, 58, 138, 0.12)',     // Ocean blue pressed state
   },
 } as const;
 

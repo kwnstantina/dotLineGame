@@ -191,7 +191,6 @@ const GameScreen: React.FC = () => {
     <GestureHandlerRootView style={{flex: 1}}>
       <SafeAreaView style={styles.container}>
         <StatusBar barStyle="dark-content" backgroundColor={colors.background.primary} />
-        
         <ScrollView 
           style={styles.scrollView}
           contentContainerStyle={styles.scrollContent}
@@ -328,8 +327,7 @@ const GameScreen: React.FC = () => {
               <Text style={styles.statValue}>{totalCells}</Text>
               <Text style={styles.statLabel}>Total Cells</Text>
             </View>
-          </View>
-          
+          </View>        
         </Animated.View>
       </ScrollView>
       </SafeAreaView>
