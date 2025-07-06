@@ -23,7 +23,7 @@ const GameHeader: React.FC<GameHeaderProps> = ({ gridSize = 5, level = 1, onHelp
           />
         </View>
         <View style={styles.titleTextContainer}>
-          <Text style={styles.title}>Dot Line</Text>
+          <Text style={styles.title}>DotLine</Text>
           <View style={styles.subtitleContainer}>
             <Text style={styles.subtitle}>Connect • Fill • Win</Text>
             <View style={styles.levelInfo}>
@@ -88,14 +88,12 @@ const styles = StyleSheet.create({
     color: colors.text.secondary,
     fontWeight: '600',
     fontFamily: 'Nunito-Medium',
-    backgroundColor: colors.background.card,
   },
   levelInfo: {
     flexDirection: 'row',
     alignItems: 'center',
     marginTop: designTokens.spacing.xs,
     gap: designTokens.spacing.md,
-    backgroundColor: colors.background.card,
   },
   levelText: {
     fontSize: designTokens.typography.fontSizes.sm,

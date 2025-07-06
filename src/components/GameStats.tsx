@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
   },
   statCard: {
     flex: 1,
-    backgroundColor: colors.background.card,
+    backgroundColor: colors.background.surface,
     borderRadius: designTokens.borderRadius.xl,
     padding: designTokens.spacing.xl,
     alignItems: 'center',

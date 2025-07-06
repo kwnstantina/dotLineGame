@@ -54,13 +54,13 @@ const styles = StyleSheet.create({
   controlsContainer: {
     flexDirection: 'row',
     gap: designTokens.spacing.md,
-    marginVertical: designTokens.spacing.xxl,
+    marginVertical: designTokens.spacing.lg,
     paddingHorizontal: designTokens.spacing.xs,
   },
   modernButton: {
     flex: 1,
     paddingVertical: designTokens.spacing.lg,
-    paddingHorizontal: designTokens.spacing.xl,
+    paddingHorizontal: designTokens.spacing.lg,
     borderRadius: designTokens.borderRadius.xl,
     ...designTokens.elevation.low,
   },
@@ -85,6 +85,7 @@ const styles = StyleSheet.create({
   },
   buttonIcon: {
     fontSize: designTokens.typography.fontSizes.lg,
+    color: colors.text.inverse,
   },
   buttonText: {
     fontSize: designTokens.typography.fontSizes.md,

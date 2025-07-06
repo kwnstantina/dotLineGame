@@ -1,7 +1,6 @@
 import {Cell, Puzzle} from '../types';
 
-export const createSamplePuzzle = (): Puzzle => {
-  const gridSize = 5;
+export const createSamplePuzzle = (gridSize: number = 5): Puzzle => {
   const cells: Cell[] = [];
   
   // Create all cells
@@ -17,14 +16,43 @@ export const createSamplePuzzle = (): Puzzle => {
   }
 
   // Add numbered cells for a more interesting solvable puzzle
-  // Solution path: 1(0,0) → 2(1,0) → 3(2,1) → 4(3,2) → 5(4,4)
-  const numberedCells: {[key: string]: number} = {
-    '0-0': 1,  // Top-left corner
-    '1-0': 2,  // One down from start
-    '2-1': 3,  // Center-left area  
-    '3-2': 4,  // Lower-center
-    '4-4': 5,  // Bottom-right corner
-  };
+  // Generate numbered cells based on grid size
+  const numberedCells: {[key: string]: number} = {};
+  
+  if (gridSize === 3) {
+    numberedCells['0-0'] = 1;
+    numberedCells['1-1'] = 2;
+    numberedCells['2-2'] = 3;
+  } else if (gridSize === 4) {
+    numberedCells['0-0'] = 1;
+    numberedCells['1-0'] = 2;
+    numberedCells['2-1'] = 3;
+    numberedCells['3-3'] = 4;
+  } else if (gridSize === 5) {
+    numberedCells['0-0'] = 1;
+    numberedCells['1-0'] = 2;
+    numberedCells['2-1'] = 3;
+    numberedCells['3-2'] = 4;
+    numberedCells['4-4'] = 5;
+  } else if (gridSize === 6) {
+    numberedCells['0-0'] = 1;
+    numberedCells['2-5'] = 2;
+    numberedCells['4-2'] = 3;
+    numberedCells['1-1'] = 4;
+    numberedCells['5-5'] = 5;
+  } else if (gridSize === 7) {
+    numberedCells['0-0'] = 1;
+    numberedCells['2-6'] = 2;
+    numberedCells['4-3'] = 3;
+    numberedCells['1-1'] = 4;
+    numberedCells['6-6'] = 5;
+  } else { // gridSize >= 8
+    numberedCells['0-0'] = 1;
+    numberedCells['2-7'] = 2;
+    numberedCells['5-4'] = 3;
+    numberedCells['1-1'] = 4;
+    numberedCells[`${gridSize-1}-${gridSize-1}`] = 5;
+  }
 
   // Update cells with numbers
   cells.forEach(cell => {
@@ -34,7 +62,7 @@ export const createSamplePuzzle = (): Puzzle => {
   });
 
   return {
-    id: 'sample-puzzle-1',
+    id: `sample-puzzle-${gridSize}x${gridSize}`,
     gridSize,
     cells,
     numberedCells,

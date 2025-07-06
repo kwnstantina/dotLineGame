@@ -283,9 +283,9 @@ const styles = StyleSheet.create({
   gridContainer: {
     alignSelf: 'center',
     borderRadius: designTokens.borderRadius.xl,
-    backgroundColor: colors.background.card,
+    backgroundColor: colors.background.surface,
     padding: designTokens.spacing.md,
-    borderWidth: 1,
+    borderWidth: 0.5,
     borderColor: colors.border.subtle,
     ...designTokens.elevation.medium,
   },

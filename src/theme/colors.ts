@@ -1,3 +1,5 @@
+import Snackbar from "../components/Snackbar";
+
 export const colors = {
   // Primary palette - Ocean and purple theme
   primary: {
@@ -15,6 +17,7 @@ export const colors = {
     surface: '#FFFFFF',   // Pure white for contrast
     card: '#FFFFFF',      // Card background
     overlay: 'rgba(30, 58, 138, 0.95)', // Dark ocean blue overlay
+    snackbar: 'rgba(11, 13, 19, 0.95)'
   },
   
   text: {

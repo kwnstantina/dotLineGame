@@ -43,7 +43,7 @@ const ProgressCard: React.FC<ProgressCardProps> = ({
 
 const styles = StyleSheet.create({
   progressCard: {
-    backgroundColor: colors.background.card,
+    backgroundColor: colors.background.surface,
     borderRadius: designTokens.borderRadius.xl,
     padding: designTokens.spacing.md,
     marginBottom: designTokens.spacing.xxl,
