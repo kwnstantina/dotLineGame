@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
   progressCard: {
     backgroundColor: colors.background.card,
     borderRadius: designTokens.borderRadius.xl,
-    padding: designTokens.spacing.xl,
+    padding: designTokens.spacing.md,
     marginBottom: designTokens.spacing.xxl,
     borderWidth: 1,
     borderColor: colors.border.subtle,
@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
   },
   progressTitle: {
     fontSize: designTokens.typography.fontSizes.lg,
-    fontWeight: '600',
+    fontWeight: '700',
     color: colors.text.primary,
     fontFamily: 'Nunito-SemiBold',
   },

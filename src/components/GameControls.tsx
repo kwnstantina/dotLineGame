@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import {View, Text, StyleSheet,Pressable} from 'react-native';
 import {colors, designTokens} from '../theme/colors';
 
 interface GameControlsProps {
@@ -15,7 +15,7 @@ const GameControls: React.FC<GameControlsProps> = ({
 }) => {
   return (
     <View style={styles.controlsContainer}>
-      <TouchableOpacity
+      <Pressable
         style={[
           styles.modernButton,
           styles.secondaryButton,
@@ -27,9 +27,9 @@ const GameControls: React.FC<GameControlsProps> = ({
           <Text style={styles.buttonIcon}>🔄</Text>
           <Text style={[styles.buttonText, styles.secondaryButtonText]}>Reset</Text>
         </View>
-      </TouchableOpacity>
+      </Pressable>
 
-      <TouchableOpacity
+      <Pressable
         style={[
           styles.modernButton, 
           styles.primaryButton,
@@ -45,7 +45,7 @@ const GameControls: React.FC<GameControlsProps> = ({
             drawnPathLength === 0 && styles.disabledButtonText
           ]}>Check Solution</Text>
         </View>
-      </TouchableOpacity>
+      </Pressable>
     </View>
   );
 };

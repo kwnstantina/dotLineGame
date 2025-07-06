@@ -13,7 +13,7 @@ import {
 } from 'react-native-gesture-handler';
 import GameGrid from '../components/GameGrid';
 import GameHeader from '../components/GameHeader';
-import InstructionsCard from '../components/InstructionsCard';
+import InstructionsModal from '../components/InstructionsModal';
 import ProgressCard from '../components/ProgressCard';
 import GameControls from '../components/GameControls';
 import GameStats from '../components/GameStats';
@@ -31,6 +31,8 @@ const GameScreen: React.FC = () => {
     isCompleted: false,
     isLoading: true,
   });
+
+  const [showInstructions, setShowInstructions] = useState(false);
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(50)).current;
@@ -190,10 +192,11 @@ const GameScreen: React.FC = () => {
               transform: [{translateY: slideAnim}],
             }
           ]}>
-          <GameHeader />
-
-          <InstructionsCard />
-
+          <GameHeader 
+            gridSize={gameState.puzzle.gridSize} 
+            level={1} 
+            onHelpPress={() => setShowInstructions(true)}
+          />
           <ProgressCard 
             progressPercentage={progressPercentage}
             progressAnim={progressAnim}
