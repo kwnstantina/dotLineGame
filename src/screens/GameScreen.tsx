@@ -25,6 +25,7 @@ import { colors, designTokens } from '../theme/colors';
 import { useSnackbar } from '../components/SnackbarProvider';
 import { Level } from '../utils/levels';
 import InstructionsModal from '../components/InstructionsModal';
+import AppHeader from '../components/AppHeader';
 
 
 export interface GameScreenProps {
@@ -120,7 +121,7 @@ const GameScreen: React.FC<GameScreenProps> = (props) => {
           useNativeDriver: true,
         }),
       ]).start();
-      showSnackbar('🎉 Perfect! You solved the puzzle!', 'Play Again', loadPuzzle, 4000);
+      showSnackbar('🎉 Perfect! You solved the puzzle!', 'Play Again', loadPuzzle, 2000);
     } else {
       Animated.sequence([
         Animated.timing(slideAnim, { toValue: -10, duration: 100, useNativeDriver: true }),
@@ -152,8 +153,8 @@ const GameScreen: React.FC<GameScreenProps> = (props) => {
     const totalCells = gameState.puzzle ? gameState.puzzle.gridSize * gameState.puzzle.gridSize : 25;
     const progress = gameState.drawnPath.length / totalCells;
 
-    if (progress < 0.3) return colors.feedback.error;
-    if (progress < 0.7) return colors.feedback.warning;
+    if (progress < 0.3) {return colors.feedback.error;}
+    if (progress < 0.7) {return colors.feedback.warning;}
     return colors.feedback.success;
   };
 
@@ -218,7 +219,6 @@ const GameScreen: React.FC<GameScreenProps> = (props) => {
               onReset={handleReset}
               onSubmit={handleSubmit}
             />
-
             <GameStats
               cellsFilled={gameState.drawnPath.length}
               totalCells={totalCells}

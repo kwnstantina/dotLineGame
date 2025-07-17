@@ -88,7 +88,7 @@ const GridCell: React.FC<GridCellProps> = ({
       return colors.game.cellHighlight;
     }
     if (cell.number) {
-      return colors.primary.oceanLight;
+      return colors.primary.ocean;
     }
     return colors.game.cellDefault;
   };
@@ -100,7 +100,7 @@ const GridCell: React.FC<GridCellProps> = ({
     if (cell.isDrawn) {
       // Use complementary colors for borders to enhance the linear effect
       const progress = pathIndex ? Math.min(pathIndex * 0.15, 0.9) : 0;
-      return progress > 0.5 ? colors.primary.purpleLight : colors.primary.oceanLight;
+      return progress > 0.5 ? colors.primary.purpleLight : colors.primary.ocean;
     }
     if (cell.number) {
       return colors.interactive.primary;
@@ -134,7 +134,7 @@ const GridCell: React.FC<GridCellProps> = ({
             style={[
               StyleSheet.absoluteFill,
               {
-                backgroundColor: pathIndex && pathIndex > 5 ? colors.primary.purpleLight : colors.primary.oceanLight,
+                backgroundColor: pathIndex && pathIndex > 5 ? colors.primary.purpleLight : colors.primary.ocean,
                 borderRadius: designTokens.borderRadius.lg,
                 opacity: glowAnim.interpolate({
                   inputRange: [0, 1],
@@ -180,7 +180,7 @@ const GridCell: React.FC<GridCellProps> = ({
               styles.dot,
               {
                 transform: [{scale: isActive ? 1.1 : 1}],
-                backgroundColor: pathIndex && pathIndex > 5 ? colors.primary.purpleLight : colors.primary.oceanLight,
+                backgroundColor: pathIndex && pathIndex > 5 ? colors.primary.purpleLight : colors.primary.ocean,
                 borderColor: pathIndex && pathIndex > 5 ? colors.primary.purple : colors.primary.ocean,
               }
             ]} 
@@ -224,7 +224,7 @@ const styles = StyleSheet.create({
     width: 12,
     height: 12,
     borderRadius: designTokens.borderRadius.full,
-    backgroundColor: colors.primary.oceanLight,
+    backgroundColor: colors.primary.ocean,
     ...designTokens.elevation.subtle,
     borderWidth: 2,
     borderColor: colors.primary.ocean,

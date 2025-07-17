@@ -59,8 +59,8 @@ const styles = StyleSheet.create({
   },
   modernButton: {
     flex: 1,
-    paddingVertical: designTokens.spacing.lg,
-    paddingHorizontal: designTokens.spacing.lg,
+    paddingVertical: designTokens.spacing.sm,
+    paddingHorizontal: designTokens.spacing.sm,
     borderRadius: designTokens.borderRadius.xl,
     ...designTokens.elevation.low,
   },
@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
     gap: designTokens.spacing.sm,
   },
   buttonIcon: {
-    fontSize: designTokens.typography.fontSizes.lg,
+    fontSize: designTokens.typography.fontSizes.md,
     color: colors.text.inverse,
   },
   buttonText: {

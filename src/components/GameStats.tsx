@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background.surface,
     borderRadius: designTokens.borderRadius.xl,
-    padding: designTokens.spacing.xl,
+    padding: designTokens.spacing.sm,
     alignItems: 'center',
     borderWidth: 1,
     borderColor: colors.border.subtle,
@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
     marginBottom: designTokens.spacing.md,
   },
   statEmoji: {
-    fontSize: designTokens.typography.fontSizes.lg,
+    fontSize: designTokens.typography.fontSizes.md,
   },
   statValue: {
     fontSize: designTokens.typography.fontSizes.xxl,
