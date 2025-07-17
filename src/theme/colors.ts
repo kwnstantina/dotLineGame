@@ -1,5 +1,3 @@
-import Snackbar from "../components/Snackbar";
-
 export const colors = {
   // Primary palette - Ocean and purple theme
   primary: {

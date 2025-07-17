@@ -1,4 +1,4 @@
-import React, {useEffect, useRef} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
   View,
   Text,
@@ -14,6 +14,7 @@ import {
 import LinearGradient from 'react-native-linear-gradient';
 import {colors, designTokens} from '../theme/colors';
 import {LEVELS, Level, getDifficultyGradient} from '../utils/levels';
+import Sidebar from '../components/Sidebar';
 
 interface LevelSelectionScreenProps {
   onLevelSelect: (level: Level) => void;
@@ -27,6 +28,9 @@ const LevelSelectionScreen: React.FC<LevelSelectionScreenProps> = ({onLevelSelec
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(30)).current;
   const scaleAnim = useRef(new Animated.Value(0.9)).current;
+  const [isSidebarVisible, setIsSidebarVisible] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isSoundEnabled, setIsSoundEnabled] = useState(true);
 
   const levelAnimations = useRef(
     LEVELS.map(() => ({
@@ -248,6 +252,14 @@ const LevelSelectionScreen: React.FC<LevelSelectionScreenProps> = ({onLevelSelec
             transform: [{translateY: slideAnim}, {scale: scaleAnim}],
           },
         ]}>
+        <View style={styles.headerTop}>
+          <TouchableOpacity
+            style={styles.menuButton}
+            onPress={() => setIsSidebarVisible(true)}
+          >
+            <Text style={styles.menuButtonText}>☰</Text>
+          </TouchableOpacity>
+        </View>
         <Text style={styles.title}>Choose Your Challenge</Text>
         <Text style={styles.subtitle}>Select a level to begin your journey</Text>
       </Animated.View>
@@ -263,6 +275,15 @@ const LevelSelectionScreen: React.FC<LevelSelectionScreenProps> = ({onLevelSelec
           <Text style={styles.footerText}>More levels coming soon! 🚀</Text>
         </View>
       </ScrollView>
+
+      <Sidebar
+        isVisible={isSidebarVisible}
+        onClose={() => setIsSidebarVisible(false)}
+        isDarkMode={isDarkMode}
+        onToggleDarkMode={() => setIsDarkMode(!isDarkMode)}
+        isSoundEnabled={isSoundEnabled}
+        onToggleSound={() => setIsSoundEnabled(!isSoundEnabled)}
+      />
     </SafeAreaView>
   );
 };
@@ -277,6 +298,26 @@ const styles = StyleSheet.create({
     paddingTop: designTokens.spacing.xl,
     paddingBottom: designTokens.spacing.lg,
     alignItems: 'center',
+  },
+  headerTop: {
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    marginBottom: designTokens.spacing.md,
+  },
+  menuButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: colors.background.surface,
+    justifyContent: 'center',
+    alignItems: 'center',
+    ...designTokens.elevation.subtle,
+  },
+  menuButtonText: {
+    fontSize: 18,
+    color: colors.text.primary,
+    fontWeight: 'bold',
   },
   title: {
     fontSize: designTokens.typography.fontSizes.xxxl,

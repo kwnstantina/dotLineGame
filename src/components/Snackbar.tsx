@@ -70,7 +70,7 @@ const Snackbar: React.FC<SnackbarProps> = ({
         }),
       ]).start();
     }
-  }, [visible]);
+  }, [visible, duration, onDismiss, opacity, scale, translateY]);
 
   if (!visible) { return null; }
   return (
