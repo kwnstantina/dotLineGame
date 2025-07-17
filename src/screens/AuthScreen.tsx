@@ -5,13 +5,13 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  Alert,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
 } from 'react-native';
 import { signInWithEmail, signUpWithEmail, resetPassword } from '../utils/firebase';
 import { theme } from '../theme/theme';
+import { useSnackbar } from '../components/SnackbarProvider';
 
 type AuthMode = 'login' | 'register' | 'forgot';
 
@@ -21,6 +21,7 @@ const AuthScreen: React.FC = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const { showSnackbar } = useSnackbar();
 
   const validateEmail = (email: string): boolean => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -33,7 +34,7 @@ const AuthScreen: React.FC = () => {
 
   const handleAuth = async () => {
     if (!validateEmail(email)) {
-      Alert.alert('Error', 'Please enter a valid email address');
+      showSnackbar('Please enter a valid email address');
       return;
     }
 
@@ -43,21 +44,21 @@ const AuthScreen: React.FC = () => {
       setIsLoading(false);
       
       if (error) {
-        Alert.alert('Error', error);
+        showSnackbar(error);
       } else {
-        Alert.alert('Success', 'Password reset email sent. Check your inbox.');
+        showSnackbar('Password reset email sent. Check your inbox.');
         setMode('login');
       }
       return;
     }
 
     if (!validatePassword(password)) {
-      Alert.alert('Error', 'Password must be at least 6 characters long');
+      showSnackbar('Password must be at least 6 characters long');
       return;
     }
 
     if (mode === 'register' && password !== confirmPassword) {
-      Alert.alert('Error', 'Passwords do not match');
+      showSnackbar('Passwords do not match');
       return;
     }
 
@@ -73,7 +74,7 @@ const AuthScreen: React.FC = () => {
     setIsLoading(false);
 
     if (result.error) {
-      Alert.alert('Error', result.error);
+      showSnackbar(result.error);
     }
   };
 

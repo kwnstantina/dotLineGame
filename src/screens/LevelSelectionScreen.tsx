@@ -15,6 +15,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import {colors, designTokens} from '../theme/colors';
 import {LEVELS, Level, getDifficultyGradient} from '../utils/levels';
 import Sidebar from '../components/Sidebar';
+import AppHeader from '../components/AppHeader';
 
 interface LevelSelectionScreenProps {
   onLevelSelect: (level: Level) => void;
@@ -253,6 +254,10 @@ const LevelSelectionScreen: React.FC<LevelSelectionScreenProps> = ({onLevelSelec
           },
         ]}>
         <View style={styles.headerTop}>
+          <AppHeader 
+          title="Choose Your Challenge" 
+          subtitle="Select a level to begin your journey" 
+        />
           <TouchableOpacity
             style={styles.menuButton}
             onPress={() => setIsSidebarVisible(true)}
@@ -260,10 +265,8 @@ const LevelSelectionScreen: React.FC<LevelSelectionScreenProps> = ({onLevelSelec
             <Text style={styles.menuButtonText}>☰</Text>
           </TouchableOpacity>
         </View>
-        <Text style={styles.title}>Choose Your Challenge</Text>
-        <Text style={styles.subtitle}>Select a level to begin your journey</Text>
-      </Animated.View>
 
+      </Animated.View>
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={styles.scrollContent}
@@ -275,7 +278,6 @@ const LevelSelectionScreen: React.FC<LevelSelectionScreenProps> = ({onLevelSelec
           <Text style={styles.footerText}>More levels coming soon! 🚀</Text>
         </View>
       </ScrollView>
-
       <Sidebar
         isVisible={isSidebarVisible}
         onClose={() => setIsSidebarVisible(false)}
@@ -318,20 +320,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: colors.text.primary,
     fontWeight: 'bold',
-  },
-  title: {
-    fontSize: designTokens.typography.fontSizes.xxxl,
-    fontWeight: 'bold',
-    color: colors.text.primary,
-    fontFamily: 'Nunito-Bold',
-    textAlign: 'center',
-    marginBottom: designTokens.spacing.md,
-  },
-  subtitle: {
-    fontSize: designTokens.typography.fontSizes.lg,
-    color: colors.text.secondary,
-    fontFamily: 'Nunito-Medium',
-    textAlign: 'center',
   },
   scrollView: {
     flex: 1,

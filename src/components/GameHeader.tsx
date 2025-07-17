@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { colors, designTokens } from '../theme/colors';
 import { getDifficultyLevel, getDifficultyColor } from '../utils/levels';
 
@@ -10,29 +10,14 @@ interface GameHeaderProps {
 }
 
 const GameHeader: React.FC<GameHeaderProps> = ({ gridSize = 5, level = 1, onHelpPress }) => {
-
-
   return (
     <View style={styles.header}>
-      <View style={styles.titleContainer}>
-        <View style={styles.logoContainer}>
-          <Image
-            source={require('../assets/logo.png')}
-            style={styles.logo}
-            resizeMode="contain"
-          />
-        </View>
-        <View style={styles.titleTextContainer}>
-          <Text style={styles.title}>DotLine</Text>
-          <View style={styles.subtitleContainer}>
-            <Text style={styles.subtitle}>Connect • Fill • Win</Text>
-            <View style={styles.levelInfo}>
-              <Text style={styles.levelText}>Level {level}</Text>
-              <Text style={[styles.difficultyText, { color: getDifficultyColor(gridSize) }]}>
-                {getDifficultyLevel(gridSize)}
-              </Text>
-            </View>
-          </View>
+      <View style={styles.gameInfo}>
+        <View style={styles.levelInfo}>
+          <Text style={styles.levelText}>Level {level}</Text>
+          <Text style={[styles.difficultyText, { color: getDifficultyColor(gridSize) }]}>
+            {getDifficultyLevel(gridSize)}
+          </Text>
         </View>
       </View>
 
@@ -47,62 +32,27 @@ const GameHeader: React.FC<GameHeaderProps> = ({ gridSize = 5, level = 1, onHelp
 
 const styles = StyleSheet.create({
   header: {
-    marginBottom: designTokens.spacing.xxl,
+    marginBottom: designTokens.spacing.xl,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+  gameInfo: {
     flex: 1,
-  },
-  logoContainer: {
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    marginRight: designTokens.spacing.xxl,
-    ...designTokens.elevation.low,
-  },
-  logo: {
-    width: 40,
-    height: 40,
-    borderRadius: designTokens.borderRadius.xxl,
-  },
-  titleTextContainer: {
-    alignItems: 'flex-start',
-    flex: 1,
-    paddingTop: designTokens.spacing.xxl,
-  },
-  title: {
-    fontSize: designTokens.typography.fontSizes.xxxl,
-    fontWeight: 'bold',
-    fontFamily: 'Nunito-Bold',
-    color: colors.text.primary,
-    lineHeight: designTokens.typography.lineHeights.tight * designTokens.typography.fontSizes.xxxl,
-  },
-  subtitleContainer: {
-    marginTop: designTokens.spacing.xs,
-  },
-  subtitle: {
-    fontSize: designTokens.typography.fontSizes.md,
-    color: colors.text.secondary,
-    fontWeight: '600',
-    fontFamily: 'Nunito-Medium',
   },
   levelInfo: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: designTokens.spacing.xs,
     gap: designTokens.spacing.md,
   },
   levelText: {
-    fontSize: designTokens.typography.fontSizes.sm,
-    color: colors.text.secondary,
-    fontWeight: '600',
-    fontFamily: 'Nunito-SemiBold',
+    fontSize: designTokens.typography.fontSizes.lg,
+    color: colors.text.primary,
+    fontWeight: 'bold',
+    fontFamily: 'Nunito-Bold',
   },
   difficultyText: {
-    fontSize: designTokens.typography.fontSizes.sm,
+    fontSize: designTokens.typography.fontSizes.md,
     fontWeight: '600',
     fontFamily: 'Nunito-SemiBold',
   },

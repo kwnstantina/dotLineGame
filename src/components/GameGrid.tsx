@@ -126,9 +126,10 @@ const GameGrid: React.FC<GameGridProps> = ({
     setHighlightedCell(cellId);
     const newPath = [cellId];
     setCurrentPath(newPath);
-    onPathUpdate(newPath);
     setSvgPath(createSvgPath(newPath));
     Vibration.vibrate([0, 10]);
+    // Use setTimeout to move the state update outside the render cycle
+    setTimeout(() => onPathUpdate(newPath), 0);
   }, [onPathUpdate, createSvgPath]);
 
   const continuePath = useCallback((cellId: string) => {
@@ -137,10 +138,11 @@ const GameGrid: React.FC<GameGridProps> = ({
       // Only continue if we're already drawing and this cell can be added
       if (prevPath.length > 0 && canAddToPath(cellId, prevPath)) {
         const newPath = [...prevPath, cellId];
-        onPathUpdate(newPath);
         setSvgPath(createSvgPath(newPath));
         setActiveCell(cellId);
         Vibration.vibrate([0, 3]);
+        // Use setTimeout to move the state update outside the render cycle
+        setTimeout(() => onPathUpdate(newPath), 0);
         return newPath;
       }
       return prevPath;

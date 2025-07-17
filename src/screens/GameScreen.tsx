@@ -25,6 +25,7 @@ import { colors, designTokens } from '../theme/colors';
 import { useSnackbar } from '../components/SnackbarProvider';
 import { Level } from '../utils/levels';
 import InstructionsModal from '../components/InstructionsModal';
+import AppHeader from '../components/AppHeader';
 
 
 export interface GameScreenProps {
@@ -193,12 +194,12 @@ const GameScreen: React.FC<GameScreenProps> = (props) => {
                 </Pressable>
               )}
             </View>
-               <GameHeader
-                gridSize={gameState.puzzle.gridSize}
-                level={level?.id || 1}
-               onHelpPress={() => setShowInstructions(true)}
-
-              />
+            <AppHeader />
+            <GameHeader
+              gridSize={gameState.puzzle.gridSize}
+              level={level?.id || 1}
+              onHelpPress={() => setShowInstructions(true)}
+            />
             <ProgressCard
               progressPercentage={progressPercentage}
               progressAnim={progressAnim}
