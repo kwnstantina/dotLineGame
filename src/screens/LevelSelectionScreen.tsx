@@ -163,7 +163,7 @@ const LevelSelectionScreen: React.FC<LevelSelectionScreenProps> = ({onLevelSelec
   };
 
   const renderStars = (stars: number) => {
-    return Array.from({length: 3}, (_, i) => (
+    return Array.from({length: stars}, (_, i) => (
       <Text key={i} style={[styles.star, {opacity: i < stars ? 1 : 0.3}]}>
         ⭐
       </Text>

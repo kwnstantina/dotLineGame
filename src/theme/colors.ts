@@ -3,7 +3,7 @@ export const colors = {
   primary: {
     ocean: '#1e3a8a',     // Deep Ocean Blue - main brand color
     purple: '#5d3c64',    // Vibrant Purple - secondary accent
-    oceanLight: '#3b82f6', // Lighter ocean blue for highlights
+    oceanLight: '#2d65beff', // Lighter ocean blue for highlights
     purpleLight: '#9f6496', // Light purple for backgrounds
     neutral: '#8A9BA8',   // Cool neutral gray - modern borders/text
   },

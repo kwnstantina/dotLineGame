@@ -151,7 +151,7 @@ const GridCell: React.FC<GridCellProps> = ({
               {
                 backgroundColor: pathIndex && pathIndex > 5 ? 
                   withOpacity(colors.primary.purple, 0.1) : 
-                  withOpacity(colors.primary.ocean, 0.1),
+                  withOpacity(colors.primary.oceanLight, 0.1),
                 borderRadius: designTokens.borderRadius.lg,
                 opacity: 0.6,
               },
@@ -180,8 +180,8 @@ const GridCell: React.FC<GridCellProps> = ({
               styles.dot,
               {
                 transform: [{scale: isActive ? 1.1 : 1}],
-                backgroundColor: pathIndex && pathIndex > 5 ? colors.primary.purpleLight : colors.primary.ocean,
-                borderColor: pathIndex && pathIndex > 5 ? colors.primary.purple : colors.primary.ocean,
+                backgroundColor: pathIndex && pathIndex > 5 ? colors.primary.purpleLight : colors.primary.oceanLight,
+                borderColor: pathIndex && pathIndex > 5 ? colors.primary.purple : colors.primary.oceanLight,
               }
             ]} 
           />
@@ -224,10 +224,10 @@ const styles = StyleSheet.create({
     width: 12,
     height: 12,
     borderRadius: designTokens.borderRadius.full,
-    backgroundColor: colors.primary.ocean,
+    backgroundColor: colors.primary.neutral,
     ...designTokens.elevation.subtle,
     borderWidth: 2,
-    borderColor: colors.primary.ocean,
+    borderColor: colors.primary.neutral,
   },
 });
 
