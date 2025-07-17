@@ -14,9 +14,8 @@ import {
 } from 'react-native-gesture-handler';
 import GameGrid from '../components/GameGrid';
 import GameHeader from '../components/GameHeader';
-import ProgressCard from '../components/ProgressCard';
+import GameProgress from '../components/GameProgress';
 import GameControls from '../components/GameControls';
-import GameStats from '../components/GameStats';
 import LoadingView from '../components/LoadingView';
 import ErrorView from '../components/ErrorView';
 import { GameState } from '../types';
@@ -200,7 +199,9 @@ const GameScreen: React.FC<GameScreenProps> = (props) => {
               level={level?.id || 1}
               onHelpPress={() => setShowInstructions(true)}
             /></View>
-            <ProgressCard
+            <GameProgress
+              cellsFilled={gameState.drawnPath.length}
+              totalCells={totalCells}
               progressPercentage={progressPercentage}
               progressAnim={progressAnim}
               progressColor={getProgressColor()}
@@ -218,10 +219,6 @@ const GameScreen: React.FC<GameScreenProps> = (props) => {
               drawnPathLength={gameState.drawnPath.length}
               onReset={handleReset}
               onSubmit={handleSubmit}
-            />
-            <GameStats
-              cellsFilled={gameState.drawnPath.length}
-              totalCells={totalCells}
             />
             <InstructionsModal
               visible={showInstructions}
