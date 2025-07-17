@@ -2,9 +2,9 @@ export const colors = {
   // Primary palette - Ocean and purple theme
   primary: {
     ocean: '#1e3a8a',     // Deep Ocean Blue - main brand color
-    purple: '#8b5cf6',    // Vibrant Purple - secondary accent
+    purple: '#5d3c64',    // Vibrant Purple - secondary accent
     oceanLight: '#3b82f6', // Lighter ocean blue for highlights
-    purpleLight: '#a78bfa', // Light purple for backgrounds
+    purpleLight: '#9f6496', // Light purple for backgrounds
     neutral: '#8A9BA8',   // Cool neutral gray - modern borders/text
   },
   
@@ -12,7 +12,7 @@ export const colors = {
   background: {
     primary: '#FAFAFA',   // Almost white with warm undertone
     secondary: '#f8fafc', // Light blue-gray
-    surface: '#FFFFFF',   // Pure white for contrast
+    surface: '#dde6ed',   // Pure white for contrast
     card: '#FFFFFF',      // Card background
     overlay: 'rgba(30, 58, 138, 0.95)', // Dark ocean blue overlay
     snackbar: 'rgba(11, 13, 19, 0.95)'
@@ -28,7 +28,7 @@ export const colors = {
   
   border: {
     primary: '#E5E7EB',   // Light modern gray
-    secondary: '#F3F4F6', // Very light gray
+    secondary: '#d7dae0ff', // Very light gray
     accent: '#1e3a8a',    // Deep ocean blue for focus states
     subtle: '#F9FAFB',    // Almost invisible border
   },
@@ -36,7 +36,7 @@ export const colors = {
   interactive: {
     primary: '#1e3a8a',     // Deep ocean blue for buttons/active states
     primaryHover: '#1e40af', // Darker ocean blue for hover
-    secondary: '#8b5cf6',   // Vibrant purple for secondary actions
+    secondary: '#9f6496',   // Vibrant purple for secondary actions
     disabled: '#D1D5DB',    // Modern disabled gray
     accent: '#a78bfa',      // Light purple accent
   },
@@ -45,13 +45,13 @@ export const colors = {
     // Game-specific colors - Modern and clean
     cellDefault: '#FFFFFF',      // Pure white for empty cells
     cellNumber: '#f8fafc',       // Very light blue-gray for numbered cells
-    cellActive: '#8b5cf6',       // Vibrant purple for currently selected cell
+    cellActive: '#9f6496',       // Vibrant purple for currently selected cell
     cellDrawn: '#1e3a8a',        // Deep ocean blue for drawn path
     cellHighlight: '#e0e7ff',    // Very light blue for highlights
     
     // Path and line colors
     pathStroke: '#1e3a8a',       // Deep ocean blue for drawn lines
-    pathComplete: '#8b5cf6',     // Vibrant purple for completed paths
+    pathComplete: '#9f6496',     // Vibrant purple for completed paths
     pathGlow: 'rgba(30, 58, 138, 0.3)', // Subtle ocean blue glow effect
     
     // UI elements
@@ -63,11 +63,11 @@ export const colors = {
   
   feedback: {
     // Modern feedback colors
-    success: '#10B981',        // Modern green
+    success: '#0fac78d0',        // Modern green
     successLight: '#D1FAE5',   // Light success background
-    warning: '#F59E0B',        // Modern amber
+    warning: '#c4810cff',        // Modern amber
     warningLight: '#FEF3C7',   // Light warning background
-    error: '#EF4444',          // Modern red
+    error: '#9e2828ff',          // Modern red
     errorLight: '#FEE2E2',     // Light error background
     info: '#3B82F6',           // Modern blue
     infoLight: '#DBEAFE',      // Light info background

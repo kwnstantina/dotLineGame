@@ -29,8 +29,9 @@ interface GameGridProps {
 }
 
 const {width: screenWidth} = Dimensions.get('window');
-const GRID_PADDING = 20;
-const GRID_WIDTH = screenWidth - GRID_PADDING * 2;
+const GRID_PADDING = 30;
+const GRID_WIDTH = screenWidth - (GRID_PADDING * 1);
+
 
 const GameGrid: React.FC<GameGridProps> = ({
   cells,
@@ -231,7 +232,7 @@ const GameGrid: React.FC<GameGridProps> = ({
               <Path
                 d={svgPath}
                 stroke={colors.game.pathGlow}
-                strokeWidth="8"
+                strokeWidth="5"
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 fill="none"
@@ -284,16 +285,16 @@ const GameGrid: React.FC<GameGridProps> = ({
 const styles = StyleSheet.create({
   gridContainer: {
     alignSelf: 'center',
-    borderRadius: designTokens.borderRadius.xl,
-    backgroundColor: colors.background.surface,
+    borderRadius: designTokens.borderRadius.md,
+    backgroundColor: colors.background.card,
     padding: designTokens.spacing.md,
-    borderWidth: 0.5,
+    borderWidth: 1,
     borderColor: colors.border.subtle,
     ...designTokens.elevation.medium,
   },
   grid: {
-    backgroundColor: colors.game.gridBackground,
-    borderRadius: designTokens.borderRadius.lg,
+    backgroundColor: colors.game.shadow,
+    borderRadius: designTokens.borderRadius.md,
     borderWidth: 1,
     borderColor: colors.border.secondary,
     overflow: 'hidden',
@@ -303,7 +304,7 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     zIndex: 1,
-    borderRadius: designTokens.borderRadius.lg,
+    borderRadius: designTokens.borderRadius.md,
   },
   cellContainer: {
     zIndex: 2,

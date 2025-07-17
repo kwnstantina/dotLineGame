@@ -43,12 +43,12 @@ const ProgressCard: React.FC<ProgressCardProps> = ({
 
 const styles = StyleSheet.create({
   progressCard: {
-    backgroundColor: colors.background.surface,
+    backgroundColor: colors.background.card,
     borderRadius: designTokens.borderRadius.xl,
     padding: designTokens.spacing.md,
-    marginBottom: designTokens.spacing.xxl,
-    borderWidth: 1,
-    borderColor: colors.border.subtle,
+    marginBottom: designTokens.spacing.md,
+    borderWidth: 1.5,
+    borderColor: colors.border.primary,
     ...designTokens.elevation.subtle,
   },
   progressHeader: {
@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
   },
   progressTitle: {
     fontSize: designTokens.typography.fontSizes.lg,
-    fontWeight: '700',
+    fontWeight: '300',
     color: colors.text.primary,
     fontFamily: 'Nunito-SemiBold',
   },
@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
   },
   progressPercentage: {
     fontSize: designTokens.typography.fontSizes.sm,
-    fontWeight: '700',
+    fontWeight: '600',
     color: colors.feedback.success,
     fontFamily: 'Nunito-Bold',
   },

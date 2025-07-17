@@ -60,20 +60,51 @@ const GridCell: React.FC<GridCellProps> = ({
     }
   }, [isActive, isHighlighted, scaleAnim, glowAnim]);
   const getCellBackgroundColor = () => {
-    if (isActive) return colors.game.cellActive;
-    if (cell.isDrawn) {
-      const opacity = pathIndex ? Math.max(0.3, 1 - (pathIndex * 0.03)) : 1;
-      return withOpacity(colors.game.cellDrawn, opacity);
+    if (isActive) {
+      return colors.interactive.primary;
     }
-    if (isHighlighted) return colors.game.cellHighlight;
-    if (cell.number) return colors.game.cellNumber;
+    if (cell.isDrawn) {
+      // Create a linear gradient effect from primary to secondary based on path index
+      const progress = pathIndex ? Math.min(pathIndex * 0.1, 0.8) : 0;
+      const baseColor = colors.primary.ocean;
+      const targetColor = colors.primary.purple;
+      
+      // Interpolate between ocean blue and purple based on progress
+      const r1 = parseInt(baseColor.slice(1, 3), 16);
+      const g1 = parseInt(baseColor.slice(3, 5), 16);
+      const b1 = parseInt(baseColor.slice(5, 7), 16);
+      
+      const r2 = parseInt(targetColor.slice(1, 3), 16);
+      const g2 = parseInt(targetColor.slice(3, 5), 16);
+      const b2 = parseInt(targetColor.slice(5, 7), 16);
+      
+      const r = Math.round(r1 + (r2 - r1) * progress);
+      const g = Math.round(g1 + (g2 - g1) * progress);
+      const b = Math.round(b1 + (b2 - b1) * progress);
+      
+      return `rgb(${r}, ${g}, ${b})`;
+    }
+    if (isHighlighted) {
+      return colors.game.cellHighlight;
+    }
+    if (cell.number) {
+      return colors.primary.oceanLight;
+    }
     return colors.game.cellDefault;
   };
 
   const getBorderColor = () => {
-    if (isActive) return colors.interactive.primary;
-    if (cell.isDrawn) return colors.game.cellDrawn;
-    if (cell.number) return colors.interactive.primary;
+    if (isActive) {
+      return colors.interactive.primary;
+    }
+    if (cell.isDrawn) {
+      // Use complementary colors for borders to enhance the linear effect
+      const progress = pathIndex ? Math.min(pathIndex * 0.15, 0.9) : 0;
+      return progress > 0.5 ? colors.primary.purpleLight : colors.primary.oceanLight;
+    }
+    if (cell.number) {
+      return colors.interactive.primary;
+    }
     return colors.border.primary;
   };
 
@@ -103,12 +134,26 @@ const GridCell: React.FC<GridCellProps> = ({
             style={[
               StyleSheet.absoluteFill,
               {
-                backgroundColor: colors.game.pathGlow,
+                backgroundColor: pathIndex && pathIndex > 5 ? colors.primary.purpleLight : colors.primary.oceanLight,
                 borderRadius: designTokens.borderRadius.lg,
                 opacity: glowAnim.interpolate({
                   inputRange: [0, 1],
-                  outputRange: [0, 0.3],
+                  outputRange: [0, 0.4],
                 }),
+              },
+            ]}
+          />
+        )}
+        {cell.isDrawn && !isActive && (
+          <Animated.View
+            style={[
+              StyleSheet.absoluteFill,
+              {
+                backgroundColor: pathIndex && pathIndex > 5 ? 
+                  withOpacity(colors.primary.purple, 0.1) : 
+                  withOpacity(colors.primary.ocean, 0.1),
+                borderRadius: designTokens.borderRadius.lg,
+                opacity: 0.6,
               },
             ]}
           />
@@ -123,7 +168,7 @@ const GridCell: React.FC<GridCellProps> = ({
             ]}>
             <Text style={[
               styles.number,
-              {color: cell.isDrawn ? colors.text.inverse : colors.text.primary}
+              {color: cell.isDrawn ? colors.text.primary : colors.text.primary}
             ]}>
               {cell.number}
             </Text>
@@ -134,7 +179,9 @@ const GridCell: React.FC<GridCellProps> = ({
             style={[
               styles.dot,
               {
-                transform: [{scale: isActive ? 1.2 : 1}],
+                transform: [{scale: isActive ? 1.1 : 1}],
+                backgroundColor: pathIndex && pathIndex > 5 ? colors.primary.purpleLight : colors.primary.oceanLight,
+                borderColor: pathIndex && pathIndex > 5 ? colors.primary.purple : colors.primary.ocean,
               }
             ]} 
           />
@@ -146,7 +193,7 @@ const GridCell: React.FC<GridCellProps> = ({
 
 const styles = StyleSheet.create({
   cellContainer: {
-    padding: 1,
+    padding: 0.5,
   },
   cell: {
     flex: 1,
@@ -157,30 +204,30 @@ const styles = StyleSheet.create({
     borderColor: 'transparent',
   },
   numberContainer: {
-    backgroundColor: colors.background.surface,
+    backgroundColor: colors.background.card,
     borderRadius: designTokens.borderRadius.full,
     width: 32,
     height: 32,
     justifyContent: 'center',
     alignItems: 'center',
-    ...designTokens.elevation.subtle,
+    ...designTokens.elevation.low,
     borderWidth: 2,
-    borderColor: colors.border.subtle,
+    borderColor: colors.interactive.primary,
   },
   number: {
     fontSize: designTokens.typography.fontSizes.md,
-    fontWeight: '700',
+    fontWeight: '600',
     fontFamily: 'Nunito-Bold',
     lineHeight: designTokens.typography.lineHeights.tight * designTokens.typography.fontSizes.md,
   },
   dot: {
-    width: 10,
-    height: 10,
+    width: 12,
+    height: 12,
     borderRadius: designTokens.borderRadius.full,
-    backgroundColor: colors.background.surface,
+    backgroundColor: colors.primary.oceanLight,
     ...designTokens.elevation.subtle,
     borderWidth: 2,
-    borderColor: colors.border.subtle,
+    borderColor: colors.primary.ocean,
   },
 });
 
