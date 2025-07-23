@@ -4,14 +4,15 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  StyleSheet,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
 } from 'react-native';
-import { signInWithEmail, signUpWithEmail, resetPassword } from '../utils/firebase';
-import { theme } from '../theme/theme';
+import { signInWithEmail, signUpWithEmail, resetPassword, signInWithGoogle } from '../utils/firebase';
 import { useSnackbar } from '../components/SnackbarProvider';
+import { AUTH_STRINGS } from '../constants/authConstants';
+import { authStyles } from '../styles/authStyles';
+import { validateAuthForm } from '../utils/validation';
 
 type AuthMode = 'login' | 'register' | 'forgot';
 
@@ -23,18 +24,11 @@ const AuthScreen: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { showSnackbar } = useSnackbar();
 
-  const validateEmail = (email: string): boolean => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  };
-
-  const validatePassword = (password: string): boolean => {
-    return password.length >= 6;
-  };
-
   const handleAuth = async () => {
-    if (!validateEmail(email)) {
-      showSnackbar('Please enter a valid email address');
+    const validation = validateAuthForm(email, password, confirmPassword, mode);
+    
+    if (!validation.isValid) {
+      showSnackbar(validation.message!);
       return;
     }
 
@@ -46,19 +40,9 @@ const AuthScreen: React.FC = () => {
       if (error) {
         showSnackbar(error);
       } else {
-        showSnackbar('Password reset email sent. Check your inbox.');
+        showSnackbar(AUTH_STRINGS.PASSWORD_RESET_SENT);
         setMode('login');
       }
-      return;
-    }
-
-    if (!validatePassword(password)) {
-      showSnackbar('Password must be at least 6 characters long');
-      return;
-    }
-
-    if (mode === 'register' && password !== confirmPassword) {
-      showSnackbar('Passwords do not match');
       return;
     }
 
@@ -78,17 +62,27 @@ const AuthScreen: React.FC = () => {
     }
   };
 
+  const handleGoogleSignIn = async () => {
+    setIsLoading(true);
+    const result = await signInWithGoogle();
+    setIsLoading(false);
+
+    if (result.error) {
+      showSnackbar(result.error);
+    }
+  };
+
   const renderForm = () => {
     switch (mode) {
       case 'login':
         return (
           <>
-            <Text style={styles.title}>Hi :)</Text>
-            <Text style={styles.subtitle}>Sign in to continue</Text>
+            <Text style={authStyles.title}>{AUTH_STRINGS.LOGIN_TITLE}</Text>
+            <Text style={authStyles.subtitle}>{AUTH_STRINGS.LOGIN_SUBTITLE}</Text>
             
             <TextInput
-              style={styles.input}
-              placeholder="Email"
+              style={authStyles.input}
+              placeholder={AUTH_STRINGS.EMAIL_PLACEHOLDER}
               value={email}
               onChangeText={setEmail}
               keyboardType="email-address"
@@ -97,8 +91,8 @@ const AuthScreen: React.FC = () => {
             />
             
             <TextInput
-              style={styles.input}
-              placeholder="Password"
+              style={authStyles.input}
+              placeholder={AUTH_STRINGS.PASSWORD_PLACEHOLDER}
               value={password}
               onChangeText={setPassword}
               secureTextEntry
@@ -106,28 +100,44 @@ const AuthScreen: React.FC = () => {
             />
             
             <TouchableOpacity
-              style={styles.button}
+              style={authStyles.button}
               onPress={handleAuth}
               disabled={isLoading}
             >
-              <Text style={styles.buttonText}>
-                {isLoading ? 'Signing In...' : 'Sign In'}
+              <Text style={authStyles.buttonText}>
+                {isLoading ? AUTH_STRINGS.SIGNING_IN : AUTH_STRINGS.SIGN_IN}
+              </Text>
+            </TouchableOpacity>
+
+            <View style={authStyles.dividerContainer}>
+              <View style={authStyles.divider} />
+              <Text style={authStyles.dividerText}>{AUTH_STRINGS.OR}</Text>
+              <View style={authStyles.divider} />
+            </View>
+
+            <TouchableOpacity
+              style={authStyles.googleButton}
+              onPress={handleGoogleSignIn}
+              disabled={isLoading}
+            >
+              <Text style={authStyles.googleButtonText}>
+                {isLoading ? AUTH_STRINGS.SIGNING_IN : AUTH_STRINGS.GOOGLE_BUTTON}
               </Text>
             </TouchableOpacity>
             
             <TouchableOpacity
-              style={styles.linkButton}
+              style={authStyles.linkButton}
               onPress={() => setMode('forgot')}
             >
-              <Text style={styles.linkText}>Forgot Password?</Text>
+              <Text style={authStyles.linkText}>{AUTH_STRINGS.FORGOT_PASSWORD}</Text>
             </TouchableOpacity>
             
             <TouchableOpacity
-              style={styles.linkButton}
+              style={authStyles.linkButton}
               onPress={() => setMode('register')}
             >
-              <Text style={styles.linkText}>
-                Don't have an account? Sign Up
+              <Text style={authStyles.linkText}>
+                {AUTH_STRINGS.DONT_HAVE_ACCOUNT}
               </Text>
             </TouchableOpacity>
           </>
@@ -136,12 +146,12 @@ const AuthScreen: React.FC = () => {
       case 'register':
         return (
           <>
-            <Text style={styles.title}>Create Account</Text>
-            <Text style={styles.subtitle}>Sign up to get started</Text>
+            <Text style={authStyles.title}>{AUTH_STRINGS.REGISTER_TITLE}</Text>
+            <Text style={authStyles.subtitle}>{AUTH_STRINGS.REGISTER_SUBTITLE}</Text>
             
             <TextInput
-              style={styles.input}
-              placeholder="Email"
+              style={authStyles.input}
+              placeholder={AUTH_STRINGS.EMAIL_PLACEHOLDER}
               value={email}
               onChangeText={setEmail}
               keyboardType="email-address"
@@ -150,8 +160,8 @@ const AuthScreen: React.FC = () => {
             />
             
             <TextInput
-              style={styles.input}
-              placeholder="Password"
+              style={authStyles.input}
+              placeholder={AUTH_STRINGS.PASSWORD_PLACEHOLDER}
               value={password}
               onChangeText={setPassword}
               secureTextEntry
@@ -159,8 +169,8 @@ const AuthScreen: React.FC = () => {
             />
             
             <TextInput
-              style={styles.input}
-              placeholder="Confirm Password"
+              style={authStyles.input}
+              placeholder={AUTH_STRINGS.CONFIRM_PASSWORD_PLACEHOLDER}
               value={confirmPassword}
               onChangeText={setConfirmPassword}
               secureTextEntry
@@ -168,21 +178,37 @@ const AuthScreen: React.FC = () => {
             />
             
             <TouchableOpacity
-              style={styles.button}
+              style={authStyles.button}
               onPress={handleAuth}
               disabled={isLoading}
             >
-              <Text style={styles.buttonText}>
-                {isLoading ? 'Creating Account...' : 'Sign Up'}
+              <Text style={authStyles.buttonText}>
+                {isLoading ? AUTH_STRINGS.CREATING_ACCOUNT : AUTH_STRINGS.SIGN_UP}
+              </Text>
+            </TouchableOpacity>
+
+            <View style={authStyles.dividerContainer}>
+              <View style={authStyles.divider} />
+              <Text style={authStyles.dividerText}>{AUTH_STRINGS.OR}</Text>
+              <View style={authStyles.divider} />
+            </View>
+
+            <TouchableOpacity
+              style={authStyles.googleButton}
+              onPress={handleGoogleSignIn}
+              disabled={isLoading}
+            >
+              <Text style={authStyles.googleButtonText}>
+                {isLoading ? AUTH_STRINGS.SIGNING_IN : AUTH_STRINGS.GOOGLE_BUTTON}
               </Text>
             </TouchableOpacity>
             
             <TouchableOpacity
-              style={styles.linkButton}
+              style={authStyles.linkButton}
               onPress={() => setMode('login')}
             >
-              <Text style={styles.linkText}>
-                Already have an account? Sign In
+              <Text style={authStyles.linkText}>
+                {AUTH_STRINGS.ALREADY_HAVE_ACCOUNT}
               </Text>
             </TouchableOpacity>
           </>
@@ -191,12 +217,12 @@ const AuthScreen: React.FC = () => {
       case 'forgot':
         return (
           <>
-            <Text style={styles.title}>Reset Password</Text>
-            <Text style={styles.subtitle}>Enter your email to reset password</Text>
+            <Text style={authStyles.title}>{AUTH_STRINGS.FORGOT_TITLE}</Text>
+            <Text style={authStyles.subtitle}>{AUTH_STRINGS.FORGOT_SUBTITLE}</Text>
             
             <TextInput
-              style={styles.input}
-              placeholder="Email"
+              style={authStyles.input}
+              placeholder={AUTH_STRINGS.EMAIL_PLACEHOLDER}
               value={email}
               onChangeText={setEmail}
               keyboardType="email-address"
@@ -205,20 +231,20 @@ const AuthScreen: React.FC = () => {
             />
             
             <TouchableOpacity
-              style={styles.button}
+              style={authStyles.button}
               onPress={handleAuth}
               disabled={isLoading}
             >
-              <Text style={styles.buttonText}>
-                {isLoading ? 'Sending...' : 'Send Reset Email'}
+              <Text style={authStyles.buttonText}>
+                {isLoading ? AUTH_STRINGS.SENDING : AUTH_STRINGS.SEND_RESET_EMAIL}
               </Text>
             </TouchableOpacity>
             
             <TouchableOpacity
-              style={styles.linkButton}
+              style={authStyles.linkButton}
               onPress={() => setMode('login')}
             >
-              <Text style={styles.linkText}>Back to Sign In</Text>
+              <Text style={authStyles.linkText}>{AUTH_STRINGS.BACK_TO_SIGN_IN}</Text>
             </TouchableOpacity>
           </>
         );
@@ -227,76 +253,16 @@ const AuthScreen: React.FC = () => {
 
   return (
     <KeyboardAvoidingView
-      style={styles.container}
+      style={authStyles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <View style={styles.formContainer}>
+      <ScrollView contentContainerStyle={authStyles.scrollContainer}>
+        <View style={authStyles.formContainer}>
           {renderForm()}
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: theme.colors.background,
-  },
-  scrollContainer: {
-    flexGrow: 1,
-    justifyContent: 'center',
-  },
-  formContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    paddingHorizontal: 24,
-    paddingVertical: 32,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: theme.colors.text,
-    textAlign: 'center',
-    marginBottom: 8,
-  },
-  subtitle: {
-    fontSize: 16,
-    color: theme.colors.textSecondary,
-    textAlign: 'center',
-    marginBottom: 32,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: theme.colors.border,
-    borderRadius: 8,
-    padding: 16,
-    marginBottom: 16,
-    fontSize: 16,
-    backgroundColor: theme.colors.surface,
-    color: theme.colors.text,
-  },
-  button: {
-    backgroundColor: theme.colors.primary,
-    borderRadius: 8,
-    padding: 16,
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  buttonText: {
-    color: theme.colors.textInverted,
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  linkButton: {
-    alignItems: 'center',
-    paddingVertical: 8,
-  },
-  linkText: {
-    color: theme.colors.primary,
-    fontSize: 14,
-  },
-});
 
 export default AuthScreen;

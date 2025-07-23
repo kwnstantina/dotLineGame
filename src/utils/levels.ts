@@ -13,6 +13,8 @@ export interface Level {
   bestTime?: number;
   description: string;
   icon: string;
+  solved?: boolean;
+  completionTime?: number;
 }
 
 export const LEVELS: Level[] = [
@@ -28,6 +30,8 @@ export const LEVELS: Level[] = [
     stars: 0,
     description: 'Learn the basics with a simple 3×3 grid',
     icon: '🌟',
+    solved: true,
+    completionTime: 45,
   },
   {
     id: 2,
@@ -54,6 +58,8 @@ export const LEVELS: Level[] = [
     stars: 1,
     description: 'Master the 5×5 grid like a pro',
     icon: '⚡',
+    solved: true,
+    completionTime: 120,
   },
   {
     id: 4,
@@ -97,16 +103,16 @@ export const LEVELS: Level[] = [
 ];
 
 export const getDifficultyLevel = (size: number) => {
-  if (size <= 3) return 'Beginner';
-  if (size <= 5) return 'Intermediate';
-  if (size <= 7) return 'Advanced';
+  if (size <= 3) { return 'Beginner'; }
+  if (size <= 5) { return 'Intermediate'; }
+  if (size <= 7) { return 'Advanced'; }
   return 'Expert';
 };
 
 export const getDifficultyColor = (size: number) => {
-  if (size <= 3) return colors.feedback.success;
-  if (size <= 5) return colors.feedback.warning;
-  if (size <= 7) return colors.feedback.error;
+  if (size <= 3) { return colors.feedback.success; }
+  if (size <= 5) { return colors.feedback.warning; }
+  if (size <= 7) { return colors.feedback.error; }
   return colors.interactive.accent;
 };
 

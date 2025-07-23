@@ -16,22 +16,27 @@ import {colors, designTokens} from '../theme/colors';
 import {LEVELS, Level, getDifficultyGradient} from '../utils/levels';
 import Sidebar from '../components/Sidebar';
 import AppHeader from '../components/AppHeader';
+import SolvedBadge from '../components/SolvedBadge';
+import { getUserProgress, UserProgress } from '../utils/firebase';
 
 interface LevelSelectionScreenProps {
   onLevelSelect: (level: Level) => void;
+  refreshTrigger?: number; // Add this to trigger refresh from parent
 }
 
 const {width} = Dimensions.get('window');
 const CARD_WIDTH = width * 0.85;
 const CARD_HEIGHT = 140;
 
-const LevelSelectionScreen: React.FC<LevelSelectionScreenProps> = ({onLevelSelect}) => {
+const LevelSelectionScreen: React.FC<LevelSelectionScreenProps> = ({onLevelSelect, refreshTrigger}) => {
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(30)).current;
   const scaleAnim = useRef(new Animated.Value(0.9)).current;
   const [isSidebarVisible, setIsSidebarVisible] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [isSoundEnabled, setIsSoundEnabled] = useState(true);
+  const [userProgress, setUserProgress] = useState<UserProgress | null>(null);
+  const [levelsWithProgress, setLevelsWithProgress] = useState<Level[]>(LEVELS);
 
   const levelAnimations = useRef(
     LEVELS.map(() => ({
@@ -42,6 +47,9 @@ const LevelSelectionScreen: React.FC<LevelSelectionScreenProps> = ({onLevelSelec
   ).current;
 
   useEffect(() => {
+    // Load user progress from Firebase
+    loadUserProgress();
+    
     // Initial screen animations
     Animated.parallel([
       Animated.timing(fadeAnim, {
@@ -91,6 +99,40 @@ const LevelSelectionScreen: React.FC<LevelSelectionScreenProps> = ({onLevelSelec
 
     Animated.parallel(staggeredAnimations).start();
   }, []);
+
+  // Refresh progress when refreshTrigger changes
+  useEffect(() => {
+    if (refreshTrigger) {
+      loadUserProgress();
+    }
+  }, [refreshTrigger]);
+
+  const loadUserProgress = async () => {
+    try {
+      const progress = await getUserProgress();
+      setUserProgress(progress);
+      
+      if (progress) {
+        // Merge Firebase progress with local level data
+        const updatedLevels = LEVELS.map(level => {
+          const levelProgress = progress.levelProgress[level.id.toString()];
+          if (levelProgress) {
+            return {
+              ...level,
+              solved: levelProgress.solved,
+              completionTime: levelProgress.completionTime,
+              bestTime: levelProgress.bestTime,
+            };
+          }
+          return level;
+        });
+        
+        setLevelsWithProgress(updatedLevels);
+      }
+    } catch (error) {
+      console.error('Error loading user progress:', error);
+    }
+  };
 
   const handleLevelPress = (level: Level) => {
     if (!level.unlocked) {
@@ -236,6 +278,13 @@ const LevelSelectionScreen: React.FC<LevelSelectionScreenProps> = ({onLevelSelec
               <Text style={styles.bestTime}>Best: {level.bestTime}s</Text>
             )}
           </LinearGradient>
+          
+          {/* Solved Badge */}
+          <SolvedBadge 
+            solved={level.solved || false}
+            completionTime={level.completionTime}
+            difficulty={level.difficulty}
+          />
         </TouchableOpacity>
       </Animated.View>
     );
@@ -272,7 +321,7 @@ const LevelSelectionScreen: React.FC<LevelSelectionScreenProps> = ({onLevelSelec
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}>
         
-        {LEVELS.map((level, index) => renderLevelCard(level, index))}
+        {levelsWithProgress.map((level, index) => renderLevelCard(level, index))}
         
         <View style={styles.footer}>
           <Text style={styles.footerText}>More levels coming soon! 🚀</Text>
@@ -337,6 +386,7 @@ const styles = StyleSheet.create({
     height: CARD_HEIGHT,
     borderRadius: designTokens.borderRadius.xl,
     ...designTokens.elevation.medium,
+    overflow: 'visible',
   },
   lockedCard: {
     opacity: 0.7,

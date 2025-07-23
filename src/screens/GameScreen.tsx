@@ -24,16 +24,17 @@ import { colors, designTokens } from '../theme/colors';
 import { useSnackbar } from '../components/SnackbarProvider';
 import { Level } from '../utils/levels';
 import InstructionsModal from '../components/InstructionsModal';
-import AppHeader from '../components/AppHeader';
+import { saveLevelCompletion } from '../utils/firebase';
 
 
 export interface GameScreenProps {
   level?: Level;
   onBackToLevels?: () => void;
+  onLevelComplete?: (levelId: number, completionTime: number) => void;
 }
 
 const GameScreen: React.FC<GameScreenProps> = (props) => {
-  const { level, onBackToLevels } = props;
+  const { level, onBackToLevels, onLevelComplete } = props;
   const [gameState, setGameState] = useState<GameState>({
     puzzle: null,
     drawnPath: [],
@@ -45,6 +46,7 @@ const GameScreen: React.FC<GameScreenProps> = (props) => {
   const slideAnim = useRef(new Animated.Value(50)).current;
   const progressAnim = useRef(new Animated.Value(0)).current;
   const [showInstructions, setShowInstructions] = useState(false);
+  const [startTime, setStartTime] = useState<number | null>(null);
 
   const { showSnackbar } = useSnackbar();
 
@@ -91,6 +93,9 @@ const GameScreen: React.FC<GameScreenProps> = (props) => {
         isCompleted: false,
         isLoading: false,
       }));
+      
+      // Set start time when puzzle is loaded
+      setStartTime(Date.now());
     }, 500);
   };
 
@@ -108,6 +113,30 @@ const GameScreen: React.FC<GameScreenProps> = (props) => {
 
     if (isValid) {
       setGameState(prev => ({ ...prev, isCompleted: true }));
+      
+      // Calculate completion time
+      const completionTime = startTime ? Math.floor((Date.now() - startTime) / 1000) : 0;
+      
+      // Save completion to Firebase
+      if (level?.id) {
+        saveLevelCompletion(level.id, completionTime)
+          .then(result => {
+            if (result.success) {
+              console.log('Level completion saved successfully');
+            } else {
+              console.error('Failed to save level completion:', result.error);
+            }
+          })
+          .catch(error => {
+            console.error('Error saving level completion:', error);
+          });
+      }
+      
+      // Notify parent component about completion
+      if (onLevelComplete && level?.id) {
+        onLevelComplete(level.id, completionTime);
+      }
+      
       Animated.sequence([
         Animated.timing(fadeAnim, {
           toValue: 0.3,
@@ -138,6 +167,9 @@ const GameScreen: React.FC<GameScreenProps> = (props) => {
       drawnPath: [],
       isCompleted: false,
     }));
+    
+    // Reset start time for new attempt
+    setStartTime(Date.now());
 
     // Reset animation
     Animated.spring(slideAnim, {
