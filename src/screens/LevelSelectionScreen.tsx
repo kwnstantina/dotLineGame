@@ -18,6 +18,7 @@ import Sidebar from '../components/Sidebar';
 import AppHeader from '../components/AppHeader';
 import SolvedBadge from '../components/SolvedBadge';
 import { getUserProgress, UserProgress } from '../utils/firebase';
+import { APP_STRINGS, formatPremiumUnlockMessage, formatAdUnlockMessage, formatAdLoadingMessage } from '../constants/strings';
 
 interface LevelSelectionScreenProps {
   onLevelSelect: (level: Level) => void;
@@ -138,20 +139,20 @@ const LevelSelectionScreen: React.FC<LevelSelectionScreenProps> = ({onLevelSelec
     if (!level.unlocked) {
       if (level.requiresPayment) {
         Alert.alert(
-          '💎 Premium Level',
-          `Unlock "${level.name}" with premium access!`,
+          APP_STRINGS.LEVEL_SELECTION.PREMIUM_DIALOG_TITLE,
+          formatPremiumUnlockMessage(level.name),
           [
-            {text: 'Maybe Later', style: 'cancel'},
-            {text: 'Unlock Premium', onPress: handlePremiumUnlock},
+            {text: APP_STRINGS.DIALOG_ACTIONS.MAYBE_LATER, style: 'cancel'},
+            {text: APP_STRINGS.DIALOG_ACTIONS.UNLOCK_PREMIUM, onPress: handlePremiumUnlock},
           ]
         );
       } else if (level.requiresAd) {
         Alert.alert(
-          '📺 Watch Ad to Play',
-          `Watch a ${level.adDuration}-second ad to unlock "${level.name}"?`,
+          APP_STRINGS.LEVEL_SELECTION.AD_DIALOG_TITLE,
+          formatAdUnlockMessage(level.name, level.adDuration),
           [
-            {text: 'Cancel', style: 'cancel'},
-            {text: 'Watch Ad', onPress: () => handleAdWatch(level)},
+            {text: APP_STRINGS.DIALOG_ACTIONS.CANCEL, style: 'cancel'},
+            {text: APP_STRINGS.DIALOG_ACTIONS.WATCH_AD, onPress: () => handleAdWatch(level)},
           ]
         );
       }
@@ -183,17 +184,17 @@ const LevelSelectionScreen: React.FC<LevelSelectionScreenProps> = ({onLevelSelec
 
   const handlePremiumUnlock = () => {
     // Simulate premium unlock process
-    Alert.alert('Premium Feature', 'This would integrate with your payment system!');
+    Alert.alert(APP_STRINGS.PREMIUM.FEATURE_ALERT, APP_STRINGS.PREMIUM.INTEGRATION_MESSAGE);
   };
 
   const handleAdWatch = (level: Level) => {
     // Simulate ad watching
     Alert.alert(
-      '📺 Ad Loading...',
-      `Starting ${level.adDuration}-second ad...`,
+      APP_STRINGS.AD_LOADING.TITLE,
+      formatAdLoadingMessage(level.adDuration),
       [
         {
-          text: 'Skip (Debug)',
+          text: APP_STRINGS.DIALOG_ACTIONS.SKIP_DEBUG,
           onPress: () => {
             // Simulate ad completion
             const updatedLevel = {...level, unlocked: true};
@@ -304,8 +305,8 @@ const LevelSelectionScreen: React.FC<LevelSelectionScreenProps> = ({onLevelSelec
         ]}>
         <View style={styles.headerTop}>
           <AppHeader 
-          title="Choose Your Challenge" 
-          subtitle="Select a level to begin your journey" 
+          title={APP_STRINGS.LEVEL_SELECTION.HEADER_TITLE}
+          subtitle={APP_STRINGS.LEVEL_SELECTION.HEADER_SUBTITLE} 
         />
           <TouchableOpacity
             style={styles.menuButton}
@@ -324,7 +325,7 @@ const LevelSelectionScreen: React.FC<LevelSelectionScreenProps> = ({onLevelSelec
         {levelsWithProgress.map((level, index) => renderLevelCard(level, index))}
         
         <View style={styles.footer}>
-          <Text style={styles.footerText}>More levels coming soon! 🚀</Text>
+          <Text style={styles.footerText}>{APP_STRINGS.LEVEL_SELECTION.FOOTER_TEXT}</Text>
         </View>
       </ScrollView>
       <Sidebar

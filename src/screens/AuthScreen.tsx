@@ -3,21 +3,20 @@ import {
   View,
   Text,
   TextInput,
-  TouchableOpacity,
+  Pressable,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
 } from 'react-native';
 import { signInWithEmail, signUpWithEmail, resetPassword, signInWithGoogle } from '../utils/firebase';
 import { useSnackbar } from '../components/SnackbarProvider';
-import { AUTH_STRINGS } from '../constants/authConstants';
+import { AUTH_CODES, AUTH_STRINGS, AuthMode } from '../constants/authConstants';
 import { authStyles } from '../styles/authStyles';
 import { validateAuthForm } from '../utils/validation';
 
-type AuthMode = 'login' | 'register' | 'forgot';
 
 const AuthScreen: React.FC = () => {
-  const [mode, setMode] = useState<AuthMode>('login');
+  const [mode, setMode] = useState<AuthMode>(AUTH_CODES.LOGIN);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -32,7 +31,7 @@ const AuthScreen: React.FC = () => {
       return;
     }
 
-    if (mode === 'forgot') {
+    if (mode === AUTH_CODES.FORGOT) {
       setIsLoading(true);
       const { error } = await resetPassword(email);
       setIsLoading(false);
@@ -41,7 +40,7 @@ const AuthScreen: React.FC = () => {
         showSnackbar(error);
       } else {
         showSnackbar(AUTH_STRINGS.PASSWORD_RESET_SENT);
-        setMode('login');
+        setMode(AUTH_CODES.LOGIN);
       }
       return;
     }
@@ -49,7 +48,7 @@ const AuthScreen: React.FC = () => {
     setIsLoading(true);
     
     let result;
-    if (mode === 'login') {
+    if (mode === AUTH_CODES.LOGIN) {
       result = await signInWithEmail(email, password);
     } else {
       result = await signUpWithEmail(email, password);
@@ -74,7 +73,7 @@ const AuthScreen: React.FC = () => {
 
   const renderForm = () => {
     switch (mode) {
-      case 'login':
+      case AUTH_CODES.LOGIN:
         return (
           <>
             <Text style={authStyles.title}>{AUTH_STRINGS.LOGIN_TITLE}</Text>
@@ -99,7 +98,7 @@ const AuthScreen: React.FC = () => {
               autoComplete="password"
             />
             
-            <TouchableOpacity
+            <Pressable
               style={authStyles.button}
               onPress={handleAuth}
               disabled={isLoading}
@@ -107,7 +106,7 @@ const AuthScreen: React.FC = () => {
               <Text style={authStyles.buttonText}>
                 {isLoading ? AUTH_STRINGS.SIGNING_IN : AUTH_STRINGS.SIGN_IN}
               </Text>
-            </TouchableOpacity>
+            </Pressable>
 
             <View style={authStyles.dividerContainer}>
               <View style={authStyles.divider} />
@@ -115,7 +114,7 @@ const AuthScreen: React.FC = () => {
               <View style={authStyles.divider} />
             </View>
 
-            <TouchableOpacity
+            <Pressable
               style={authStyles.googleButton}
               onPress={handleGoogleSignIn}
               disabled={isLoading}
@@ -123,27 +122,27 @@ const AuthScreen: React.FC = () => {
               <Text style={authStyles.googleButtonText}>
                 {isLoading ? AUTH_STRINGS.SIGNING_IN : AUTH_STRINGS.GOOGLE_BUTTON}
               </Text>
-            </TouchableOpacity>
+            </Pressable>
             
-            <TouchableOpacity
+            <Pressable
               style={authStyles.linkButton}
-              onPress={() => setMode('forgot')}
+              onPress={() => setMode(AUTH_CODES.FORGOT)}
             >
               <Text style={authStyles.linkText}>{AUTH_STRINGS.FORGOT_PASSWORD}</Text>
-            </TouchableOpacity>
+            </Pressable>
             
-            <TouchableOpacity
+            <Pressable
               style={authStyles.linkButton}
-              onPress={() => setMode('register')}
+              onPress={() => setMode(AUTH_CODES.REGISTER)}
             >
               <Text style={authStyles.linkText}>
                 {AUTH_STRINGS.DONT_HAVE_ACCOUNT}
               </Text>
-            </TouchableOpacity>
+            </Pressable>
           </>
         );
         
-      case 'register':
+      case AUTH_CODES.REGISTER:
         return (
           <>
             <Text style={authStyles.title}>{AUTH_STRINGS.REGISTER_TITLE}</Text>
@@ -177,7 +176,7 @@ const AuthScreen: React.FC = () => {
               autoComplete="new-password"
             />
             
-            <TouchableOpacity
+            <Pressable
               style={authStyles.button}
               onPress={handleAuth}
               disabled={isLoading}
@@ -185,7 +184,7 @@ const AuthScreen: React.FC = () => {
               <Text style={authStyles.buttonText}>
                 {isLoading ? AUTH_STRINGS.CREATING_ACCOUNT : AUTH_STRINGS.SIGN_UP}
               </Text>
-            </TouchableOpacity>
+            </Pressable>
 
             <View style={authStyles.dividerContainer}>
               <View style={authStyles.divider} />
@@ -193,7 +192,7 @@ const AuthScreen: React.FC = () => {
               <View style={authStyles.divider} />
             </View>
 
-            <TouchableOpacity
+            <Pressable
               style={authStyles.googleButton}
               onPress={handleGoogleSignIn}
               disabled={isLoading}
@@ -201,20 +200,20 @@ const AuthScreen: React.FC = () => {
               <Text style={authStyles.googleButtonText}>
                 {isLoading ? AUTH_STRINGS.SIGNING_IN : AUTH_STRINGS.GOOGLE_BUTTON}
               </Text>
-            </TouchableOpacity>
+            </Pressable>
             
-            <TouchableOpacity
+            <Pressable
               style={authStyles.linkButton}
-              onPress={() => setMode('login')}
+              onPress={() => setMode(AUTH_CODES.LOGIN)}
             >
               <Text style={authStyles.linkText}>
                 {AUTH_STRINGS.ALREADY_HAVE_ACCOUNT}
               </Text>
-            </TouchableOpacity>
+            </Pressable>
           </>
         );
         
-      case 'forgot':
+      case AUTH_CODES.FORGOT:
         return (
           <>
             <Text style={authStyles.title}>{AUTH_STRINGS.FORGOT_TITLE}</Text>
@@ -230,7 +229,7 @@ const AuthScreen: React.FC = () => {
               autoComplete="email"
             />
             
-            <TouchableOpacity
+            <Pressable
               style={authStyles.button}
               onPress={handleAuth}
               disabled={isLoading}
@@ -238,14 +237,14 @@ const AuthScreen: React.FC = () => {
               <Text style={authStyles.buttonText}>
                 {isLoading ? AUTH_STRINGS.SENDING : AUTH_STRINGS.SEND_RESET_EMAIL}
               </Text>
-            </TouchableOpacity>
+            </Pressable>
             
-            <TouchableOpacity
+            <Pressable
               style={authStyles.linkButton}
-              onPress={() => setMode('login')}
+              onPress={() => setMode(AUTH_CODES.LOGIN)}
             >
               <Text style={authStyles.linkText}>{AUTH_STRINGS.BACK_TO_SIGN_IN}</Text>
-            </TouchableOpacity>
+            </Pressable>
           </>
         );
     }

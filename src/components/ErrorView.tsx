@@ -1,6 +1,7 @@
 import React from 'react';
 import {View, Text, StyleSheet, SafeAreaView, StatusBar, TouchableOpacity} from 'react-native';
 import {colors, designTokens} from '../theme/colors';
+import { APP_STRINGS } from '../constants/strings';
 
 interface ErrorViewProps {
   onRetry: () => void;
@@ -11,9 +12,9 @@ const ErrorView: React.FC<ErrorViewProps> = ({onRetry}) => {
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor={colors.background.primary} />
       <View style={styles.errorContainer}>
-        <Text style={styles.errorText}>❌ Failed to load puzzle</Text>
+        <Text style={styles.errorText}>{APP_STRINGS.GAME.ERROR_TEXT}</Text>
         <TouchableOpacity style={[styles.modernButton, styles.retryButton]} onPress={onRetry}>
-          <Text style={styles.buttonText}>🔄 Retry</Text>
+          <Text style={styles.buttonText}>{APP_STRINGS.GAME.RETRY_BUTTON}</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>

@@ -25,6 +25,7 @@ import { useSnackbar } from '../components/SnackbarProvider';
 import { Level } from '../utils/levels';
 import InstructionsModal from '../components/InstructionsModal';
 import { saveLevelCompletion } from '../utils/firebase';
+import { APP_STRINGS } from '../constants/strings';
 
 
 export interface GameScreenProps {
@@ -149,7 +150,7 @@ const GameScreen: React.FC<GameScreenProps> = (props) => {
           useNativeDriver: true,
         }),
       ]).start();
-      showSnackbar('🎉 Perfect! You solved the puzzle!', 'Play Again', loadPuzzle, 2000);
+      showSnackbar(APP_STRINGS.GAME.SUCCESS_MESSAGE, APP_STRINGS.GAME.SUCCESS_ACTION, loadPuzzle, 2000);
     } else {
       Animated.sequence([
         Animated.timing(slideAnim, { toValue: -10, duration: 100, useNativeDriver: true }),
@@ -157,7 +158,7 @@ const GameScreen: React.FC<GameScreenProps> = (props) => {
         Animated.timing(slideAnim, { toValue: -5, duration: 100, useNativeDriver: true }),
         Animated.timing(slideAnim, { toValue: 0, duration: 100, useNativeDriver: true }),
       ]).start();
-      showSnackbar('❌ Not quite right! Make sure to: Connect all numbers in order (1→2→3→4→5), fill every cell, and keep the line continuous.', 'Try Again', undefined, 5000);
+      showSnackbar(APP_STRINGS.GAME.ERROR_MESSAGE, APP_STRINGS.GAME.ERROR_ACTION, undefined, 5000);
     }
   };
 
@@ -221,7 +222,7 @@ const GameScreen: React.FC<GameScreenProps> = (props) => {
             <View style={styles.headerContainer}>
               {onBackToLevels && (
                 <Pressable style={styles.backButton} onPress={onBackToLevels}>
-                  <Text style={styles.backButtonText}>← Back</Text>
+                  <Text style={styles.backButtonText}>{APP_STRINGS.GAME.BACK_BUTTON}</Text>
                 </Pressable>
               )}
             </View>

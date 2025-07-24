@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image } from 'react-native';
 import { colors, designTokens } from '../theme/colors';
+import { APP_STRINGS } from '../constants/strings';
 
 interface AppHeaderProps {
   title?: string;
@@ -8,8 +9,8 @@ interface AppHeaderProps {
 }
 
 const AppHeader: React.FC<AppHeaderProps> = ({ 
-  title = "DotLine", 
-  subtitle = "Connect • Fill • Win" 
+  title = APP_STRINGS.TITLE, 
+  subtitle = APP_STRINGS.TAGLINE 
 }) => {
   return (
     <View style={styles.header}>

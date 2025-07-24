@@ -1,6 +1,7 @@
 import React from 'react';
 import {View, Text, StyleSheet, SafeAreaView, StatusBar, Animated} from 'react-native';
 import {colors, designTokens} from '../theme/colors';
+import { APP_STRINGS } from '../constants/strings';
 
 interface LoadingViewProps {
   fadeAnim: Animated.Value;
@@ -12,7 +13,7 @@ const LoadingView: React.FC<LoadingViewProps> = ({fadeAnim}) => {
       <StatusBar barStyle="dark-content" backgroundColor={colors.background.primary} />
       <View style={styles.loadingContainer}>
         <Animated.View style={[styles.loadingDot, {opacity: fadeAnim}]} />
-        <Text style={styles.loadingText}>Loading...</Text>
+        <Text style={styles.loadingText}>{APP_STRINGS.GAME.LOADING_TEXT}</Text>
       </View>
     </SafeAreaView>
   );

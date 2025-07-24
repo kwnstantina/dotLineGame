@@ -12,6 +12,7 @@ import {
 import { signOut } from '../utils/firebase';
 import { useAuth } from '../contexts/AuthContext';
 import { theme } from '../theme/theme';
+import { APP_STRINGS } from '../constants/strings';
 
 interface SidebarProps {
   isVisible: boolean;
@@ -51,24 +52,24 @@ const Sidebar: React.FC<SidebarProps> = ({
         <SafeAreaView style={styles.sidebarContainer}>
           <ScrollView style={styles.scrollView}>
             <View style={styles.header}>
-              <Text style={styles.title}>Settings</Text>
+              <Text style={styles.title}>{APP_STRINGS.SIDEBAR.TITLE}</Text>
               <Pressable onPress={onClose} style={styles.closeButton}>
-                <Text style={styles.closeButtonText}>×</Text>
+                <Text style={styles.closeButtonText}>{APP_STRINGS.SIDEBAR.CLOSE_BUTTON}</Text>
               </Pressable>
             </View>
 
             {user && (
               <View style={styles.userSection}>
-                <Text style={styles.sectionTitle}>Account</Text>
+                <Text style={styles.sectionTitle}>{APP_STRINGS.SIDEBAR.ACCOUNT.title}</Text>
                 <Text style={styles.userEmail}>{user.email}</Text>
               </View>
             )}
 
             <View style={styles.section}>
-              <Text style={styles.sectionTitle}>Preferences</Text>
+              <Text style={styles.sectionTitle}>{APP_STRINGS.SIDEBAR.PREFERENCES.title}</Text>
               
               <View style={styles.settingItem}>
-                <Text style={styles.settingLabel}>Dark Mode</Text>
+                <Text style={styles.settingLabel}>{APP_STRINGS.SIDEBAR.PREFERENCES.DARK_MODE}</Text>
                 <Switch
                   value={isDarkMode}
                   onValueChange={onToggleDarkMode}
@@ -78,7 +79,7 @@ const Sidebar: React.FC<SidebarProps> = ({
               </View>
 
               <View style={styles.settingItem}>
-                <Text style={styles.settingLabel}>Sound Effects</Text>
+                <Text style={styles.settingLabel}>{APP_STRINGS.SIDEBAR.PREFERENCES.SOUND_EFFECTS}</Text>
                 <Switch
                   value={isSoundEnabled}
                   onValueChange={onToggleSound}
@@ -89,38 +90,38 @@ const Sidebar: React.FC<SidebarProps> = ({
             </View>
 
             <View style={styles.section}>
-              <Text style={styles.sectionTitle}>Game</Text>
+              <Text style={styles.sectionTitle}>{APP_STRINGS.SIDEBAR.GAME_SECTION.title}</Text>
               
               <Pressable style={styles.menuItem}>
-                <Text style={styles.menuItemText}>Statistics</Text>
+                <Text style={styles.menuItemText}>{APP_STRINGS.SIDEBAR.GAME_SECTION.STATISTICS}</Text>
               </Pressable>
 
               <Pressable style={styles.menuItem}>
-                <Text style={styles.menuItemText}>Achievements</Text>
+                <Text style={styles.menuItemText}>{APP_STRINGS.SIDEBAR.GAME_SECTION.ACHIEVEMENTS}</Text>
               </Pressable>
 
               <Pressable style={styles.menuItem}>
-                <Text style={styles.menuItemText}>Leaderboard</Text>
+                <Text style={styles.menuItemText}>{APP_STRINGS.SIDEBAR.GAME_SECTION.LEADERBOARD}</Text>
               </Pressable>
             </View>
 
             <View style={styles.section}>
-              <Text style={styles.sectionTitle}>Support</Text>
+              <Text style={styles.sectionTitle}>{APP_STRINGS.SIDEBAR.SUPPORT.title}</Text>
               
               <Pressable style={styles.menuItem}>
-                <Text style={styles.menuItemText}>Help & Tutorial</Text>
+                <Text style={styles.menuItemText}>{APP_STRINGS.SIDEBAR.SUPPORT.HELP_TUTORIAL}</Text>
               </Pressable>
 
               <Pressable style={styles.menuItem}>
-                <Text style={styles.menuItemText}>Contact Us</Text>
+                <Text style={styles.menuItemText}>{APP_STRINGS.SIDEBAR.SUPPORT.CONTACT_US}</Text>
               </Pressable>
 
               <Pressable style={styles.menuItem}>
-                <Text style={styles.menuItemText}>Privacy Policy</Text>
+                <Text style={styles.menuItemText}>{APP_STRINGS.SIDEBAR.SUPPORT.PRIVACY_POLICY}</Text>
               </Pressable>
 
               <Pressable style={styles.menuItem}>
-                <Text style={styles.menuItemText}>Terms of Service</Text>
+                <Text style={styles.menuItemText}>{APP_STRINGS.SIDEBAR.SUPPORT.TERMS_OF_SERVICE}</Text>
               </Pressable>
             </View>
 
@@ -131,7 +132,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                   onPress={handleSignOut}
                 >
                   <Text style={[styles.menuItemText, styles.signOutText]}>
-                    Sign Out
+                    {APP_STRINGS.SIDEBAR.SIGN_OUT}
                   </Text>
                 </Pressable>
               </View>

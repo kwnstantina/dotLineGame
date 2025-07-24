@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { colors, designTokens } from '../theme/colors';
 import { getDifficultyLevel, getDifficultyColor } from '../utils/levels';
+import { APP_STRINGS, formatLevelTitle } from '../constants/strings';
 
 interface GameHeaderProps {
   gridSize?: number;
@@ -14,7 +15,7 @@ const GameHeader: React.FC<GameHeaderProps> = ({ gridSize = 5, level = 1, onHelp
     <View style={styles.header}>
       <View style={styles.gameInfo}>
         <View style={styles.levelInfo}>
-          <Text style={styles.levelText}>Level {level}</Text>
+          <Text style={styles.levelText}>{formatLevelTitle(level)}</Text>
           <Text style={[styles.difficultyText, { color: getDifficultyColor(gridSize) }]}>
             {getDifficultyLevel(gridSize)}
           </Text>
@@ -24,7 +25,7 @@ const GameHeader: React.FC<GameHeaderProps> = ({ gridSize = 5, level = 1, onHelp
       <TouchableOpacity
         style={styles.helpButton}
         onPress={onHelpPress}>
-        <Text style={styles.helpIcon}>?</Text>
+        <Text style={styles.helpIcon}>{APP_STRINGS.GAME.HELP_BUTTON}</Text>
       </TouchableOpacity>
     </View>
   );

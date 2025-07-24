@@ -1,6 +1,7 @@
 import React from 'react';
 import {View, Text, StyleSheet,Pressable} from 'react-native';
 import {colors, designTokens} from '../theme/colors';
+import { APP_STRINGS } from '../constants/strings';
 
 interface GameControlsProps {
   drawnPathLength: number;
@@ -24,8 +25,8 @@ const GameControls: React.FC<GameControlsProps> = ({
         onPress={onReset}
         disabled={drawnPathLength === 0}>
         <View style={styles.buttonContent}>
-          <Text style={styles.buttonIcon}>🔄</Text>
-          <Text style={[styles.buttonText, styles.secondaryButtonText]}>Reset</Text>
+          <Text style={styles.buttonIcon}>{APP_STRINGS.GAME.RESET_ICON}</Text>
+          <Text style={[styles.buttonText, styles.secondaryButtonText]}>{APP_STRINGS.GAME.RESET_TEXT}</Text>
         </View>
       </Pressable>
 
@@ -38,12 +39,12 @@ const GameControls: React.FC<GameControlsProps> = ({
         onPress={onSubmit}
         disabled={drawnPathLength === 0}>
         <View style={styles.buttonContent}>
-          <Text style={styles.buttonIcon}>✓</Text>
+          <Text style={styles.buttonIcon}>{APP_STRINGS.GAME.SUBMIT_ICON}</Text>
           <Text style={[
             styles.buttonText,
             styles.primaryButtonText,
             drawnPathLength === 0 && styles.disabledButtonText
-          ]}>Check Solution</Text>
+          ]}>{APP_STRINGS.GAME.SUBMIT_TEXT}</Text>
         </View>
       </Pressable>
     </View>

@@ -8,6 +8,7 @@ import {
   ScrollView,
 } from 'react-native';
 import {colors, designTokens} from '../theme/colors';
+import { APP_STRINGS, formatDifficulty, formatInstructionsCells } from '../constants/strings';
 
 interface InstructionsModalProps {
   visible: boolean;
@@ -21,10 +22,10 @@ const InstructionsModal: React.FC<InstructionsModalProps> = ({
   gridSize,
 }) => {
   const getDifficultyLevel = (size: number) => {
-    if (size <= 3) return 'Beginner';
-    if (size <= 5) return 'Intermediate';
-    if (size <= 7) return 'Advanced';
-    return 'Expert';
+    if (size <= 3) return APP_STRINGS.DIFFICULTY.BEGINNER;
+    if (size <= 5) return APP_STRINGS.DIFFICULTY.INTERMEDIATE;
+    if (size <= 7) return APP_STRINGS.DIFFICULTY.ADVANCED;
+    return APP_STRINGS.DIFFICULTY.EXPERT;
   };
 
   const getDifficultyColor = (size: number) => {
@@ -44,54 +45,45 @@ const InstructionsModal: React.FC<InstructionsModalProps> = ({
       <View style={styles.overlay}>
         <View style={styles.modal}>
           <View style={styles.header}>
-            <Text style={styles.title}>How to Play</Text>
+            <Text style={styles.title}>{APP_STRINGS.INSTRUCTIONS.TITLE}</Text>
             <TouchableOpacity onPress={onClose} style={styles.closeButton}>
-              <Text style={styles.closeButtonText}>✕</Text>
+              <Text style={styles.closeButtonText}>{APP_STRINGS.INSTRUCTIONS.CLOSE_BUTTON}</Text>
             </TouchableOpacity>
           </View>
 
           <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
             <View style={styles.difficultyBadge}>
               <Text style={[styles.difficultyText, {color: getDifficultyColor(gridSize)}]}>
-                {getDifficultyLevel(gridSize)} • {gridSize}×{gridSize} Grid
+                {formatDifficulty(getDifficultyLevel(gridSize), gridSize)}
               </Text>
             </View>
 
             <View style={styles.section}>
-              <Text style={styles.sectionTitle}>🎯 Objective</Text>
+              <Text style={styles.sectionTitle}>{APP_STRINGS.INSTRUCTIONS.OBJECTIVE.title}</Text>
               <Text style={styles.sectionText}>
-                Connect all numbered dots in order (1→2→3→4→5) while filling every cell in the grid.
+                {APP_STRINGS.INSTRUCTIONS.OBJECTIVE.content}
               </Text>
             </View>
 
             <View style={styles.section}>
-              <Text style={styles.sectionTitle}>🎮 How to Play</Text>
+              <Text style={styles.sectionTitle}>{APP_STRINGS.INSTRUCTIONS.HOW_TO_PLAY.title}</Text>
               <Text style={styles.sectionText}>
-                • Tap and drag to draw your path{'\n'}
-                • Start from any numbered cell{'\n'}
-                • Connect numbers in sequential order{'\n'}
-                • Fill all {gridSize * gridSize} cells in the grid{'\n'}
-                • Keep your line continuous
+                {formatInstructionsCells(gridSize * gridSize).map(item => `• ${item}`).join('\n')}
               </Text>
             </View>
 
             <View style={styles.section}>
-              <Text style={styles.sectionTitle}>✅ Winning Rules</Text>
+              <Text style={styles.sectionTitle}>{APP_STRINGS.INSTRUCTIONS.WINNING_RULES.title}</Text>
               <Text style={styles.sectionText}>
-                • Visit all numbered cells in order{'\n'}
-                • Fill every cell exactly once{'\n'}
-                • Maintain a continuous path{'\n'}
-                • No jumping or gaps allowed
+                {APP_STRINGS.INSTRUCTIONS.WINNING_RULES.content.map(item => `• ${item}`).join('\n')}
               </Text>
             </View>
 
             <View style={styles.section}>
-              <Text style={styles.sectionTitle}>💡 Tips</Text>
+              <Text style={styles.sectionTitle}>{APP_STRINGS.INSTRUCTIONS.TIPS.title}</Text>
               <Text style={styles.sectionText}>
-                • Plan your route before drawing{'\n'}
-                • Use the reset button to start over{'\n'}
-                • Watch the progress bar to track completion{'\n'}
-                • {gridSize > 5 ? 'Take your time - larger grids require strategy!' : 'Start simple and work your way up!'}
+                {APP_STRINGS.INSTRUCTIONS.TIPS.content.map(item => `• ${item}`).join('\n')}{'\n'}
+                • {gridSize > 5 ? APP_STRINGS.INSTRUCTIONS.TIPS.LARGE_GRID_TIP : APP_STRINGS.INSTRUCTIONS.TIPS.SMALL_GRID_TIP}
               </Text>
             </View>
           </ScrollView>
