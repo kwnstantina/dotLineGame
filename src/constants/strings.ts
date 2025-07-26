@@ -10,7 +10,7 @@ export const APP_STRINGS = {
   // Authentication Screen Texts
   AUTH: {
     // Login Screen
-    LOGIN_TITLE: 'Hi :)',
+    LOGIN_TITLE: 'Hey there!',
     LOGIN_SUBTITLE: 'Sign in to continue',
     SIGN_IN: 'Sign In',
     SIGNING_IN: 'Signing In...',
