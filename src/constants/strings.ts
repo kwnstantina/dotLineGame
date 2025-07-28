@@ -87,6 +87,11 @@ export const APP_STRINGS = {
         description: 'The ultimate puzzle experience',
         icon: '👑',
       },
+      EXTRA_CHALLENGES: {
+        name: 'Extra Challenges',
+        description: 'Obstacles & themes to test your skills',
+        icon: '🧩',
+      },
     },
 
     // Premium/Ad Unlock
@@ -94,7 +99,7 @@ export const APP_STRINGS = {
     PREMIUM_DIALOG_TITLE: '💎 Premium Level',
     AD_WATCH_FORMAT: '📺 Watch {duration}s Ad',
     AD_DIALOG_TITLE: '📺 Watch Ad to Play',
-    
+    UNLOCK_THEMED_PUZZLES: 'Unlock themed puzzle collections based on your level progress',
     // Footer
     FOOTER_TEXT: 'More levels coming soon! 🚀',
     

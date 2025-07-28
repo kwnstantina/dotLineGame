@@ -4,7 +4,7 @@ import { APP_STRINGS } from '../constants/strings';
 export interface Level {
   id: number;
   name: string;
-  difficulty: 'Beginner' | 'Intermediate' | 'Advanced' | 'Expert';
+  difficulty:'Exercise'| 'Beginner' | 'Intermediate' | 'Advanced' | 'Expert';
   gridSize: number;
   unlocked: boolean;
   requiresPayment: boolean;
@@ -22,7 +22,7 @@ export const LEVELS: Level[] = [
   {
     id: 1,
     name: APP_STRINGS.LEVEL_SELECTION.LEVELS.FIRST_STEPS.name,
-    difficulty: 'Beginner',
+    difficulty:'Exercise',
     gridSize: 3,
     unlocked: true,
     requiresPayment: false,
@@ -31,7 +31,7 @@ export const LEVELS: Level[] = [
     stars: 0,
     description: APP_STRINGS.LEVEL_SELECTION.LEVELS.FIRST_STEPS.description,
     icon: APP_STRINGS.LEVEL_SELECTION.LEVELS.FIRST_STEPS.icon,
-    solved: true,
+    solved: false,
     completionTime: 45,
   },
   {
@@ -59,7 +59,7 @@ export const LEVELS: Level[] = [
     stars: 1,
     description: APP_STRINGS.LEVEL_SELECTION.LEVELS.STEADY_PROGRESS.description,
     icon: APP_STRINGS.LEVEL_SELECTION.LEVELS.STEADY_PROGRESS.icon,
-    solved: true,
+    solved: false,
     completionTime: 120,
   },
   {

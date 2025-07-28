@@ -5,7 +5,7 @@ import { colors, designTokens } from '../theme/colors';
 interface SolvedBadgeProps {
   solved: boolean;
   completionTime?: number;
-  difficulty: 'Beginner' | 'Intermediate' | 'Advanced' | 'Expert';
+  difficulty: 'Beginner' | 'Intermediate' | 'Advanced' | 'Expert' | 'Exercise';
 }
 
 const SolvedBadge: React.FC<SolvedBadgeProps> = ({ 

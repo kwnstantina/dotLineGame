@@ -1,5 +1,5 @@
 import React, {useEffect, useRef} from 'react';
-import {Animated, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Animated, StyleSheet, Text, TouchableOpacity} from 'react-native';
 import {colors, designTokens} from '../theme/colors';
 
 interface SnackbarProps {

@@ -60,6 +60,9 @@ const GridCell: React.FC<GridCellProps> = ({
     }
   }, [isActive, isHighlighted, scaleAnim, glowAnim]);
   const getCellBackgroundColor = () => {
+    if (cell.isObstacle) {
+      return colors.text.secondary;
+    }
     if (isActive) {
       return colors.interactive.primary;
     }
@@ -158,7 +161,12 @@ const GridCell: React.FC<GridCellProps> = ({
             ]}
           />
         )}
-        {cell.number && (
+        {cell.isObstacle && (
+          <View style={styles.obstacleIcon}>
+            <Text style={styles.obstacleText}>✕</Text>
+          </View>
+        )}
+        {cell.number && !cell.isObstacle && (
           <Animated.View 
             style={[
               styles.numberContainer,
@@ -174,7 +182,7 @@ const GridCell: React.FC<GridCellProps> = ({
             </Text>
           </Animated.View>
         )}
-        {cell.isDrawn && !cell.number && (
+        {cell.isDrawn && !cell.number && !cell.isObstacle && (
           <Animated.View 
             style={[
               styles.dot,
@@ -228,6 +236,17 @@ const styles = StyleSheet.create({
     ...designTokens.elevation.subtle,
     borderWidth: 2,
     borderColor: colors.primary.neutral,
+  },
+  obstacleIcon: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 24,
+    height: 24,
+  },
+  obstacleText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: colors.text.inverse,
   },
 });
 

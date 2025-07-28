@@ -18,24 +18,28 @@ import GameProgress from '../components/GameProgress';
 import GameControls from '../components/GameControls';
 import LoadingView from '../components/LoadingView';
 import ErrorView from '../components/ErrorView';
-import { GameState } from '../types';
-import { createSamplePuzzle, validatePath } from '../utils/puzzleUtils';
+import { GameState, Puzzle } from '../types';
+import { createSamplePuzzle, validatePuzzleCompletion } from '../utils/puzzleUtils';
 import { colors, designTokens } from '../theme/colors';
 import { useSnackbar } from '../components/SnackbarProvider';
 import { Level } from '../utils/levels';
 import InstructionsModal from '../components/InstructionsModal';
-import { saveLevelCompletion } from '../utils/firebase';
+import { saveLevelCompletion, savePuzzleCompletion } from '../utils/firebase';
+import { processLevelCompletion, getPackUnlockMessage, processPuzzleCompletion, trackPuzzleReplay, shouldRedirectToPackPuzzles } from '../utils/packProgression';
 import { APP_STRINGS } from '../constants/strings';
 
 
 export interface GameScreenProps {
   level?: Level;
+  puzzle?: Puzzle; // Support for direct puzzle input from packs
   onBackToLevels?: () => void;
   onLevelComplete?: (levelId: number, completionTime: number) => void;
+  onPuzzleComplete?: (puzzleId: string, completionTime: number) => void;
+  gameMode?: 'level' | 'pack'; // Distinguish between level mode and pack mode
 }
 
 const GameScreen: React.FC<GameScreenProps> = (props) => {
-  const { level, onBackToLevels, onLevelComplete } = props;
+  const { level, puzzle, onBackToLevels, onLevelComplete, onPuzzleComplete, gameMode = 'level' } = props;
   const [gameState, setGameState] = useState<GameState>({
     puzzle: null,
     drawnPath: [],
@@ -85,11 +89,23 @@ const GameScreen: React.FC<GameScreenProps> = (props) => {
     setGameState(prev => ({...prev, isLoading: true}));
     // Simulate loading delay for better UX
     setTimeout(() => {
-      const puzzle = createSamplePuzzle(level?.gridSize || 5);
+      let puzzleToLoad: Puzzle;
+      
+      if (gameMode === 'pack' && puzzle) {
+        // Use the provided puzzle from pack
+        puzzleToLoad = puzzle;
+      } else {
+        // Generate a random puzzle for this level with increasing difficulty
+        const levelDifficulty = level?.id ? 
+          (level.id <= 2 ? 'easy' : level.id <= 4 ? 'medium' : level.id <= 6 ? 'hard' : 'expert') as 'easy' | 'medium' | 'hard' | 'expert' 
+          : 'easy';
+        
+        puzzleToLoad = createSamplePuzzle(level?.gridSize || 5, levelDifficulty);
+      }
       
       setGameState(prev => ({
         ...prev,
-        puzzle,
+        puzzle: puzzleToLoad,
         drawnPath: [],
         isCompleted: false,
         isLoading: false,
@@ -108,19 +124,31 @@ const GameScreen: React.FC<GameScreenProps> = (props) => {
   };
 
   const handleSubmit = () => {
-    if (!gameState.puzzle) { return; }
+    if (!gameState.puzzle || !startTime) { return; }
 
-    const isValid = validatePath(gameState.drawnPath, gameState.puzzle);
+    // Use enhanced completion detection
+    const completionResult = validatePuzzleCompletion(gameState.drawnPath, gameState.puzzle, startTime);
 
-    if (isValid) {
+    if (completionResult.isValid) {
       setGameState(prev => ({ ...prev, isCompleted: true }));
       
-      // Calculate completion time
-      const completionTime = startTime ? Math.floor((Date.now() - startTime) / 1000) : 0;
+      // Save puzzle completion to Firebase
+      savePuzzleCompletion(gameState.puzzle.id, completionResult)
+        .then(result => {
+          if (result.success) {
+            console.log('Puzzle completion saved successfully');
+          } else {
+            console.error('Failed to save puzzle completion:', result.error);
+          }
+        })
+        .catch(error => {
+          console.error('Error saving puzzle completion:', error);
+        });
       
-      // Save completion to Firebase
-      if (level?.id) {
-        saveLevelCompletion(level.id, completionTime)
+      // Save completion based on game mode
+      if (gameMode === 'level' && level?.id) {
+        // Save level completion to Firebase
+        saveLevelCompletion(level.id, completionResult.completionTime)
           .then(result => {
             if (result.success) {
               console.log('Level completion saved successfully');
@@ -131,11 +159,98 @@ const GameScreen: React.FC<GameScreenProps> = (props) => {
           .catch(error => {
             console.error('Error saving level completion:', error);
           });
-      }
-      
-      // Notify parent component about completion
-      if (onLevelComplete && level?.id) {
-        onLevelComplete(level.id, completionTime);
+        
+        // Check for pack unlocks after level completion
+        processLevelCompletion(level.id)
+          .then(newlyUnlockedPacks => {
+            if (newlyUnlockedPacks.length > 0) {
+              // Show unlock notifications for each newly unlocked pack
+              newlyUnlockedPacks.forEach((packId, index) => {
+                setTimeout(() => {
+                  const unlockMessage = getPackUnlockMessage(packId);
+                  showSnackbar(unlockMessage, 'Play Now', undefined, 4000);
+                }, index * 1000); // Stagger notifications if multiple packs unlock
+              });
+              
+              console.log('🎉 Newly unlocked packs:', newlyUnlockedPacks);
+            }
+          })
+          .catch(error => {
+            console.error('Error processing level completion for pack unlocks:', error);
+          });
+        
+        // Check if user should be directed to pack puzzles
+        shouldRedirectToPackPuzzles(level.id)
+          .then(redirectInfo => {
+            if (redirectInfo.shouldRedirect && redirectInfo.reason) {
+              // Show suggestion to play pack puzzles
+              setTimeout(() => {
+                showSnackbar(
+                  redirectInfo.reason || 'Try pack puzzles for more challenges!',
+                  'Play Packs',
+                  undefined,
+                  5000
+                );
+              }, 2000); // Show after other notifications
+              
+              console.log('📦 Suggesting pack puzzles:', redirectInfo);
+            }
+          })
+          .catch(error => {
+            console.error('Error checking pack puzzle redirect:', error);
+          });
+        
+        // Notify parent component about level completion
+        if (onLevelComplete) {
+          onLevelComplete(level.id, completionResult.completionTime);
+        }
+      } else if (gameMode === 'pack' && puzzle?.id && puzzle?.packId) {
+        // Track replay information first
+        trackPuzzleReplay(puzzle.id, puzzle.packId)
+          .then(replayInfo => {
+            // Check if this is an improvement
+            const isImprovement = (replayInfo.previousBestStars && completionResult.stars > replayInfo.previousBestStars) ||
+              (replayInfo.previousBestTime && completionResult.completionTime < replayInfo.previousBestTime);
+            
+            if (isImprovement) {
+              // Show improvement notification
+              const improvementMsg = replayInfo.previousBestStars && completionResult.stars > replayInfo.previousBestStars
+                ? `⭐ Star Improvement! ${replayInfo.previousBestStars} → ${completionResult.stars} stars`
+                : `⚡ Time Improvement! ${replayInfo.previousBestTime}s → ${completionResult.completionTime}s`;
+              
+              showSnackbar(improvementMsg, 'Great!', undefined, 3500);
+              console.log('🎯 Puzzle improvement achieved:', improvementMsg);
+            }
+          })
+          .catch(error => {
+            console.error('Error tracking replay:', error);
+          });
+        
+        // Track pack progression for puzzle completion
+        processPuzzleCompletion(puzzle.id, puzzle.packId)
+          .then(packProgress => {
+            if (packProgress.packCompleted) {
+              // Show pack completion notification
+              showSnackbar(
+                `🎉 Pack Completed! ${packProgress.totalCompleted}/${packProgress.totalPuzzles} puzzles solved`,
+                'View Packs',
+                undefined,
+                4000
+              );
+              console.log('🏆 Pack completed:', puzzle.packId);
+            } else {
+              // Show progress update for first-time completions
+              console.log(`📈 Pack progress: ${packProgress.newCompletionPercentage}% (${packProgress.totalCompleted}/${packProgress.totalPuzzles})`);
+            }
+          })
+          .catch(error => {
+            console.error('Error processing puzzle completion:', error);
+          });
+        
+        // Notify parent component about puzzle completion
+        if (onPuzzleComplete) {
+          onPuzzleComplete(puzzle.id, completionResult.completionTime);
+        }
       }
       
       Animated.sequence([
@@ -150,7 +265,10 @@ const GameScreen: React.FC<GameScreenProps> = (props) => {
           useNativeDriver: true,
         }),
       ]).start();
-      showSnackbar(APP_STRINGS.GAME.SUCCESS_MESSAGE, APP_STRINGS.GAME.SUCCESS_ACTION, loadPuzzle, 2000);
+      
+      // Enhanced success message with stars
+      const starMessage = `${APP_STRINGS.GAME.SUCCESS_MESSAGE} ⭐${completionResult.stars}/3 - ${completionResult.efficiency}% efficiency`;
+      showSnackbar(starMessage, APP_STRINGS.GAME.SUCCESS_ACTION, loadPuzzle, 3000);
     } else {
       Animated.sequence([
         Animated.timing(slideAnim, { toValue: -10, duration: 100, useNativeDriver: true }),
@@ -158,7 +276,11 @@ const GameScreen: React.FC<GameScreenProps> = (props) => {
         Animated.timing(slideAnim, { toValue: -5, duration: 100, useNativeDriver: true }),
         Animated.timing(slideAnim, { toValue: 0, duration: 100, useNativeDriver: true }),
       ]).start();
-      showSnackbar(APP_STRINGS.GAME.ERROR_MESSAGE, APP_STRINGS.GAME.ERROR_ACTION, undefined, 5000);
+      
+      // Show specific error from completion result
+      const errorMessage = completionResult.errors.length > 0 ? 
+        completionResult.errors[0] : APP_STRINGS.GAME.ERROR_MESSAGE;
+      showSnackbar(errorMessage, APP_STRINGS.GAME.ERROR_ACTION, undefined, 5000);
     }
   };
 
@@ -229,7 +351,7 @@ const GameScreen: React.FC<GameScreenProps> = (props) => {
             <View style={styles.subHeaderContainer}>
             <GameHeader
               gridSize={gameState.puzzle.gridSize}
-              level={level?.id || 1}
+              level={gameMode === 'pack' ? undefined : level?.id || 1}
               onHelpPress={() => setShowInstructions(true)}
             /></View>
             <GameProgress
