@@ -6,6 +6,7 @@ import { SnackbarProvider } from './components/SnackbarProvider';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { initializeFirebase } from './utils/firebase';
 import LoadingView from './components/LoadingView';
+import { SettingsProvider } from './contexts/SettingsContext';
 
 const AppContent: React.FC = () => {
   const { user, isLoading } = useAuth();
@@ -15,7 +16,6 @@ const AppContent: React.FC = () => {
   useEffect(() => {
     const initializeApp = async () => {
       try {
-        console.log('🚀 Initializing Firebase...');
         await initializeFirebase();
         console.log('✅ Firebase initialization complete');
         setFirebaseInitialized(true);
@@ -26,7 +26,7 @@ const AppContent: React.FC = () => {
         setFirebaseInitialized(true);
       }
     };
-    
+
     initializeApp();
   }, []);
 
@@ -53,9 +53,11 @@ const AppContent: React.FC = () => {
 const App: React.FC = () => {
   return (
     <AuthProvider>
-      <SnackbarProvider>
-        <AppContent />
-      </SnackbarProvider>
+      <SettingsProvider>
+        <SnackbarProvider>
+          <AppContent />
+        </SnackbarProvider>
+      </SettingsProvider>
     </AuthProvider>
   );
 };

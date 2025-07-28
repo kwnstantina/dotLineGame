@@ -219,13 +219,7 @@ export const APP_STRINGS = {
     SIGN_OUT: 'Sign Out',
   },
 
-  // Difficulty Classifications
-  DIFFICULTY: {
-    BEGINNER: 'Beginner',
-    INTERMEDIATE: 'Intermediate',
-    ADVANCED: 'Advanced',
-    EXPERT: 'Expert',
-  },
+
 
   // Dialog Actions
   DIALOG_ACTIONS: {
@@ -258,7 +252,16 @@ export const APP_STRINGS = {
     SIGN_OUT_ERROR: 'Sign out error:',
     ERROR_LOADING_PROGRESS: 'Error loading user progress:',
   },
+
+    // Difficulty Classifications
+  DIFFICULTY: {
+    BEGINNER: 'Beginner',
+    INTERMEDIATE: 'Intermediate',
+    ADVANCED: 'Advanced',
+    EXPERT: 'Expert',
+  },
 } as const;
+
 
 // Helper functions for string formatting
 export const formatString = (template: string, params: Record<string, string | number>): string => {

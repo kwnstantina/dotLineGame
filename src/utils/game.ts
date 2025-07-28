@@ -632,18 +632,20 @@ export const getPuzzleCompletions = async (puzzleId?: string): Promise<any[]> =>
       throw new Error('User not authenticated');
     }
 
-    let completionsQuery = query(
-      collection(getFirestore(), 'puzzleCompletions'),
-      where('userId', '==', user.uid),
-      orderBy('completedAt', 'desc')
-    );
-
+    let completionsQuery;
+    
     if (puzzleId) {
+      // Query with specific puzzle ID - avoid composite index by not using orderBy
       completionsQuery = query(
-        collection(getFirestore(), 'puzzleCompletions'),
+        collection(getDb(), 'puzzleCompletions'),
         where('userId', '==', user.uid),
-        where('puzzleId', '==', puzzleId),
-        orderBy('completedAt', 'desc')
+        where('puzzleId', '==', puzzleId)
+      );
+    } else {
+      // Query all completions for user - avoid composite index by not using orderBy
+      completionsQuery = query(
+        collection(getDb(), 'puzzleCompletions'),
+        where('userId', '==', user.uid)
       );
     }
 
@@ -654,7 +656,12 @@ export const getPuzzleCompletions = async (puzzleId?: string): Promise<any[]> =>
       completions.push(doc.data());
     });
 
-    return completions;
+    // Sort by completedAt in memory to avoid composite index requirement
+    return completions.sort((a, b) => {
+      const aTime = a.completedAt?.toDate?.() || new Date(a.completedAt) || new Date(0);
+      const bTime = b.completedAt?.toDate?.() || new Date(b.completedAt) || new Date(0);
+      return bTime.getTime() - aTime.getTime(); // descending order
+    });
   } catch (error: any) {
     console.error('Error getting puzzle completions:', error);
     return [];

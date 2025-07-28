@@ -37,7 +37,7 @@ export const LEVELS: Level[] = [
   {
     id: 2,
     name: APP_STRINGS.LEVEL_SELECTION.LEVELS.GETTING_WARMER.name,
-    difficulty: 'Beginner',
+    difficulty:APP_STRINGS.DIFFICULTY.BEGINNER,
     gridSize: 4,
     unlocked: true,
     requiresPayment: false,
@@ -50,7 +50,7 @@ export const LEVELS: Level[] = [
   {
     id: 3,
     name: APP_STRINGS.LEVEL_SELECTION.LEVELS.STEADY_PROGRESS.name,
-    difficulty: 'Intermediate',
+    difficulty: APP_STRINGS.DIFFICULTY.INTERMEDIATE,
     gridSize: 5,
     unlocked: true,
     requiresPayment: false,
@@ -65,7 +65,7 @@ export const LEVELS: Level[] = [
   {
     id: 4,
     name: APP_STRINGS.LEVEL_SELECTION.LEVELS.MIND_BENDER.name,
-    difficulty: 'Advanced',
+    difficulty: APP_STRINGS.DIFFICULTY.ADVANCED,
     gridSize: 6,
     unlocked: false,
     requiresPayment: false,
@@ -78,7 +78,7 @@ export const LEVELS: Level[] = [
   {
     id: 5,
     name: APP_STRINGS.LEVEL_SELECTION.LEVELS.EXPERT_ZONE.name,
-    difficulty: 'Advanced',
+    difficulty: APP_STRINGS.DIFFICULTY.ADVANCED,
     gridSize: 7,
     unlocked: false,
     requiresPayment: false,
@@ -91,7 +91,7 @@ export const LEVELS: Level[] = [
   {
     id: 6,
     name: APP_STRINGS.LEVEL_SELECTION.LEVELS.MASTER_CLASS.name,
-    difficulty: 'Expert',
+    difficulty: APP_STRINGS.DIFFICULTY.EXPERT,
     gridSize: 8,
     unlocked: false,
     requiresPayment: true,

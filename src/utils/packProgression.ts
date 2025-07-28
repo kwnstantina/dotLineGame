@@ -1,6 +1,7 @@
 import { getUserProgress, checkPuzzlePackUnlock } from './firebase';
 import { createPuzzlePacks } from './puzzleUtils';
 import { PuzzlePack } from '../types';
+import { puzzlePackCodes } from '../constants/codes';
 
 export interface PackProgressionResult {
   unlockedPacks: string[];
@@ -17,7 +18,7 @@ export const checkPackProgression = async (_completedLevel: number): Promise<Pac
     if (!userProgress) {
       console.warn('⚠️ No user progress found for pack progression check');
       return {
-        unlockedPacks: ['starter-pack'],
+        unlockedPacks: [puzzlePackCodes.starterPack], // Default to starter pack
         newlyUnlockedPacks: [],
         userLevel: 0
       };
@@ -66,7 +67,7 @@ export const checkPackProgression = async (_completedLevel: number): Promise<Pac
   } catch (error) {
     console.error('Error checking pack progression:', error);
     return {
-      unlockedPacks: ['starter-pack'], // Fallback to starter pack
+      unlockedPacks: [puzzlePackCodes.starterPack], // Fallback to starter pack
       newlyUnlockedPacks: [],
       userLevel: 0
     };
@@ -88,7 +89,7 @@ export const getPackUnlockStatus = async (): Promise<{
       return {
         packs: createPuzzlePacks(),
         userLevel: 0,
-        unlockedPackIds: ['starter-pack']
+        unlockedPackIds: [puzzlePackCodes.starterPack]
       };
     }
     
@@ -124,7 +125,7 @@ export const getPackUnlockStatus = async (): Promise<{
     return {
       packs: createPuzzlePacks(),
       userLevel: 0,
-      unlockedPackIds: ['starter-pack']
+      unlockedPackIds: [puzzlePackCodes.starterPack]
     };
   }
 };
@@ -169,9 +170,9 @@ export const getPackCompletionStats = async (packId: string): Promise<{
 // Get pack unlock notification message
 export const getPackUnlockMessage = (packId: string): string => {
   const packMessages: { [key: string]: string } = {
-    'starter-pack': '🌟 Welcome to Puzzle Packs! Start with these beginner-friendly challenges.',
-    'challenge-pack': '⚡ Challenge Pack Unlocked! Ready for puzzles with obstacles?',
-    'expert-pack': '🏆 Expert Pack Unlocked! You\'ve mastered the basics - time for the ultimate challenge!'
+   [puzzlePackCodes.starterPack]: '🌟 Welcome to Puzzle Packs! Start with these beginner-friendly challenges.',
+   [puzzlePackCodes.challengePack]: '⚡ Challenge Pack Unlocked! Ready for puzzles with obstacles?',
+   [puzzlePackCodes.expertPack]: '🏆 Expert Pack Unlocked! You\'ve mastered the basics - time for the ultimate challenge!'
   };
   
   return packMessages[packId] || '🎉 New Puzzle Pack Unlocked!';
@@ -179,9 +180,9 @@ export const getPackUnlockMessage = (packId: string): string => {
 
 // Level milestones that unlock puzzle packs
 export const PACK_UNLOCK_MILESTONES = {
-  0: ['starter-pack'],     // Always available
-  3: ['challenge-pack'],   // Unlocks at level 3
-  5: ['expert-pack'],      // Unlocks at level 5
+  0: [puzzlePackCodes.starterPack],     // Always available
+  3: [puzzlePackCodes.challengePack],   // Unlocks at level 3
+  5: [puzzlePackCodes.expertPack],      // Unlocks at level 5
 } as const;
 
 // Check if completing a specific level unlocks new packs
@@ -224,15 +225,15 @@ export const processLevelCompletion = async (levelId: number): Promise<string[]>
 // Get unlock requirements display for UI
 export const getPackUnlockRequirements = (): { [key: string]: { levelsRequired: number; description: string } } => {
   return {
-    'starter-pack': { 
+    [puzzlePackCodes.starterPack]: { 
       levelsRequired: 0, 
       description: 'Available immediately' 
     },
-    'challenge-pack': { 
+    [puzzlePackCodes.challengePack]: { 
       levelsRequired: 3, 
       description: 'Complete 3 levels to unlock' 
     },
-    'expert-pack': { 
+    [puzzlePackCodes.expertPack]: { 
       levelsRequired: 5, 
       description: 'Complete 5 levels to unlock' 
     },

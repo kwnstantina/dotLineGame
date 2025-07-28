@@ -19,7 +19,6 @@ const AppNavigator: React.FC = () => {
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   const handleLevelSelect = (level: Level) => {
-    console.log('📱 Navigator: Level selected, navigating to game:', level.id);
     setNavigationState({ screen: 'game', level, gameMode: 'level' });
   };
 
@@ -37,7 +36,6 @@ const AppNavigator: React.FC = () => {
 
   const handleBackToLevels = () => {
     setNavigationState({ screen: 'levelSelection' });
-    // Trigger refresh to update level progress
     setRefreshTrigger(prev => prev + 1);
   };
 
@@ -47,9 +45,7 @@ const AppNavigator: React.FC = () => {
 
 
   const handleLevelComplete = async (levelId: number, completionTime: number) => {
-    console.log(`Level ${levelId} completed in ${completionTime}s`);
-    
-    // Check for newly unlocked puzzle packs
+        // Check for newly unlocked puzzle packs
     try {
       const progression = await checkPackProgression(levelId);
       

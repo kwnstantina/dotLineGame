@@ -12,3 +12,16 @@ export const errorCodes = {
 export const firebaseDatabaseCodes = {
   userProgress: 'userProgress',
 }
+
+export const difficultyCodes = {
+  easy: 'easy',
+  medium: 'medium',
+  hard: 'hard',
+  expert: 'expert',
+};
+
+export const puzzlePackCodes = {
+  starterPack: 'starter-pack',
+  challengePack: 'challenge-pack',
+  expertPack: 'expert-pack',
+};

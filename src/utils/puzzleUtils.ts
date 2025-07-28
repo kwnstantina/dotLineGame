@@ -1,4 +1,7 @@
+import { difficultyCodes, puzzlePackCodes } from '../constants/codes';
 import {Cell, Puzzle, CompletionResult, PuzzlePack} from '../types';
+
+let puzzleCounter = 0;
 
 export const createSamplePuzzle = (gridSize: number = 5, difficulty: 'easy' | 'medium' | 'hard' | 'expert' = 'easy'): Puzzle => {
   const cells: Cell[] = [];
@@ -29,8 +32,10 @@ export const createSamplePuzzle = (gridSize: number = 5, difficulty: 'easy' | 'm
     }
   });
 
+  // Generate unique ID using counter and timestamp to avoid duplicates
+  puzzleCounter++;
   return {
-    id: `puzzle-${gridSize}x${gridSize}-${difficulty}-${Date.now()}`,
+    id: `puzzle-${gridSize}x${gridSize}-${difficulty}-${Date.now()}-${puzzleCounter}`,
     gridSize,
     cells,
     numberedCells,
@@ -223,10 +228,10 @@ const getObstacleCount = (gridSize: number, difficulty: 'easy' | 'medium' | 'har
   const maxObstacles = Math.floor(gridSize * gridSize * 0.15); // Max 15% of grid
   
   switch (difficulty) {
-    case 'easy': return 0;
-    case 'medium': return Math.floor(maxObstacles * 0.3);
-    case 'hard': return Math.floor(maxObstacles * 0.6);
-    case 'expert': return maxObstacles;
+    case difficultyCodes.easy: return 0;
+    case difficultyCodes.medium: return Math.floor(maxObstacles * 0.3);
+    case difficultyCodes.hard: return Math.floor(maxObstacles * 0.6);
+    case difficultyCodes.expert: return maxObstacles;
     default: return 0;
   }
 };
@@ -332,9 +337,14 @@ export const validatePuzzleCompletion = (path: string[], puzzle: Puzzle, startTi
 export const generatePuzzlesForLevel = (level: number, count: number = 5): Puzzle[] => {
   const puzzles: Puzzle[] = [];
   const gridSize = Math.min(3 + Math.floor(level / 2), 8);
-  
-  const difficulties: ('easy' | 'medium' | 'hard' | 'expert')[] = ['easy', 'medium', 'hard', 'expert'];
-  
+
+  const difficulties: ('easy' | 'medium' | 'hard' | 'expert')[] = [
+    difficultyCodes.easy as 'easy',
+    difficultyCodes.medium as 'medium',
+    difficultyCodes.hard as 'hard',
+    difficultyCodes.expert as 'expert'
+  ];
+
   for (let i = 0; i < count; i++) {
     const difficultyIndex = Math.min(Math.floor(level / 3), difficulties.length - 1);
     const difficulty = difficulties[difficultyIndex];
@@ -349,7 +359,7 @@ export const generatePuzzlesForLevel = (level: number, count: number = 5): Puzzl
 export const createPuzzlePacks = (): PuzzlePack[] => {
   return [
     {
-      id: 'starter-pack',
+      id: puzzlePackCodes.starterPack,
       name: 'Starter Pack',
       description: 'Perfect for beginners',
       puzzles: generatePuzzlesForLevel(1, 10),
@@ -358,7 +368,7 @@ export const createPuzzlePacks = (): PuzzlePack[] => {
       theme: 'green'
     },
     {
-      id: 'challenge-pack',
+      id: puzzlePackCodes.challengePack,
       name: 'Challenge Pack',
       description: 'Test your skills',
       puzzles: generatePuzzlesForLevel(3, 8),
@@ -368,7 +378,7 @@ export const createPuzzlePacks = (): PuzzlePack[] => {
       theme: 'orange'
     },
     {
-      id: 'expert-pack',
+      id: puzzlePackCodes.expertPack,
       name: 'Expert Pack',
       description: 'For puzzle masters',
       puzzles: generatePuzzlesForLevel(5, 6),

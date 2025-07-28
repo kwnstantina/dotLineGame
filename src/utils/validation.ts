@@ -1,4 +1,4 @@
-import { AUTH_CONFIG, AUTH_STRINGS } from '../constants/authConstants';
+import { AUTH_CODES, AUTH_CONFIG, AUTH_STRINGS } from '../constants/authConstants';
 
 export const validateEmail = (email: string): { isValid: boolean; message?: string } => {
   if (!email.trim()) {
@@ -42,7 +42,7 @@ export const validateAuthForm = (
   mode: 'login' | 'register' | 'forgot' = 'login'
 ): { isValid: boolean; message?: string } => {
   // For forgot password, only validate email
-  if (mode === 'forgot') {
+  if (mode === AUTH_CODES.FORGOT) {
     return validateEmail(email);
   }
 
@@ -59,7 +59,7 @@ export const validateAuthForm = (
   }
 
   // For registration, validate password confirmation
-  if (mode === 'register' && confirmPassword !== undefined) {
+  if (mode === AUTH_CODES.REGISTER && confirmPassword !== undefined) {
     const confirmValidation = validatePasswordConfirmation(password, confirmPassword);
     if (!confirmValidation.isValid) {
       return confirmValidation;
