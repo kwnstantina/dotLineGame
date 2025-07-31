@@ -16,6 +16,8 @@ import { savePuzzlePack } from '../utils/firebase';
 import { getUserProgress } from '../utils/firebase';
 import { getPackUnlockStatus } from '../utils/packProgression';
 import LoadingView from '../components/LoadingView';
+import {styles} from '../styles/puzzlePacksStyles';
+import { APP_STRINGS, formatDynamicSubstitutionMessage } from '../constants/strings';
 
 interface PuzzlePacksScreenProps {
   onPackSelect: (pack: PuzzlePack) => void;
@@ -112,14 +114,14 @@ const PuzzlePacksScreen: React.FC<PuzzlePacksScreenProps> = ({ onPackSelect, onB
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <Pressable style={styles.backButton} onPress={onBackToMain}>
-          <Text style={styles.backButtonText}>← Back</Text>
+          <Text style={styles.backButtonText}>{APP_STRINGS.GAME.BACK_BUTTON}</Text>
         </Pressable>
-        <Text style={styles.headerTitle}>Puzzle Packs</Text>
+        <Text style={styles.headerTitle}>{APP_STRINGS.PACKS.TITLE}</Text>
       </View>
 
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
         <Text style={styles.subtitle}>
-          Choose from various puzzle collections with different themes and difficulties
+          {APP_STRINGS.PACKS.SUBTITLE}
         </Text>
 
         {puzzlePacks.map((pack) => (
@@ -151,23 +153,23 @@ const PuzzlePacksScreen: React.FC<PuzzlePacksScreenProps> = ({ onPackSelect, onB
               </Text>
               {pack.requiredLevel && (
                 <Text style={[styles.requirement, !pack.isUnlocked && styles.textLocked]}>
-                  Requires {pack.requiredLevel} levels completed
+                  Requires {pack.requiredLevel} levels completed               
                 </Text>
               )}
             </View>
 
             {pack.isUnlocked && (
-              <Text style={styles.playHint}>Tap to play →</Text>
+              <Text style={styles.playHint}>{APP_STRINGS.GAME.PLAY_HINT}</Text>
             )}
           </Pressable>
         ))}
 
         <View style={styles.footer}>
           <Text style={styles.footerText}>
-            Complete more levels to unlock additional puzzle packs!
+            {APP_STRINGS.PACKS.SUBTITLE}
           </Text>
           <Text style={styles.progressText}>
-            Your progress: {userLevel} levels completed
+            {formatDynamicSubstitutionMessage(APP_STRINGS.PACKS.COMPLETED_LEVELS, 'userLevel', userLevel)}
           </Text>
         </View>
       </ScrollView>
@@ -175,126 +177,5 @@ const PuzzlePacksScreen: React.FC<PuzzlePacksScreenProps> = ({ onPackSelect, onB
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.background.primary,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: designTokens.spacing.lg,
-    paddingVertical: designTokens.spacing.md,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.background.secondary,
-  },
-  backButton: {
-    paddingVertical: designTokens.spacing.sm,
-    paddingRight: designTokens.spacing.md,
-  },
-  backButtonText: {
-    fontSize: 16,
-    color: colors.interactive.primary,
-    fontWeight: '600',
-  },
-  headerTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: colors.text.primary,
-    flex: 1,
-  },
-  scrollView: {
-    flex: 1,
-  },
-  scrollContent: {
-    padding: designTokens.spacing.lg,
-  },
-  subtitle: {
-    fontSize: 16,
-    color: colors.text.secondary,
-    marginBottom: designTokens.spacing.xl,
-    textAlign: 'center',
-    lineHeight: 24,
-  },
-  packCard: {
-    backgroundColor: colors.background.secondary,
-    borderRadius: designTokens.borderRadius.lg,
-    padding: designTokens.spacing.lg,
-    marginBottom: designTokens.spacing.lg,
-    borderLeftWidth: 4,
-    ...designTokens.elevation.medium,
-  },
-  packCardLocked: {
-    opacity: 0.6,
-    backgroundColor: colors.background.surface,
-  },
-  packHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: designTokens.spacing.md,
-  },
-  packIcon: {
-    fontSize: 32,
-    marginRight: designTokens.spacing.md,
-  },
-  packInfo: {
-    flex: 1,
-  },
-  packName: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: colors.text.primary,
-    marginBottom: 4,
-  },
-  packDescription: {
-    fontSize: 14,
-    color: colors.text.secondary,
-    lineHeight: 20,
-  },
-  lockIcon: {
-    fontSize: 24,
-  },
-  packDetails: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: designTokens.spacing.sm,
-  },
-  packCount: {
-    fontSize: 14,
-    color: colors.text.secondary,
-    fontWeight: '600',
-  },
-  requirement: {
-    fontSize: 12,
-    color: colors.feedback.warning,
-    fontStyle: 'italic',
-  },
-  playHint: {
-    fontSize: 14,
-    color: colors.interactive.primary,
-    fontWeight: '600',
-    textAlign: 'right',
-  },
-  textLocked: {
-    color: colors.text.muted,
-  },
-  footer: {
-    alignItems: 'center',
-    paddingVertical: designTokens.spacing.xl,
-    marginTop: designTokens.spacing.lg,
-  },
-  footerText: {
-    fontSize: 14,
-    color: colors.text.secondary,
-    textAlign: 'center',
-    marginBottom: designTokens.spacing.sm,
-  },
-  progressText: {
-    fontSize: 16,
-    color: colors.interactive.primary,
-    fontWeight: '600',
-  },
-});
 
 export default PuzzlePacksScreen;

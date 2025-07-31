@@ -6,6 +6,18 @@ export const APP_STRINGS = {
   APP_NAME: 'DotLineGame',
   TITLE: 'DotLine',
   TAGLINE: 'Connect • Fill • Win',
+  RECOMMEND_REPLAY: '💡 Recommended Replays',
+  RECOMMEND_REPLAY_SUBTITLE: 'Improve your scores on these puzzles:',
+  PERFECT_SCORE: 'Perfect score!',
+
+  PACKS:{
+    STARTER_PACK: '🌟 Welcome to Puzzle Packs! Start with these beginner-friendly challenges.',
+    CHALLENGE_PACK: '⚡ Challenge Pack Unlocked! Ready for puzzles with obstacles?',
+    EXPERT_PACK: '🏆 Expert Pack Unlocked! Only for the most dedicated players.',
+    TITLE: 'Puzzle Packs',
+    SUBTITLE: 'Choose from various puzzle collections with different themes and difficulties',
+    COMPLETED_LEVELS: "Your progress: {userLevel} levels completed",
+  },
 
   // Authentication Screen Texts
   AUTH: {
@@ -132,6 +144,8 @@ export const APP_STRINGS = {
     LOADING_TEXT: 'Loading...',
     ERROR_TEXT: '❌ Failed to load puzzle',
     RETRY_BUTTON: '🔄 Retry',
+    PLAY_HINT: 'Tap to play',
+    REPLAY_HINT: 'Tap to replay',
   },
 
   // Instructions Modal
@@ -303,6 +317,10 @@ export const formatInstructionsCells = (totalCells: number): string[] => {
   return APP_STRINGS.INSTRUCTIONS.HOW_TO_PLAY.content.map(item => 
     formatString(item, { totalCells })
   );
+};
+
+export const formatDynamicSubstitutionMessage = (message:string, substitution:string,value:any): string => {
+     return message.replace(`${substitution}`, value.toString());
 };
 
 // Type definitions for better IDE support

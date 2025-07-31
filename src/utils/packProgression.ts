@@ -2,6 +2,8 @@ import { getUserProgress, checkPuzzlePackUnlock } from './firebase';
 import { createPuzzlePacks } from './puzzleUtils';
 import { PuzzlePack } from '../types';
 import { puzzlePackCodes } from '../constants/codes';
+import { AUTH_CODES } from '../constants/authConstants';
+import { APP_STRINGS } from '../constants/strings';
 
 export interface PackProgressionResult {
   unlockedPacks: string[];
@@ -170,9 +172,9 @@ export const getPackCompletionStats = async (packId: string): Promise<{
 // Get pack unlock notification message
 export const getPackUnlockMessage = (packId: string): string => {
   const packMessages: { [key: string]: string } = {
-   [puzzlePackCodes.starterPack]: '🌟 Welcome to Puzzle Packs! Start with these beginner-friendly challenges.',
-   [puzzlePackCodes.challengePack]: '⚡ Challenge Pack Unlocked! Ready for puzzles with obstacles?',
-   [puzzlePackCodes.expertPack]: '🏆 Expert Pack Unlocked! You\'ve mastered the basics - time for the ultimate challenge!'
+   [puzzlePackCodes.starterPack]: APP_STRINGS.PACKS.STARTER_PACK,
+   [puzzlePackCodes.challengePack]: APP_STRINGS.PACKS.CHALLENGE_PACK,
+   [puzzlePackCodes.expertPack]: APP_STRINGS.PACKS.EXPERT_PACK
   };
   
   return packMessages[packId] || '🎉 New Puzzle Pack Unlocked!';

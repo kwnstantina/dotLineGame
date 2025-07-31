@@ -3,7 +3,6 @@ import {
   View,
   Text,
   ScrollView,
-  StyleSheet,
   Pressable,
   SafeAreaView,
   Dimensions,
@@ -12,7 +11,9 @@ import { colors, designTokens } from '../theme/colors';
 import { PuzzlePack, Puzzle } from '../types';
 import { getPuzzleCompletions } from '../utils/firebase';
 import { getReplayRecommendations } from '../utils/packProgression';
-
+import { difficultyCodes } from '../constants/codes';
+import { styles } from '../styles/packPuzzlesStyles';
+import { APP_STRINGS } from '../constants/strings';
 interface PackPuzzlesScreenProps {
   pack: PuzzlePack;
   onPuzzleSelect: (puzzle: Puzzle) => void;
@@ -65,10 +66,10 @@ const PackPuzzlesScreen: React.FC<PackPuzzlesScreenProps> = ({ pack, onPuzzleSel
 
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
-      case 'easy': return colors.feedback.success;
-      case 'medium': return colors.feedback.warning;
-      case 'hard': return colors.feedback.error;
-      case 'expert': return colors.interactive.accent;
+      case difficultyCodes.easy: return colors.feedback.success;
+      case difficultyCodes.medium: return colors.feedback.warning;
+      case difficultyCodes.hard: return colors.feedback.error;
+      case difficultyCodes.expert: return colors.interactive.accent;
       default: return colors.text.secondary;
     }
   };
@@ -98,7 +99,7 @@ const PackPuzzlesScreen: React.FC<PackPuzzlesScreenProps> = ({ pack, onPuzzleSel
     if (completion.efficiency < 90) {
       return `${90 - completion.efficiency}% efficiency gain`;
     }
-    return 'Perfect score!';
+    return APP_STRINGS.PERFECT_SCORE;
   };
 
   const screenWidth = Dimensions.get('window').width;
@@ -108,7 +109,7 @@ const PackPuzzlesScreen: React.FC<PackPuzzlesScreenProps> = ({ pack, onPuzzleSel
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <Pressable style={styles.backButton} onPress={onBack}>
-          <Text style={styles.backButtonText}>← Back</Text>
+          <Text style={styles.backButtonText}>{APP_STRINGS.GAME.BACK_BUTTON}</Text>
         </Pressable>
         <Text style={styles.headerTitle}>{pack.name}</Text>
       </View>
@@ -123,9 +124,9 @@ const PackPuzzlesScreen: React.FC<PackPuzzlesScreenProps> = ({ pack, onPuzzleSel
         {/* Replay Recommendations Section */}
         {replayRecommendations.length > 0 && (
           <View style={styles.recommendationsSection}>
-            <Text style={styles.recommendationsTitle}>💡 Recommended Replays</Text>
+            <Text style={styles.recommendationsTitle}>{APP_STRINGS.RECOMMEND_REPLAY}</Text>
             <Text style={styles.recommendationsSubtitle}>
-              Improve your scores on these puzzles:
+              {APP_STRINGS.RECOMMEND_REPLAY_SUBTITLE}
             </Text>
             {replayRecommendations.slice(0, 2).map((rec, index) => (
               <Text key={index} style={styles.recommendationItem}>
@@ -178,13 +179,13 @@ const PackPuzzlesScreen: React.FC<PackPuzzlesScreenProps> = ({ pack, onPuzzleSel
                     {hasImprovementPotential ? (
                       <Text style={styles.improvementHint}>{getImprovementHint(puzzle.id)}</Text>
                     ) : (
-                      <Text style={styles.replayHint}>Tap to replay</Text>
+                      <Text style={styles.replayHint}>{APP_STRINGS.GAME.REPLAY_HINT}</Text>
                     )}
                   </View>
                 )}
 
                 {!isCompleted && (
-                  <Text style={styles.playHint}>Tap to play</Text>
+                  <Text style={styles.playHint}>{APP_STRINGS.GAME.PLAY_HINT}</Text>
                 )}
               </Pressable>
             );
@@ -195,165 +196,5 @@ const PackPuzzlesScreen: React.FC<PackPuzzlesScreenProps> = ({ pack, onPuzzleSel
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.background.primary,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: designTokens.spacing.lg,
-    paddingVertical: designTokens.spacing.md,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.background.secondary,
-  },
-  backButton: {
-    paddingVertical: designTokens.spacing.sm,
-    paddingRight: designTokens.spacing.md,
-  },
-  backButtonText: {
-    fontSize: 16,
-    color: colors.interactive.primary,
-    fontWeight: '600',
-  },
-  headerTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: colors.text.primary,
-    flex: 1,
-  },
-  packInfo: {
-    alignItems: 'center',
-    paddingVertical: designTokens.spacing.lg,
-    backgroundColor: colors.background.secondary,
-  },
-  packIcon: {
-    fontSize: 48,
-    marginBottom: designTokens.spacing.sm,
-  },
-  packDescription: {
-    fontSize: 16,
-    color: colors.text.secondary,
-    textAlign: 'center',
-    marginBottom: designTokens.spacing.sm,
-  },
-  puzzleCount: {
-    fontSize: 14,
-    color: colors.text.muted,
-    fontWeight: '600',
-  },
-  scrollView: {
-    flex: 1,
-  },
-  scrollContent: {
-    padding: designTokens.spacing.lg,
-  },
-  puzzleGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-  },
-  puzzleCard: {
-    backgroundColor: colors.background.secondary,
-    borderRadius: designTokens.borderRadius.lg,
-    padding: designTokens.spacing.md,
-    marginBottom: designTokens.spacing.md,
-    ...designTokens.elevation.low,
-  },
-  puzzleCardCompleted: {
-    borderWidth: 2,
-    borderColor: colors.feedback.success,
-  },
-  puzzleCardImprovement: {
-    borderWidth: 2,
-    borderColor: colors.feedback.warning,
-    backgroundColor: colors.background.surface,
-  },
-  puzzleHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: designTokens.spacing.sm,
-  },
-  puzzleNumber: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: colors.text.primary,
-  },
-  difficultyIndicator: {
-    width: 12,
-    height: 12,
-    borderRadius: 6,
-  },
-  puzzleTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: colors.text.primary,
-    marginBottom: 4,
-  },
-  difficulty: {
-    fontSize: 12,
-    fontWeight: 'bold',
-    marginBottom: designTokens.spacing.sm,
-  },
-  completionInfo: {
-    alignItems: 'center',
-  },
-  stars: {
-    fontSize: 16,
-    marginBottom: 4,
-  },
-  completionTime: {
-    fontSize: 12,
-    color: colors.text.secondary,
-    fontWeight: '600',
-  },
-  playHint: {
-    fontSize: 12,
-    color: colors.interactive.primary,
-    textAlign: 'center',
-    fontStyle: 'italic',
-  },
-  replayHint: {
-    fontSize: 11,
-    color: colors.interactive.secondary,
-    textAlign: 'center',
-    fontStyle: 'italic',
-    marginTop: 4,
-  },
-  improvementHint: {
-    fontSize: 10,
-    color: colors.feedback.warning,
-    textAlign: 'center',
-    fontWeight: '600',
-    marginTop: 4,
-  },
-  recommendationsSection: {
-    backgroundColor: colors.background.surface,
-    borderRadius: designTokens.borderRadius.md,
-    padding: designTokens.spacing.md,
-    marginBottom: designTokens.spacing.lg,
-    borderLeftWidth: 4,
-    borderLeftColor: colors.feedback.warning,
-  },
-  recommendationsTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: colors.text.primary,
-    marginBottom: designTokens.spacing.xs,
-  },
-  recommendationsSubtitle: {
-    fontSize: 14,
-    color: colors.text.secondary,
-    marginBottom: designTokens.spacing.sm,
-  },
-  recommendationItem: {
-    fontSize: 13,
-    color: colors.text.primary,
-    marginBottom: 4,
-    paddingLeft: designTokens.spacing.sm,
-  },
-});
 
 export default PackPuzzlesScreen;

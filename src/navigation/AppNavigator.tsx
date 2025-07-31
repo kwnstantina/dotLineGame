@@ -75,7 +75,6 @@ const AppNavigator: React.FC = () => {
   };
 
   const handlePuzzleComplete = (puzzleId: string, completionTime: number) => {
-    console.log(`Puzzle ${puzzleId} completed in ${completionTime}s`);
     // You can add logic here for pack progression tracking
   };
 
