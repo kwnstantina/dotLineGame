@@ -19,7 +19,7 @@ import Animated, {
 import Svg, {Path} from 'react-native-svg';
 import GridCell from './GridCell';
 import {Cell, Position} from '../types';
-import {colors, designTokens} from '../theme/colors';
+import { COLORS, DESIGN_SYSTEM } from '../core/theme/designSystem';
 
 interface GameGridProps {
   cells: Cell[];
@@ -231,7 +231,7 @@ const GameGrid: React.FC<GameGridProps> = ({
               {/* Glow effect */}
               <Path
                 d={svgPath}
-                stroke={colors.game.pathGlow}
+                stroke={COLORS.game.pathGlow}
                 strokeWidth="5"
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -241,7 +241,7 @@ const GameGrid: React.FC<GameGridProps> = ({
               {/* Main path */}
               <Path
                 d={svgPath}
-                stroke={colors.game.pathStroke}
+                stroke={COLORS.game.pathStroke}
                 strokeWidth="3"
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -285,18 +285,18 @@ const GameGrid: React.FC<GameGridProps> = ({
 const styles = StyleSheet.create({
   gridContainer: {
     alignSelf: 'center',
-    borderRadius: designTokens.borderRadius.md,
-    backgroundColor: colors.background.card,
-    padding: designTokens.spacing.md,
+    borderRadius: DESIGN_SYSTEM.borderRadius.md,
+    backgroundColor: COLORS.background.card,
+    padding: DESIGN_SYSTEM.spacing.md,
     borderWidth: 1,
-    borderColor: colors.border.subtle,
-    ...designTokens.elevation.medium,
+    borderColor: COLORS.border.subtle,
+    ...DESIGN_SYSTEM.elevation.medium,
   },
   grid: {
-    backgroundColor: colors.game.shadow,
-    borderRadius: designTokens.borderRadius.md,
+    backgroundColor: COLORS.game.shadow,
+    borderRadius: DESIGN_SYSTEM.borderRadius.md,
     borderWidth: 1,
-    borderColor: colors.border.secondary,
+    borderColor: COLORS.border.secondary,
     overflow: 'hidden',
   },
   svgOverlay: {
@@ -304,7 +304,7 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     zIndex: 1,
-    borderRadius: designTokens.borderRadius.md,
+    borderRadius: DESIGN_SYSTEM.borderRadius.md,
   },
   cellContainer: {
     zIndex: 2,

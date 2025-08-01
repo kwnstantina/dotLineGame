@@ -1,6 +1,6 @@
 import React from 'react';
 import {View, Text, StyleSheet, SafeAreaView, StatusBar, Animated} from 'react-native';
-import {colors, designTokens} from '../theme/colors';
+import { COLORS, DESIGN_SYSTEM } from '../core/theme/designSystem';
 import { APP_STRINGS } from '../constants/strings';
 
 interface LoadingViewProps {
@@ -10,7 +10,7 @@ interface LoadingViewProps {
 const LoadingView: React.FC<LoadingViewProps> = ({fadeAnim}) => {
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="dark-content" backgroundColor={colors.background.primary} />
+      <StatusBar barStyle="dark-content" backgroundColor={COLORS.background.primary} />
       <View style={styles.loadingContainer}>
         <Animated.View style={[styles.loadingDot, {opacity: fadeAnim}]} />
         <Text style={styles.loadingText}>{APP_STRINGS.GAME.LOADING_TEXT}</Text>
@@ -22,7 +22,7 @@ const LoadingView: React.FC<LoadingViewProps> = ({fadeAnim}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background.primary,
+    backgroundColor: COLORS.background.primary,
   },
   loadingContainer: {
     flex: 1,
@@ -33,12 +33,12 @@ const styles = StyleSheet.create({
     width: 20,
     height: 20,
     borderRadius: 10,
-    backgroundColor: colors.interactive.primary,
-    marginBottom: designTokens.spacing.lg,
+    backgroundColor: COLORS.interactive.primary,
+    marginBottom: DESIGN_SYSTEM.spacing.lg,
   },
   loadingText: {
     fontSize: 18,
-    color: colors.text.muted,
+    color: COLORS.text.muted,
     fontWeight: '500',
     fontFamily: 'Nunito-Medium',
   },

@@ -1,6 +1,6 @@
 import React from 'react';
 import {View, Text, StyleSheet, Animated} from 'react-native';
-import {colors, designTokens} from '../theme/colors';
+import {COLORS, DESIGN_SYSTEM} from '../core/theme/designSystem';
 
 interface ProgressCardProps {
   progressPercentage: number;
@@ -43,50 +43,50 @@ const ProgressCard: React.FC<ProgressCardProps> = ({
 
 const styles = StyleSheet.create({
   progressCard: {
-    backgroundColor: colors.background.card,
-    borderRadius: designTokens.borderRadius.xl,
-    padding: designTokens.spacing.md,
-    marginBottom: designTokens.spacing.md,
+    backgroundColor: COLORS.background.card,
+    borderRadius: DESIGN_SYSTEM.borderRadius.xl,
+    padding: DESIGN_SYSTEM.spacing.md,
+    marginBottom: DESIGN_SYSTEM.spacing.md,
     borderWidth: 1.5,
-    borderColor: colors.border.primary,
-    ...designTokens.elevation.subtle,
+    borderColor: COLORS.border.primary,
+    ...DESIGN_SYSTEM.elevation.subtle,
   },
   progressHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: designTokens.spacing.md,
+    marginBottom: DESIGN_SYSTEM.spacing.md,
   },
   progressTitle: {
-    fontSize: designTokens.typography.fontSizes.lg,
+    fontSize: DESIGN_SYSTEM.typography.fontSizes.lg,
     fontWeight: '300',
-    color: colors.text.primary,
+    color: COLORS.text.primary,
     fontFamily: 'Nunito-SemiBold',
   },
   progressBadge: {
-    backgroundColor: colors.feedback.successLight,
-    paddingHorizontal: designTokens.spacing.md,
-    paddingVertical: designTokens.spacing.xs,
-    borderRadius: designTokens.borderRadius.full,
+    backgroundColor: COLORS.feedback.successLight,
+    paddingHorizontal: DESIGN_SYSTEM.spacing.md,
+    paddingVertical: DESIGN_SYSTEM.spacing.xs,
+    borderRadius: DESIGN_SYSTEM.borderRadius.full,
   },
   progressPercentage: {
-    fontSize: designTokens.typography.fontSizes.sm,
+    fontSize: DESIGN_SYSTEM.typography.fontSizes.sm,
     fontWeight: '600',
-    color: colors.feedback.success,
+    color: COLORS.feedback.success,
     fontFamily: 'Nunito-Bold',
   },
   progressBarContainer: {
-    marginTop: designTokens.spacing.sm,
+    marginTop: DESIGN_SYSTEM.spacing.sm,
   },
   progressBarBackground: {
     height: 12,
-    backgroundColor: colors.border.secondary,
-    borderRadius: designTokens.borderRadius.lg,
+    backgroundColor: COLORS.border.secondary,
+    borderRadius: DESIGN_SYSTEM.borderRadius.lg,
     overflow: 'hidden',
   },
   progressBarFill: {
     height: '100%',
-    borderRadius: designTokens.borderRadius.lg,
+    borderRadius: DESIGN_SYSTEM.borderRadius.lg,
   },
 });
 

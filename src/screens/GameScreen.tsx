@@ -18,14 +18,17 @@ import GameProgress from '../components/GameProgress';
 import GameControls from '../components/GameControls';
 import LoadingView from '../components/LoadingView';
 import ErrorView from '../components/ErrorView';
-import { GameState, Puzzle } from '../types';
-import { createSamplePuzzle, validatePuzzleCompletion } from '../utils/puzzleUtils';
-import { colors, designTokens } from '../theme/colors';
+import type { GameState } from '../core/models/game';
+import type { Puzzle } from '../core/models/puzzle';
+import type { Level } from '../core/models/level';
+import { createSamplePuzzle } from '../core/services/puzzleService';
+import { validatePuzzleCompletion } from '../core/services/validationService';
+import { COLORS, DESIGN_SYSTEM } from '../core/theme/designSystem';
 import { useSnackbar } from '../components/SnackbarProvider';
-import { Level } from '../utils/levels';
 import InstructionsModal from '../components/InstructionsModal';
-import { saveLevelCompletion, savePuzzleCompletion } from '../utils/firebase';
-import { processLevelCompletion, getPackUnlockMessage, processPuzzleCompletion, trackPuzzleReplay, shouldRedirectToPackPuzzles } from '../utils/packProgression';
+import { saveLevelCompletion } from '../core/services/levelService';
+import { savePuzzleCompletion } from '../core/services/userService';
+import { processLevelCompletion, getPackUnlockMessage, processPuzzleCompletion, trackPuzzleReplay, shouldRedirectToPackPuzzles } from '../core/services/packProgressionService';
 import { APP_STRINGS } from '../constants/strings';
 
 
@@ -134,14 +137,14 @@ const GameScreen: React.FC<GameScreenProps> = (props) => {
       
       // Save puzzle completion to Firebase
       savePuzzleCompletion(gameState.puzzle.id, completionResult)
-        .then(result => {
+        .then((result: any) => {
           if (result.success) {
             console.log('Puzzle completion saved successfully');
           } else {
             console.error('Failed to save puzzle completion:', result.error);
           }
         })
-        .catch(error => {
+        .catch((error: any) => {
           console.error('Error saving puzzle completion:', error);
         });
       
@@ -307,9 +310,9 @@ const GameScreen: React.FC<GameScreenProps> = (props) => {
     const totalCells = gameState.puzzle ? gameState.puzzle.gridSize * gameState.puzzle.gridSize : 25;
     const progress = gameState.drawnPath.length / totalCells;
 
-    if (progress < 0.3) {return colors.feedback.error;}
-    if (progress < 0.7) {return colors.feedback.warning;}
-    return colors.feedback.success;
+    if (progress < 0.3) {return COLORS.feedback.error;}
+    if (progress < 0.7) {return COLORS.feedback.warning;}
+    return COLORS.feedback.success;
   };
 
   if (gameState.isLoading) {
@@ -326,7 +329,7 @@ const GameScreen: React.FC<GameScreenProps> = (props) => {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaView style={styles.container}>
-        <StatusBar barStyle="dark-content" backgroundColor={colors.background.primary} />
+        <StatusBar barStyle="dark-content" backgroundColor={COLORS.background.primary} />
         <ScrollView
           style={styles.scrollView}
           contentContainerStyle={styles.scrollContent}
@@ -390,43 +393,43 @@ const GameScreen: React.FC<GameScreenProps> = (props) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background.primary,
+    backgroundColor: COLORS.background.primary,
   },
   scrollView: {
     flex: 1,
   },
   scrollContent: {
     flexGrow: 1,
-    paddingBottom: designTokens.spacing.xxxl,
+    paddingBottom: DESIGN_SYSTEM.spacing.xxxl,
   },
   content: {
-    paddingHorizontal: designTokens.spacing.xl,
+    paddingHorizontal: DESIGN_SYSTEM.spacing.xl,
   },
   gameGridContainer: {
     alignItems: 'center',
-    paddingHorizontal: designTokens.spacing.lg,
-    marginVertical: designTokens.spacing.lg,
+    paddingHorizontal: DESIGN_SYSTEM.spacing.lg,
+    marginVertical: DESIGN_SYSTEM.spacing.lg,
   },
   headerContainer: {
     flexDirection: 'row',
     alignItems: 'flex-start',
   },
   subHeaderContainer: {
-    marginVertical: designTokens.spacing.md,
+    marginVertical: DESIGN_SYSTEM.spacing.md,
   },
   backButton: {
     width: 100,
     height: 22,
     borderRadius: 22,
-    backgroundColor: colors.background.secondary,
+    backgroundColor: COLORS.background.secondary,
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
-    marginRight: designTokens.spacing.md,
-    ...designTokens.elevation.low,
+    marginRight: DESIGN_SYSTEM.spacing.md,
+    ...DESIGN_SYSTEM.elevation.low,
   },
   backButtonText: {
-    fontSize: designTokens.spacing.xl,
-    color: colors.text.primary,
+    fontSize: DESIGN_SYSTEM.spacing.xl,
+    color: COLORS.text.primary,
     fontWeight: 'bold',
   },
 });

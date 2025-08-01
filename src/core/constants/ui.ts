@@ -1,0 +1,65 @@
+// UI-related constants
+export const UI_CONSTANTS = {
+  // Animation durations (milliseconds)
+  ANIMATION_FAST: 150,
+  ANIMATION_NORMAL: 250,
+  ANIMATION_SLOW: 350,
+  
+  // Layout constants
+  HEADER_HEIGHT: 60,
+  FOOTER_HEIGHT: 80,
+  SIDEBAR_WIDTH: 280,
+  
+  // Grid cell sizing
+  MIN_CELL_SIZE: 30,
+  MAX_CELL_SIZE: 80,
+  CELL_BORDER_WIDTH: 1,
+  CELL_BORDER_RADIUS: 4,
+  
+  // Touch interaction
+  TOUCH_SLOP: 8,
+  LONG_PRESS_DURATION: 500,
+  
+  // Loading and feedback
+  SNACKBAR_DURATION: 3000,
+  LOADING_SPINNER_SIZE: 40,
+  
+  // Layout spacing
+  PADDING_XS: 4,
+  PADDING_SM: 8,
+  PADDING_MD: 12,
+  PADDING_LG: 16,
+  PADDING_XL: 20,
+  PADDING_XXL: 24,
+  PADDING_XXXL: 32,
+  
+  // Border radius
+  BORDER_RADIUS_XS: 2,
+  BORDER_RADIUS_SM: 4,
+  BORDER_RADIUS_MD: 6,
+  BORDER_RADIUS_LG: 8,
+  BORDER_RADIUS_XL: 12,
+  BORDER_RADIUS_XXL: 16,
+  BORDER_RADIUS_FULL: 9999,
+} as const;
+
+// Typography constants
+export const TYPOGRAPHY_CONSTANTS = {
+  FONT_SIZE_XS: 12,
+  FONT_SIZE_SM: 14,
+  FONT_SIZE_MD: 16,
+  FONT_SIZE_LG: 18,
+  FONT_SIZE_XL: 20,
+  FONT_SIZE_XXL: 24,
+  FONT_SIZE_XXXL: 32,
+  FONT_SIZE_XXXXL: 48,
+  
+  LINE_HEIGHT_TIGHT: 1.2,
+  LINE_HEIGHT_NORMAL: 1.5,
+  LINE_HEIGHT_RELAXED: 1.75,
+  
+  FONT_WEIGHT_NORMAL: '400',
+  FONT_WEIGHT_MEDIUM: '500',
+  FONT_WEIGHT_SEMIBOLD: '600',
+  FONT_WEIGHT_BOLD: '700',
+} as const;

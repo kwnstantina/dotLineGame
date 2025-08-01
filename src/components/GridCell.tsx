@@ -1,7 +1,7 @@
 import React, {useEffect, useRef} from 'react';
 import {View, Text, StyleSheet, Animated} from 'react-native';
-import {Cell} from '../types';
-import {colors, designTokens, withOpacity} from '../theme/colors';
+import {Cell} from '../core/models/game';
+import {DESIGN_SYSTEM, COLORS, SPACING, TYPOGRAPHY, BORDER_RADIUS, ELEVATION, TRANSITIONS, withOpacity} from '../core/theme/designSystem';
 
 interface GridCellProps {
   cell: Cell;
@@ -32,7 +32,7 @@ const GridCell: React.FC<GridCellProps> = ({
         }),
         Animated.timing(glowAnim, {
           toValue: 1,
-          duration: 200,
+          duration: TRANSITIONS.normal,
           useNativeDriver: false,
         }),
       ]).start();
@@ -53,7 +53,7 @@ const GridCell: React.FC<GridCellProps> = ({
         }),
         Animated.timing(glowAnim, {
           toValue: 0,
-          duration: 150,
+          duration: TRANSITIONS.fast,
           useNativeDriver: false,
         }),
       ]).start();
@@ -61,16 +61,16 @@ const GridCell: React.FC<GridCellProps> = ({
   }, [isActive, isHighlighted, scaleAnim, glowAnim]);
   const getCellBackgroundColor = () => {
     if (cell.isObstacle) {
-      return colors.text.secondary;
+      return COLORS.text.secondary;
     }
     if (isActive) {
-      return colors.interactive.primary;
+      return COLORS.interactive.primary;
     }
     if (cell.isDrawn) {
       // Create a linear gradient effect from primary to secondary based on path index
       const progress = pathIndex ? Math.min(pathIndex * 0.1, 0.8) : 0;
-      const baseColor = colors.primary.ocean;
-      const targetColor = colors.primary.purple;
+      const baseColor = COLORS.primary.ocean;
+      const targetColor = COLORS.primary.purple;
       
       // Interpolate between ocean blue and purple based on progress
       const r1 = parseInt(baseColor.slice(1, 3), 16);
@@ -88,27 +88,27 @@ const GridCell: React.FC<GridCellProps> = ({
       return `rgb(${r}, ${g}, ${b})`;
     }
     if (isHighlighted) {
-      return colors.game.cellHighlight;
+      return COLORS.game.cellHighlight;
     }
     if (cell.number) {
-      return colors.primary.ocean;
+      return COLORS.primary.ocean;
     }
-    return colors.game.cellDefault;
+    return COLORS.game.cellDefault;
   };
 
   const getBorderColor = () => {
     if (isActive) {
-      return colors.interactive.primary;
+      return COLORS.interactive.primary;
     }
     if (cell.isDrawn) {
       // Use complementary colors for borders to enhance the linear effect
       const progress = pathIndex ? Math.min(pathIndex * 0.15, 0.9) : 0;
-      return progress > 0.5 ? colors.primary.purpleLight : colors.primary.ocean;
+      return progress > 0.5 ? COLORS.primary.purpleLight : COLORS.primary.ocean;
     }
     if (cell.number) {
-      return colors.interactive.primary;
+      return COLORS.interactive.primary;
     }
-    return colors.border.primary;
+    return COLORS.border.primary;
   };
 
   return (
@@ -137,8 +137,8 @@ const GridCell: React.FC<GridCellProps> = ({
             style={[
               StyleSheet.absoluteFill,
               {
-                backgroundColor: pathIndex && pathIndex > 5 ? colors.primary.purpleLight : colors.primary.ocean,
-                borderRadius: designTokens.borderRadius.lg,
+                backgroundColor: pathIndex && pathIndex > 5 ? COLORS.primary.purpleLight : COLORS.primary.ocean,
+                borderRadius: BORDER_RADIUS.lg,
                 opacity: glowAnim.interpolate({
                   inputRange: [0, 1],
                   outputRange: [0, 0.4],
@@ -153,9 +153,9 @@ const GridCell: React.FC<GridCellProps> = ({
               StyleSheet.absoluteFill,
               {
                 backgroundColor: pathIndex && pathIndex > 5 ? 
-                  withOpacity(colors.primary.purple, 0.1) : 
-                  withOpacity(colors.primary.oceanLight, 0.1),
-                borderRadius: designTokens.borderRadius.lg,
+                  withOpacity(COLORS.primary.purple, 0.1) : 
+                  withOpacity(COLORS.primary.oceanLight, 0.1),
+                borderRadius: BORDER_RADIUS.lg,
                 opacity: 0.6,
               },
             ]}
@@ -176,7 +176,7 @@ const GridCell: React.FC<GridCellProps> = ({
             ]}>
             <Text style={[
               styles.number,
-              {color: cell.isDrawn ? colors.text.primary : colors.text.primary}
+              {color: cell.isDrawn ? COLORS.text.primary : COLORS.text.primary}
             ]}>
               {cell.number}
             </Text>
@@ -188,8 +188,8 @@ const GridCell: React.FC<GridCellProps> = ({
               styles.dot,
               {
                 transform: [{scale: isActive ? 1.1 : 1}],
-                backgroundColor: pathIndex && pathIndex > 5 ? colors.primary.purpleLight : colors.primary.oceanLight,
-                borderColor: pathIndex && pathIndex > 5 ? colors.primary.purple : colors.primary.oceanLight,
+                backgroundColor: pathIndex && pathIndex > 5 ? COLORS.primary.purpleLight : COLORS.primary.oceanLight,
+                borderColor: pathIndex && pathIndex > 5 ? COLORS.primary.purple : COLORS.primary.oceanLight,
               }
             ]} 
           />
@@ -207,35 +207,35 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: designTokens.borderRadius.lg,
+    borderRadius: BORDER_RADIUS.lg,
     borderWidth: 1,
     borderColor: 'transparent',
   },
   numberContainer: {
-    backgroundColor: colors.background.card,
-    borderRadius: designTokens.borderRadius.full,
+    backgroundColor: COLORS.background.card,
+    borderRadius: BORDER_RADIUS.full,
     width: 32,
     height: 32,
     justifyContent: 'center',
     alignItems: 'center',
-    ...designTokens.elevation.low,
+    ...ELEVATION.low,
     borderWidth: 2,
-    borderColor: colors.interactive.primary,
+    borderColor: COLORS.interactive.primary,
   },
   number: {
-    fontSize: designTokens.typography.fontSizes.md,
-    fontWeight: '600',
+    fontSize: TYPOGRAPHY.fontSizes.md,
+    fontWeight: TYPOGRAPHY.fontWeights.semibold,
     fontFamily: 'Nunito-Bold',
-    lineHeight: designTokens.typography.lineHeights.tight * designTokens.typography.fontSizes.md,
+    lineHeight: TYPOGRAPHY.lineHeights.tight * TYPOGRAPHY.fontSizes.md,
   },
   dot: {
     width: 12,
     height: 12,
-    borderRadius: designTokens.borderRadius.full,
-    backgroundColor: colors.primary.neutral,
-    ...designTokens.elevation.subtle,
+    borderRadius: BORDER_RADIUS.full,
+    backgroundColor: COLORS.primary.neutral,
+    ...ELEVATION.subtle,
     borderWidth: 2,
-    borderColor: colors.primary.neutral,
+    borderColor: COLORS.primary.neutral,
   },
   obstacleIcon: {
     justifyContent: 'center',
@@ -244,9 +244,9 @@ const styles = StyleSheet.create({
     height: 24,
   },
   obstacleText: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: colors.text.inverse,
+    fontSize: TYPOGRAPHY.fontSizes.xl,
+    fontWeight: TYPOGRAPHY.fontWeights.bold,
+    color: COLORS.text.inverse,
   },
 });
 

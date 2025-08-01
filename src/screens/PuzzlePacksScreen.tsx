@@ -3,21 +3,20 @@ import {
   View,
   Text,
   ScrollView,
-  StyleSheet,
   Pressable,
-  Alert,
   SafeAreaView,
   Animated,
 } from 'react-native';
-import { colors, designTokens } from '../theme/colors';
+import { COLORS } from '../core/theme/designSystem';
 import { PuzzlePack } from '../types';
 import { createPuzzlePacks } from '../utils/puzzleUtils';
 import { savePuzzlePack } from '../utils/firebase';
-import { getUserProgress } from '../utils/firebase';
-import { getPackUnlockStatus } from '../utils/packProgression';
+import { getUserProgress } from '../core/services/userService';
+import { getPackUnlockStatus } from '../core/services/packProgressionService';
 import LoadingView from '../components/LoadingView';
 import {styles} from '../styles/puzzlePacksStyles';
 import { APP_STRINGS, formatDynamicSubstitutionMessage } from '../constants/strings';
+import { useSnackbar } from '../components/SnackbarProvider';
 
 interface PuzzlePacksScreenProps {
   onPackSelect: (pack: PuzzlePack) => void;
@@ -28,6 +27,8 @@ const PuzzlePacksScreen: React.FC<PuzzlePacksScreenProps> = ({ onPackSelect, onB
   const [puzzlePacks, setPuzzlePacks] = useState<PuzzlePack[]>([]);
   const [loading, setLoading] = useState(true);
   const [userLevel, setUserLevel] = useState(0);
+  
+  const { showSnackbar } = useSnackbar();
 
   useEffect(() => {
     loadPuzzlePacks();
@@ -86,10 +87,11 @@ const PuzzlePacksScreen: React.FC<PuzzlePacksScreenProps> = ({ onPackSelect, onB
   const handlePackPress = (pack: PuzzlePack) => {
     if (!pack.isUnlocked) {
       const requiredLevel = pack.requiredLevel || 0;
-      Alert.alert(
-        'Pack Locked',
-        `Complete ${requiredLevel} levels to unlock this pack. You have completed ${userLevel} levels.`,
-        [{ text: 'OK', style: 'default' }]
+      showSnackbar(
+        `Pack Locked: Complete ${requiredLevel} levels to unlock this pack. You have completed ${userLevel} levels.`,
+        'OK',
+        undefined,
+        5000
       );
       return;
     }
@@ -99,10 +101,10 @@ const PuzzlePacksScreen: React.FC<PuzzlePacksScreenProps> = ({ onPackSelect, onB
 
   const getThemeColor = (theme: string) => {
     switch (theme) {
-      case 'green': return colors.feedback.success;
-      case 'orange': return colors.feedback.warning;
-      case 'purple': return colors.interactive.accent;
-      default: return colors.text.secondary;
+      case 'green': return COLORS.feedback.success;
+      case 'orange': return COLORS.feedback.warning;
+      case 'purple': return COLORS.interactive.accent;
+      default: return COLORS.text.secondary;
     }
   };
 

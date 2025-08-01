@@ -1,6 +1,6 @@
 import React, {useEffect, useRef} from 'react';
 import {Animated, StyleSheet, Text, TouchableOpacity} from 'react-native';
-import {colors, designTokens} from '../theme/colors';
+import {COLORS, DESIGN_SYSTEM} from '../core/theme/designSystem';
 
 interface SnackbarProps {
   visible: boolean;
@@ -34,7 +34,7 @@ const Snackbar: React.FC<SnackbarProps> = ({
         }),
         Animated.timing(opacity, {
           toValue: 1,
-          duration: designTokens.transitions.normal,
+          duration: DESIGN_SYSTEM.transitions.normal,
           useNativeDriver: true,
         }),
         Animated.spring(scale, {
@@ -55,17 +55,17 @@ const Snackbar: React.FC<SnackbarProps> = ({
       Animated.parallel([
         Animated.timing(translateY, {
           toValue: 100,
-          duration: designTokens.transitions.fast,
+          duration: DESIGN_SYSTEM.transitions.fast,
           useNativeDriver: true,
         }),
         Animated.timing(opacity, {
           toValue: 0,
-          duration: designTokens.transitions.fast,
+          duration: DESIGN_SYSTEM.transitions.fast,
           useNativeDriver: true,
         }),
         Animated.timing(scale, {
           toValue: 0.95,
-          duration: designTokens.transitions.fast,
+          duration: DESIGN_SYSTEM.transitions.fast,
           useNativeDriver: true,
         }),
       ]).start();
@@ -98,44 +98,44 @@ const Snackbar: React.FC<SnackbarProps> = ({
 const styles = StyleSheet.create({
   container: {
     position: 'absolute',
-    left: designTokens.spacing.lg,
-    right: designTokens.spacing.lg,
-    bottom: designTokens.spacing.xxl,
-    backgroundColor: colors.background.surface,
-    borderRadius: designTokens.borderRadius.xl,
+    left: DESIGN_SYSTEM.spacing.lg,
+    right: DESIGN_SYSTEM.spacing.lg,
+    bottom: DESIGN_SYSTEM.spacing.xxl,
+    backgroundColor: COLORS.background.surface,
+    borderRadius: DESIGN_SYSTEM.borderRadius.xl,
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: designTokens.spacing.lg,
-    paddingVertical: designTokens.spacing.md,
+    paddingHorizontal: DESIGN_SYSTEM.spacing.lg,
+    paddingVertical: DESIGN_SYSTEM.spacing.md,
     minHeight: 64,
-    ...designTokens.elevation.high,
+    ...DESIGN_SYSTEM.elevation.high,
     borderWidth: 1,
-    borderColor: colors.border.primary,
+    borderColor: COLORS.border.primary,
     zIndex: 1000,
   },
   message: {
-    color: colors.text.primary,
-    fontSize: designTokens.typography.fontSizes.md,
+    color: COLORS.text.primary,
+    fontSize: DESIGN_SYSTEM.typography.fontSizes.md,
     fontFamily: 'Nunito-Medium',
-    lineHeight: designTokens.typography.lineHeights.relaxed * designTokens.typography.fontSizes.md,
+    lineHeight: DESIGN_SYSTEM.typography.lineHeights.relaxed * DESIGN_SYSTEM.typography.fontSizes.md,
     flex: 1,
   },
   actionButton: {
-    marginLeft: designTokens.spacing.lg,
-    paddingHorizontal: designTokens.spacing.lg,
-    paddingVertical: designTokens.spacing.sm,
-    backgroundColor: colors.interactive.primary,
-    borderRadius: designTokens.borderRadius.lg,
+    marginLeft: DESIGN_SYSTEM.spacing.lg,
+    paddingHorizontal: DESIGN_SYSTEM.spacing.lg,
+    paddingVertical: DESIGN_SYSTEM.spacing.sm,
+    backgroundColor: COLORS.interactive.primary,
+    borderRadius: DESIGN_SYSTEM.borderRadius.lg,
     minWidth: 88,
     alignItems: 'center',
     justifyContent: 'center',
-    ...designTokens.elevation.subtle,
+    ...DESIGN_SYSTEM.elevation.subtle,
   },
   actionLabel: {
-    color: colors.text.inverse,
+    color: COLORS.text.inverse,
     fontWeight: '600',
     fontFamily: 'Nunito-SemiBold',
-    fontSize: designTokens.typography.fontSizes.sm,
+    fontSize: DESIGN_SYSTEM.typography.fontSizes.sm,
     textTransform: 'uppercase',
     letterSpacing: 0.5,
   },

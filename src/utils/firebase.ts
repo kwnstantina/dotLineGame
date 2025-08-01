@@ -1,4 +1,4 @@
-import { getApps, initializeApp, getApp } from '@react-native-firebase/app';
+import { getApps, initializeApp } from '@react-native-firebase/app';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { FIREBASE_PROJECT_ID, FIREBASE_WEB_API_KEY, FIREBASE_PROJECT_NUMBER, GOOGLE_WEB_CLIENT_ID } from '@env';
 import { initializeFirebaseCollections } from './game';

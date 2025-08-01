@@ -9,7 +9,7 @@ import {
   ScrollView,
   Switch,
 } from 'react-native';
-import { signOut } from '../utils/firebase';
+import { signOut } from '../core/services/authService';
 import { useAuth } from '../contexts/AuthContext';
 import { theme } from '../theme/theme';
 import { APP_STRINGS } from '../constants/strings';

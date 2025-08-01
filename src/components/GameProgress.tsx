@@ -1,6 +1,6 @@
 import React from 'react';
 import {View, Text, StyleSheet, Animated} from 'react-native';
-import {colors, designTokens} from '../theme/colors';
+import {COLORS, DESIGN_SYSTEM} from '../core/theme/designSystem';
 
 interface GameProgressProps {
   cellsFilled: number;
@@ -61,77 +61,77 @@ const GameProgress: React.FC<GameProgressProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: colors.background.card,
-    borderRadius: designTokens.borderRadius.xl,
-    padding: designTokens.spacing.lg,
-    marginBottom: designTokens.spacing.lg,
+    backgroundColor: COLORS.background.card,
+    borderRadius: DESIGN_SYSTEM.borderRadius.xl,
+    padding: DESIGN_SYSTEM.spacing.lg,
+    marginBottom: DESIGN_SYSTEM.spacing.lg,
     borderWidth: 1,
-    borderColor: colors.border.subtle,
-    ...designTokens.elevation.subtle,
+    borderColor: COLORS.border.subtle,
+    ...DESIGN_SYSTEM.elevation.subtle,
   },
   progressSection: {
-    marginBottom: designTokens.spacing.md,
+    marginBottom: DESIGN_SYSTEM.spacing.md,
   },
   progressHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: designTokens.spacing.sm,
+    marginBottom: DESIGN_SYSTEM.spacing.sm,
   },
   progressLabel: {
-    fontSize: designTokens.typography.fontSizes.md,
+    fontSize: DESIGN_SYSTEM.typography.fontSizes.md,
     fontWeight: '500',
-    color: colors.text.secondary,
+    color: COLORS.text.secondary,
     fontFamily: 'Nunito-Medium',
   },
   progressPercentage: {
-    fontSize: designTokens.typography.fontSizes.md,
+    fontSize: DESIGN_SYSTEM.typography.fontSizes.md,
     fontWeight: '700',
-    color: colors.text.primary,
+    color: COLORS.text.primary,
     fontFamily: 'Nunito-Bold',
   },
   progressBarContainer: {
-    marginTop: designTokens.spacing.xs,
+    marginTop: DESIGN_SYSTEM.spacing.xs,
   },
   progressBarBackground: {
     height: 8,
-    backgroundColor: colors.border.secondary,
-    borderRadius: designTokens.borderRadius.full,
+    backgroundColor: COLORS.border.secondary,
+    borderRadius: DESIGN_SYSTEM.borderRadius.full,
     overflow: 'hidden',
   },
   progressBarFill: {
     height: '100%',
-    borderRadius: designTokens.borderRadius.full,
+    borderRadius: DESIGN_SYSTEM.borderRadius.full,
   },
   statsSection: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-around',
-    paddingTop: designTokens.spacing.sm,
+    paddingTop: DESIGN_SYSTEM.spacing.sm,
   },
   statItem: {
     alignItems: 'center',
     flex: 1,
   },
   statValue: {
-    fontSize: designTokens.typography.fontSizes.xl,
+    fontSize: DESIGN_SYSTEM.typography.fontSizes.xl,
     fontWeight: 'bold',
-    color: colors.text.primary,
+    color: COLORS.text.primary,
     fontFamily: 'Nunito-Bold',
-    lineHeight: designTokens.typography.lineHeights.tight * designTokens.typography.fontSizes.xl,
+    lineHeight: DESIGN_SYSTEM.typography.lineHeights.tight * DESIGN_SYSTEM.typography.fontSizes.xl,
   },
   statLabel: {
-    fontSize: designTokens.typography.fontSizes.sm,
-    color: colors.text.muted,
-    marginTop: designTokens.spacing.xs,
+    fontSize: DESIGN_SYSTEM.typography.fontSizes.sm,
+    color: COLORS.text.muted,
+    marginTop: DESIGN_SYSTEM.spacing.xs,
     fontFamily: 'Nunito-Regular',
     textAlign: 'center',
   },
   statDivider: {
     width: 1,
     height: 30,
-    backgroundColor: colors.border.secondary,
-    marginHorizontal: designTokens.spacing.md,
+    backgroundColor: COLORS.border.secondary,
+    marginHorizontal: DESIGN_SYSTEM.spacing.md,
   },
 });
 

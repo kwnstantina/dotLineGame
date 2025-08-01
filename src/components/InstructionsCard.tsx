@@ -1,6 +1,6 @@
 import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
-import {colors, designTokens} from '../theme/colors';
+import {COLORS, DESIGN_SYSTEM} from '../core/theme/designSystem';
 
 const InstructionsCard: React.FC = () => {
   return (
@@ -28,47 +28,47 @@ const InstructionsCard: React.FC = () => {
 
 const styles = StyleSheet.create({
   instructionsCard: {
-    backgroundColor: colors.background.card,
-    borderRadius: designTokens.borderRadius.xl,
-    padding: designTokens.spacing.xl,
-    marginBottom: designTokens.spacing.xxl,
+    backgroundColor: COLORS.background.card,
+    borderRadius: DESIGN_SYSTEM.borderRadius.xl,
+    padding: DESIGN_SYSTEM.spacing.xl,
+    marginBottom: DESIGN_SYSTEM.spacing.xxl,
     borderWidth: 1,
-    borderColor: colors.border.subtle,
-    ...designTokens.elevation.subtle,
+    borderColor: COLORS.border.subtle,
+    ...DESIGN_SYSTEM.elevation.subtle,
   },
   instructionsHeader: {
-    marginBottom: designTokens.spacing.md,
+    marginBottom: DESIGN_SYSTEM.spacing.md,
   },
   instructionsTitle: {
-    fontSize: designTokens.typography.fontSizes.lg,
+    fontSize: DESIGN_SYSTEM.typography.fontSizes.lg,
     fontWeight: '600',
     fontFamily: 'Nunito-SemiBold',
-    color: colors.text.primary,
+    color: COLORS.text.primary,
     textAlign: 'center',
   },
   instructions: {
-    fontSize: designTokens.typography.fontSizes.sm,
+    fontSize: DESIGN_SYSTEM.typography.fontSizes.sm,
     textAlign: 'center',
-    color: colors.text.muted,
-    lineHeight: designTokens.typography.lineHeights.relaxed * designTokens.typography.fontSizes.sm,
+    color: COLORS.text.muted,
+    lineHeight: DESIGN_SYSTEM.typography.lineHeights.relaxed * DESIGN_SYSTEM.typography.fontSizes.sm,
     fontFamily: 'Nunito-Regular',
-    marginBottom: designTokens.spacing.lg,
+    marginBottom: DESIGN_SYSTEM.spacing.lg,
   },
   instructionsBadges: {
     flexDirection: 'row',
     justifyContent: 'center',
-    gap: designTokens.spacing.sm,
+    gap: DESIGN_SYSTEM.spacing.sm,
   },
   badge: {
-    backgroundColor: colors.interactive.secondary,
-    paddingHorizontal: designTokens.spacing.md,
-    paddingVertical: designTokens.spacing.xs,
-    borderRadius: designTokens.borderRadius.full,
+    backgroundColor: COLORS.interactive.secondary,
+    paddingHorizontal: DESIGN_SYSTEM.spacing.md,
+    paddingVertical: DESIGN_SYSTEM.spacing.xs,
+    borderRadius: DESIGN_SYSTEM.borderRadius.full,
   },
   badgeText: {
-    fontSize: designTokens.typography.fontSizes.xs,
+    fontSize: DESIGN_SYSTEM.typography.fontSizes.xs,
     fontWeight: '600',
-    color: colors.text.inverse,
+    color: COLORS.text.inverse,
     fontFamily: 'Nunito-SemiBold',
   },
 });

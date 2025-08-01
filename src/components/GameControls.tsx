@@ -1,6 +1,6 @@
 import React from 'react';
 import {View, Text, StyleSheet,Pressable} from 'react-native';
-import {colors, designTokens} from '../theme/colors';
+import {COLORS, DESIGN_SYSTEM} from '../core/theme/designSystem';
 import { APP_STRINGS } from '../constants/strings';
 
 interface GameControlsProps {
@@ -54,53 +54,53 @@ const GameControls: React.FC<GameControlsProps> = ({
 const styles = StyleSheet.create({
   controlsContainer: {
     flexDirection: 'row',
-    gap: designTokens.spacing.md,
-    marginVertical: designTokens.spacing.lg,
-    paddingHorizontal: designTokens.spacing.xs,
+    gap: DESIGN_SYSTEM.spacing.md,
+    marginVertical: DESIGN_SYSTEM.spacing.lg,
+    paddingHorizontal: DESIGN_SYSTEM.spacing.xs,
   },
   modernButton: {
     flex: 1,
-    paddingVertical: designTokens.spacing.sm,
-    paddingHorizontal: designTokens.spacing.sm,
-    borderRadius: designTokens.borderRadius.xl,
-    ...designTokens.elevation.low,
+    paddingVertical: DESIGN_SYSTEM.spacing.sm,
+    paddingHorizontal: DESIGN_SYSTEM.spacing.sm,
+    borderRadius: DESIGN_SYSTEM.borderRadius.xl,
+    ...DESIGN_SYSTEM.elevation.low,
   },
   primaryButton: {
-    backgroundColor: colors.interactive.primary,
+    backgroundColor: COLORS.interactive.primary,
   },
   secondaryButton: {
-    backgroundColor: colors.background.card,
+    backgroundColor: COLORS.background.card,
     borderWidth: 1,
-    borderColor: colors.border.primary,
+    borderColor: COLORS.border.primary,
   },
   disabledButton: {
-    backgroundColor: colors.interactive.disabled,
-    borderColor: colors.interactive.disabled,
-    ...designTokens.elevation.none,
+    backgroundColor: COLORS.interactive.disabled,
+    borderColor: COLORS.interactive.disabled,
+    ...DESIGN_SYSTEM.elevation.none,
   },
   buttonContent: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: designTokens.spacing.sm,
+    gap: DESIGN_SYSTEM.spacing.sm,
   },
   buttonIcon: {
-    fontSize: designTokens.typography.fontSizes.md,
-    color: colors.text.inverse,
+    fontSize: DESIGN_SYSTEM.typography.fontSizes.md,
+    color: COLORS.text.inverse,
   },
   buttonText: {
-    fontSize: designTokens.typography.fontSizes.md,
+    fontSize: DESIGN_SYSTEM.typography.fontSizes.md,
     fontWeight: '600',
     fontFamily: 'Nunito-SemiBold',
   },
   primaryButtonText: {
-    color: colors.text.inverse,
+    color: COLORS.text.inverse,
   },
   secondaryButtonText: {
-    color: colors.text.primary,
+    color: COLORS.text.primary,
   },
   disabledButtonText: {
-    color: colors.text.muted,
+    color: COLORS.text.muted,
   },
 });
 

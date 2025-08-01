@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image } from 'react-native';
-import { colors, designTokens } from '../theme/colors';
+import { COLORS, DESIGN_SYSTEM } from '../core/theme/designSystem';
 import { APP_STRINGS } from '../constants/strings';
 
 interface AppHeaderProps {
@@ -33,7 +33,7 @@ const AppHeader: React.FC<AppHeaderProps> = ({
 
 const styles = StyleSheet.create({
   header: {
-    marginHorizontal: designTokens.spacing.xl,
+    marginHorizontal: DESIGN_SYSTEM.spacing.xl,
     alignItems: 'center',
   },
   titleContainer: {
@@ -44,31 +44,31 @@ const styles = StyleSheet.create({
   logoContainer: {
     justifyContent: 'center',
     alignItems: 'center',
-    marginHorizontal: designTokens.spacing.lg,
-    ...designTokens.elevation.low,
+    marginHorizontal: DESIGN_SYSTEM.spacing.lg,
+    ...DESIGN_SYSTEM.elevation.low,
   },
   logo: {
     width: 30,
     height: 30,
-    borderRadius: designTokens.borderRadius.xxl,
+    borderRadius: DESIGN_SYSTEM.borderRadius.xxl,
 
   },
   titleTextContainer: {
     alignItems: 'flex-start',
   },
   title: {
-    fontSize: designTokens.typography.fontSizes.lg,
+    fontSize: DESIGN_SYSTEM.typography.fontSizes.lg,
     fontWeight: 'bold',
     fontFamily: 'Nunito-Bold',
-    color: colors.text.primary,
-    lineHeight: designTokens.typography.lineHeights.tight * designTokens.typography.fontSizes.xxxl,
+    color: COLORS.text.primary,
+    lineHeight: DESIGN_SYSTEM.typography.lineHeights.tight * DESIGN_SYSTEM.typography.fontSizes.xxxl,
   },
   subtitle: {
-    fontSize: designTokens.typography.fontSizes.md,
-    color: colors.text.secondary,
+    fontSize: DESIGN_SYSTEM.typography.fontSizes.md,
+    color: COLORS.text.secondary,
     fontWeight: '600',
     fontFamily: 'Nunito-Medium',
-    marginTop: designTokens.spacing.xs,
+    marginTop: DESIGN_SYSTEM.spacing.xs,
   },
 });
 

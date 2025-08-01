@@ -1,6 +1,6 @@
 import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
-import {colors, designTokens} from '../theme/colors';
+import {COLORS, DESIGN_SYSTEM} from '../core/theme/designSystem';
 
 interface GameStatsProps {
   cellsFilled: number;
@@ -34,42 +34,42 @@ const GameStats: React.FC<GameStatsProps> = ({
 const styles = StyleSheet.create({
   statsGrid: {
     flexDirection: 'row',
-    gap: designTokens.spacing.md,
-    marginBottom: designTokens.spacing.xxl,
+    gap: DESIGN_SYSTEM.spacing.md,
+    marginBottom: DESIGN_SYSTEM.spacing.xxl,
   },
   statCard: {
     flex: 1,
-    backgroundColor: colors.background.surface,
-    borderRadius: designTokens.borderRadius.xl,
-    padding: designTokens.spacing.sm,
+    backgroundColor: COLORS.background.surface,
+    borderRadius: DESIGN_SYSTEM.borderRadius.xl,
+    padding: DESIGN_SYSTEM.spacing.sm,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: colors.border.subtle,
-    ...designTokens.elevation.subtle,
+    borderColor: COLORS.border.subtle,
+    ...DESIGN_SYSTEM.elevation.subtle,
   },
   statIcon: {
     width: 40,
     height: 40,
-    borderRadius: designTokens.borderRadius.lg,
-    backgroundColor: colors.feedback.infoLight,
+    borderRadius: DESIGN_SYSTEM.borderRadius.lg,
+    backgroundColor: COLORS.feedback.infoLight,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: designTokens.spacing.md,
+    marginBottom: DESIGN_SYSTEM.spacing.md,
   },
   statEmoji: {
-    fontSize: designTokens.typography.fontSizes.md,
+    fontSize: DESIGN_SYSTEM.typography.fontSizes.md,
   },
   statValue: {
-    fontSize: designTokens.typography.fontSizes.xxl,
+    fontSize: DESIGN_SYSTEM.typography.fontSizes.xxl,
     fontWeight: 'bold',
-    color: colors.text.primary,
+    color: COLORS.text.primary,
     fontFamily: 'Nunito-Bold',
-    lineHeight: designTokens.typography.lineHeights.tight * designTokens.typography.fontSizes.xxl,
+    lineHeight: DESIGN_SYSTEM.typography.lineHeights.tight * DESIGN_SYSTEM.typography.fontSizes.xxl,
   },
   statLabel: {
-    fontSize: designTokens.typography.fontSizes.xs,
-    color: colors.text.muted,
-    marginTop: designTokens.spacing.xs,
+    fontSize: DESIGN_SYSTEM.typography.fontSizes.xs,
+    color: COLORS.text.muted,
+    marginTop: DESIGN_SYSTEM.spacing.xs,
     fontFamily: 'Nunito-Regular',
     textAlign: 'center',
   },

@@ -7,20 +7,22 @@ import {
   ScrollView,
   SafeAreaView,
   StatusBar,
-  Alert,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import {colors} from '../theme/colors';
-import {LEVELS, Level, getDifficultyGradient} from '../utils/levels';
+import { COLORS } from '../core/theme/designSystem';
+import { LEVELS, Level, getDifficultyGradient } from '../utils/levels';
 import Sidebar from '../components/Sidebar';
 import AppHeader from '../components/AppHeader';
 import SolvedBadge from '../components/SolvedBadge';
-import { getUserProgress, getLevelsWithProgress } from '../utils/firebase';
+import { getUserProgress } from '../core/services/userService';
+import { getLevelsWithProgress } from '../core/services/levelService';
 import { APP_STRINGS, formatPremiumUnlockMessage, formatAdUnlockMessage, formatAdLoadingMessage } from '../constants/strings';
 import { useSettings } from '../contexts/SettingsContext';
-import { UserProgress, FirebaseLevel } from '../utils/types';
+import { UserProgress } from '../core/models/user';
+import { FirebaseLevel } from '../core/models/level';
 import { levelSelectionStyles } from '../styles/levelSelectionStyles';
 import useLevelAnimations from '../hooks/useLevelAnimations';
+import { useSnackbar } from '../components/SnackbarProvider';
 
 interface LevelSelectionScreenProps {
   onLevelSelect: (level: Level) => void;
@@ -94,6 +96,9 @@ const LevelSelectionScreen: React.FC<LevelSelectionScreenProps> = ({
 
   // Settings context
   const { isDarkMode, setIsDarkMode, isSoundEnabled, setIsSoundEnabled } = useSettings();
+  
+  // Snackbar context
+  const { showSnackbar } = useSnackbar();
 
   // Animations for each level card
   const levelAnimations = useLevelAnimations(levelsWithProgress.length);
@@ -167,22 +172,18 @@ const LevelSelectionScreen: React.FC<LevelSelectionScreenProps> = ({
     if (!level?.id) return;
     if (!level.unlocked) {
       if (level.requiresPayment) {
-        Alert.alert(
-          APP_STRINGS.LEVEL_SELECTION.PREMIUM_DIALOG_TITLE,
-          formatPremiumUnlockMessage(level.name),
-          [
-            { text: APP_STRINGS.DIALOG_ACTIONS.MAYBE_LATER, style: 'cancel' },
-            { text: APP_STRINGS.DIALOG_ACTIONS.UNLOCK_PREMIUM, onPress: handlePremiumUnlock },
-          ]
+        showSnackbar(
+          `${APP_STRINGS.LEVEL_SELECTION.PREMIUM_DIALOG_TITLE}: ${formatPremiumUnlockMessage(level.name)}`,
+          APP_STRINGS.DIALOG_ACTIONS.UNLOCK_PREMIUM,
+          handlePremiumUnlock,
+          5000
         );
       } else if (level.requiresAd) {
-        Alert.alert(
-          APP_STRINGS.LEVEL_SELECTION.AD_DIALOG_TITLE,
-          formatAdUnlockMessage(level.name, level.adDuration),
-          [
-            { text: APP_STRINGS.DIALOG_ACTIONS.CANCEL, style: 'cancel' },
-            { text: APP_STRINGS.DIALOG_ACTIONS.WATCH_AD, onPress: () => handleAdWatch(level) },
-          ]
+        showSnackbar(
+          `${APP_STRINGS.LEVEL_SELECTION.AD_DIALOG_TITLE}: ${formatAdUnlockMessage(level.name, level.adDuration)}`,
+          APP_STRINGS.DIALOG_ACTIONS.WATCH_AD,
+          () => handleAdWatch(level),
+          5000
         );
       }
       return;
@@ -197,19 +198,20 @@ const LevelSelectionScreen: React.FC<LevelSelectionScreenProps> = ({
   };
 
   const handlePremiumUnlock = () => {
-    Alert.alert(APP_STRINGS.PREMIUM.FEATURE_ALERT, APP_STRINGS.PREMIUM.INTEGRATION_MESSAGE);
+    showSnackbar(
+      `${APP_STRINGS.PREMIUM.FEATURE_ALERT}: ${APP_STRINGS.PREMIUM.INTEGRATION_MESSAGE}`,
+      undefined,
+      undefined,
+      4000
+    );
   };
 
   const handleAdWatch = (level: Level) => {
-    Alert.alert(
-      APP_STRINGS.AD_LOADING.TITLE,
-      formatAdLoadingMessage(level.adDuration),
-      [
-        {
-          text: APP_STRINGS.DIALOG_ACTIONS.SKIP_DEBUG,
-          onPress: () => onLevelSelect({ ...level, unlocked: true }),
-        },
-      ]
+    showSnackbar(
+      `${APP_STRINGS.AD_LOADING.TITLE}: ${formatAdLoadingMessage(level.adDuration)}`,
+      APP_STRINGS.DIALOG_ACTIONS.SKIP_DEBUG,
+      () => onLevelSelect({ ...level, unlocked: true }),
+      6000
     );
   };
 
@@ -305,7 +307,7 @@ const LevelSelectionScreen: React.FC<LevelSelectionScreenProps> = ({
   // Main render
   return (
     <SafeAreaView style={levelSelectionStyles.container}>
-      <StatusBar barStyle="light-content" backgroundColor={colors.background.primary} />
+      <StatusBar barStyle="light-content" backgroundColor={COLORS.background.primary} />
       <Animated.View
         style={[
           levelSelectionStyles.header,

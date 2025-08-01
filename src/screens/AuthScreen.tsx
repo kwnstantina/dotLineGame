@@ -8,11 +8,11 @@ import {
   Platform,
   ScrollView,
 } from 'react-native';
-import { signInWithEmail, signUpWithEmail, resetPassword, signInWithGoogle } from '../utils/firebase';
+import { signInWithEmail, signUpWithEmail, resetPassword, signInWithGoogle } from '../core/services/authService';
 import { useSnackbar } from '../components/SnackbarProvider';
 import { AUTH_CODES, AUTH_STRINGS, AuthMode } from '../constants/authConstants';
 import { authStyles } from '../styles/authStyles';
-import { validateAuthForm } from '../utils/validation';
+import { validateAuthForm } from '../core/services/validationService';
 
 
 const AuthScreen: React.FC = () => {

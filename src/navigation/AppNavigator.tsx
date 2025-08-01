@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
-import { View, Alert } from 'react-native';
+import { View } from 'react-native';
 import LevelSelectionScreen from '../screens/LevelSelectionScreen';
 import PuzzlePacksScreen from '../screens/PuzzlePacksScreen';
 import PackPuzzlesScreen from '../screens/PackPuzzlesScreen';
 import GameScreen from '../screens/GameScreen';
 import { Level } from '../utils/levels';
 import { PuzzlePack, Puzzle } from '../types';
-import { checkPackProgression, getPackUnlockMessage } from '../utils/packProgression';
 
 type NavigationState = 
   | { screen: 'levelSelection' }
@@ -45,33 +44,8 @@ const AppNavigator: React.FC = () => {
 
 
   const handleLevelComplete = async (levelId: number, completionTime: number) => {
-        // Check for newly unlocked puzzle packs
-    try {
-      const progression = await checkPackProgression(levelId);
-      
-      // Show notifications for newly unlocked packs
-      if (progression.newlyUnlockedPacks.length > 0) {
-        const packNames = progression.newlyUnlockedPacks.map(packId => {
-          const message = getPackUnlockMessage(packId);
-          return message;
-        });
-        
-        Alert.alert(
-          'New Content Unlocked! 🎉',
-          packNames.join('\n\n'),
-          [
-            { text: 'Continue Playing', style: 'default' },
-            { 
-              text: 'Check Puzzle Packs', 
-              style: 'default',
-              onPress: () => setNavigationState({ screen: 'puzzlePacks' })
-            }
-          ]
-        );
-      }
-    } catch (error) {
-      console.error('Error checking pack progression:', error);
-    }
+    // Pack unlock notifications are handled in GameScreen
+    // This handler is kept for future navigation logic if needed
   };
 
   const handlePuzzleComplete = (puzzleId: string, completionTime: number) => {

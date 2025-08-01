@@ -1,6 +1,6 @@
 import React from 'react';
 import {View, Text, StyleSheet, SafeAreaView, StatusBar, TouchableOpacity} from 'react-native';
-import {colors, designTokens} from '../theme/colors';
+import { COLORS, DESIGN_SYSTEM } from '../core/theme/designSystem';
 import { APP_STRINGS } from '../constants/strings';
 
 interface ErrorViewProps {
@@ -10,7 +10,7 @@ interface ErrorViewProps {
 const ErrorView: React.FC<ErrorViewProps> = ({onRetry}) => {
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="dark-content" backgroundColor={colors.background.primary} />
+      <StatusBar barStyle="dark-content" backgroundColor={COLORS.background.primary} />
       <View style={styles.errorContainer}>
         <Text style={styles.errorText}>{APP_STRINGS.GAME.ERROR_TEXT}</Text>
         <TouchableOpacity style={[styles.modernButton, styles.retryButton]} onPress={onRetry}>
@@ -24,7 +24,7 @@ const ErrorView: React.FC<ErrorViewProps> = ({onRetry}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background.primary,
+    backgroundColor: COLORS.background.primary,
   },
   errorContainer: {
     flex: 1,
@@ -34,25 +34,25 @@ const styles = StyleSheet.create({
   },
   errorText: {
     fontSize: 18,
-    color: colors.feedback.error,
+    color: COLORS.feedback.error,
     textAlign: 'center',
-    marginBottom: designTokens.spacing.lg,
+    marginBottom: DESIGN_SYSTEM.spacing.lg,
     fontFamily: 'Nunito-Medium',
   },
   modernButton: {
-    paddingVertical: designTokens.spacing.lg,
-    paddingHorizontal: designTokens.spacing.xl,
-    borderRadius: designTokens.borderRadius.xl,
-    ...designTokens.elevation.low,
+    paddingVertical: DESIGN_SYSTEM.spacing.lg,
+    paddingHorizontal: DESIGN_SYSTEM.spacing.xl,
+    borderRadius: DESIGN_SYSTEM.borderRadius.xl,
+    ...DESIGN_SYSTEM.elevation.low,
   },
   retryButton: {
-    backgroundColor: colors.interactive.primary,
+    backgroundColor: COLORS.interactive.primary,
   },
   buttonText: {
-    fontSize: designTokens.typography.fontSizes.md,
+    fontSize: DESIGN_SYSTEM.typography.fontSizes.md,
     fontWeight: '600',
     fontFamily: 'Nunito-SemiBold',
-    color: colors.text.inverse,
+    color: COLORS.text.inverse,
   },
 });
 

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, Animated } from 'react-native';
-import { colors, designTokens } from '../theme/colors';
+import { COLORS, DESIGN_SYSTEM } from '../core/theme/designSystem';
 
 interface SolvedBadgeProps {
   solved: boolean;
@@ -53,15 +53,15 @@ const SolvedBadge: React.FC<SolvedBadgeProps> = ({
   const getBadgeColor = () => {
     switch (difficulty) {
       case 'Beginner':
-        return colors.feedback.success;
+        return COLORS.feedback.success;
       case 'Intermediate':
-        return colors.feedback.warning;
+        return COLORS.feedback.warning;
       case 'Advanced':
-        return colors.feedback.error;
+        return COLORS.feedback.error;
       case 'Expert':
-        return colors.interactive.accent;
+        return COLORS.interactive.accent;
       default:
-        return colors.primary.ocean;
+        return COLORS.primary.ocean;
     }
   };
 
@@ -171,41 +171,41 @@ const styles = StyleSheet.create({
     height: 35,
     borderRadius: 17.5,
     borderWidth: 2,
-    borderColor: colors.feedback.success,
+    borderColor: COLORS.feedback.success,
   },
   badge: {
     width: 28,
     height: 28,
     borderRadius: 14,
-    backgroundColor: colors.feedback.success,
+    backgroundColor: COLORS.feedback.success,
     justifyContent: 'center',
     alignItems: 'center',
-    ...designTokens.elevation.medium,
+    ...DESIGN_SYSTEM.elevation.medium,
     borderWidth: 2,
-    borderColor: colors.background.card,
+    borderColor: COLORS.background.card,
   },
   checkmark: {
     fontSize: 14,
-    color: colors.text.inverse,
+    color: COLORS.text.inverse,
     fontWeight: 'bold',
     fontFamily: 'Nunito-Bold',
   },
   timeContainer: {
     position: 'absolute',
     top: 30,
-    backgroundColor: colors.background.card,
-    paddingHorizontal: designTokens.spacing.xs,
+    backgroundColor: COLORS.background.card,
+    paddingHorizontal: DESIGN_SYSTEM.spacing.xs,
     paddingVertical: 2,
-    borderRadius: designTokens.borderRadius.sm,
+    borderRadius: DESIGN_SYSTEM.borderRadius.sm,
     borderWidth: 1,
-    borderColor: colors.border.subtle,
-    ...designTokens.elevation.subtle,
+    borderColor: COLORS.border.subtle,
+    ...DESIGN_SYSTEM.elevation.subtle,
   },
   timeText: {
     fontSize: 10,
     fontWeight: '600',
     fontFamily: 'Nunito-SemiBold',
-    color: colors.feedback.success,
+    color: COLORS.feedback.success,
   },
   sparkle: {
     position: 'absolute',

@@ -7,10 +7,10 @@ import {
   SafeAreaView,
   Dimensions,
 } from 'react-native';
-import { colors, designTokens } from '../theme/colors';
+import { COLORS, DESIGN_SYSTEM } from '../core/theme/designSystem';
 import { PuzzlePack, Puzzle } from '../types';
-import { getPuzzleCompletions } from '../utils/firebase';
-import { getReplayRecommendations } from '../utils/packProgression';
+import { getPuzzleCompletions } from '../core/services/userService';
+import { getReplayRecommendations } from '../core/services/packProgressionService';
 import { difficultyCodes } from '../constants/codes';
 import { styles } from '../styles/packPuzzlesStyles';
 import { APP_STRINGS } from '../constants/strings';
@@ -66,11 +66,11 @@ const PackPuzzlesScreen: React.FC<PackPuzzlesScreenProps> = ({ pack, onPuzzleSel
 
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
-      case difficultyCodes.easy: return colors.feedback.success;
-      case difficultyCodes.medium: return colors.feedback.warning;
-      case difficultyCodes.hard: return colors.feedback.error;
-      case difficultyCodes.expert: return colors.interactive.accent;
-      default: return colors.text.secondary;
+      case difficultyCodes.easy: return COLORS.feedback.success;
+      case difficultyCodes.medium: return COLORS.feedback.warning;
+      case difficultyCodes.hard: return COLORS.feedback.error;
+      case difficultyCodes.expert: return COLORS.interactive.accent;
+      default: return COLORS.text.secondary;
     }
   };
 
@@ -103,7 +103,7 @@ const PackPuzzlesScreen: React.FC<PackPuzzlesScreenProps> = ({ pack, onPuzzleSel
   };
 
   const screenWidth = Dimensions.get('window').width;
-  const puzzleCardWidth = (screenWidth - designTokens.spacing.lg * 3) / 2;
+  const puzzleCardWidth = (screenWidth - DESIGN_SYSTEM.spacing.lg * 3) / 2;
 
   return (
     <SafeAreaView style={styles.container}>

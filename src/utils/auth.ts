@@ -1,67 +1,27 @@
-import auth from '@react-native-firebase/auth';
-import { getAuth } from '@react-native-firebase/auth';
-import { getApp } from '@react-native-firebase/app';
-import { GoogleSignin } from '@react-native-google-signin/google-signin';
+// ⚠️ DEPRECATED: This file has been moved to ../core/services/authService.ts
+// This file provides backward compatibility during migration
+// Please update your imports to use the new location
 
-export const signUpWithEmail = async (email: string, password: string) => {
-  try {
-    const userCredential = await auth().createUserWithEmailAndPassword(email, password);
-    return { user: userCredential.user, error: null };
-  } catch (error: any) {
-    return { user: null, error: error.message };
-  }
-};
+import {
+  signUpWithEmail as newSignUpWithEmail,
+  signInWithEmail as newSignInWithEmail,
+  signOut as newSignOut,
+  resetPassword as newResetPassword,
+  signInWithGoogle as newSignInWithGoogle,
+  getCurrentUser as newGetCurrentUser,
+  onAuthStateChanged as newOnAuthStateChanged,
+} from '../core/services/authService';
 
-export const signInWithEmail = async (email: string, password: string) => {
-  try {
-    const userCredential = await auth().signInWithEmailAndPassword(email, password);
-    return { user: userCredential.user, error: null };
-  } catch (error: any) {
-    return { user: null, error: error.message };
-  }
-};
+// Re-export all functions for backward compatibility
+export const signUpWithEmail = newSignUpWithEmail;
+export const signInWithEmail = newSignInWithEmail;
+export const signOut = newSignOut;
+export const resetPassword = newResetPassword;
+export const signInWithGoogle = newSignInWithGoogle;
+export const getCurrentUser = newGetCurrentUser;
+export const onAuthStateChanged = newOnAuthStateChanged;
 
-export const signOut = async () => {
-  try {
-    await auth().signOut();
-    return { error: null };
-  } catch (error: any) {
-    return { error: error.message };
-  }
-};
-
-export const resetPassword = async (email: string) => {
-  try {
-    await auth().sendPasswordResetEmail(email);
-    return { error: null };
-  } catch (error: any) {
-    return { error: error.message };
-  }
-};
-
-export const signInWithGoogle = async () => {
-  try {
-    await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
-    const signInResult = await GoogleSignin.signIn();
-    const idToken = signInResult.data?.idToken;
-    if (!idToken) throw new Error('No ID token received from Google Sign-In');
-    const googleCredential = auth.GoogleAuthProvider.credential(idToken);
-    const userCredential = await auth().signInWithCredential(googleCredential);
-    return { user: userCredential.user, error: null };
-  } catch (error: any) {
-    if (error.code === 'auth/account-exists-with-different-credential') {
-      return { user: null, error: 'An account already exists with the same email address but different sign-in credentials.' };
-    }
-    return { user: null, error: error.message || 'Google sign-in failed' };
-  }
-};
-
-export const getCurrentUser = () => {
-  const authInstance = getAuth(getApp());
-  return authInstance.currentUser;
-};
-
-export const onAuthStateChanged = (callback: (user: any) => void) => {
-  const authInstance = getAuth(getApp());
-  return authInstance.onAuthStateChanged(callback);
-};
+console.warn(
+  '⚠️ Deprecated: utils/auth.ts has been moved to core/services/authService.ts. ' +
+  'Please update your imports to use the new location.'
+);

@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
-import {colors, designTokens} from '../theme/colors';
+import {COLORS, DESIGN_SYSTEM} from '../core/theme/designSystem';
 import { APP_STRINGS, formatDifficulty, formatInstructionsCells } from '../constants/strings';
 
 interface InstructionsModalProps {
@@ -29,10 +29,10 @@ const InstructionsModal: React.FC<InstructionsModalProps> = ({
   };
 
   const getDifficultyColor = (size: number) => {
-    if (size <= 3) return colors.feedback.success;
-    if (size <= 5) return colors.feedback.warning;
-    if (size <= 7) return colors.feedback.error;
-    return colors.interactive.accent;
+    if (size <= 3) return COLORS.feedback.success;
+    if (size <= 5) return COLORS.feedback.warning;
+    if (size <= 7) return COLORS.feedback.error;
+    return COLORS.interactive.accent;
   };
 
   return (
@@ -99,77 +99,77 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: designTokens.spacing.lg,
+    paddingHorizontal: DESIGN_SYSTEM.spacing.lg,
   },
   modal: {
-    backgroundColor: colors.background.primary,
-    borderRadius: designTokens.borderRadius.xl,
+    backgroundColor: COLORS.background.primary,
+    borderRadius: DESIGN_SYSTEM.borderRadius.xl,
     width: '100%',
     maxWidth: 400,
     maxHeight: '80%',
-    ...designTokens.elevation.high,
+    ...DESIGN_SYSTEM.elevation.high,
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: designTokens.spacing.xl,
-    paddingTop: designTokens.spacing.xl,
-    paddingBottom: designTokens.spacing.lg,
+    paddingHorizontal: DESIGN_SYSTEM.spacing.xl,
+    paddingTop: DESIGN_SYSTEM.spacing.xl,
+    paddingBottom: DESIGN_SYSTEM.spacing.lg,
     borderBottomWidth: 1,
-    borderBottomColor: colors.border.accent,
+    borderBottomColor: COLORS.border.accent,
   },
   title: {
-    fontSize: designTokens.typography.fontSizes.xxl,
+    fontSize: DESIGN_SYSTEM.typography.fontSizes.xxl,
     fontWeight: 'bold',
-    color: colors.text.primary,
+    color: COLORS.text.primary,
     fontFamily: 'Nunito-Bold',
   },
   closeButton: {
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: colors.background.secondary,
+    backgroundColor: COLORS.background.secondary,
     justifyContent: 'center',
     alignItems: 'center',
   },
   closeButtonText: {
     fontSize: 16,
-    color: colors.text.secondary,
+    color: COLORS.text.secondary,
     fontWeight: 'bold',
   },
   content: {
-    paddingHorizontal: designTokens.spacing.xl,
-    paddingBottom: designTokens.spacing.xl,
+    paddingHorizontal: DESIGN_SYSTEM.spacing.xl,
+    paddingBottom: DESIGN_SYSTEM.spacing.xl,
   },
   difficultyBadge: {
-    backgroundColor: colors.background.secondary,
-    paddingHorizontal: designTokens.spacing.lg,
-    paddingVertical: designTokens.spacing.md,
-    borderRadius: designTokens.borderRadius.lg,
+    backgroundColor: COLORS.background.secondary,
+    paddingHorizontal: DESIGN_SYSTEM.spacing.lg,
+    paddingVertical: DESIGN_SYSTEM.spacing.md,
+    borderRadius: DESIGN_SYSTEM.borderRadius.lg,
     alignItems: 'center',
-    marginVertical: designTokens.spacing.lg,
+    marginVertical: DESIGN_SYSTEM.spacing.lg,
   },
   difficultyText: {
-    fontSize: designTokens.typography.fontSizes.md,
+    fontSize: DESIGN_SYSTEM.typography.fontSizes.md,
     fontWeight: '600',
     fontFamily: 'Nunito-SemiBold',
   },
   section: {
-    marginBottom: designTokens.spacing.xl,
+    marginBottom: DESIGN_SYSTEM.spacing.xl,
   },
   sectionTitle: {
-    fontSize: designTokens.typography.fontSizes.lg,
+    fontSize: DESIGN_SYSTEM.typography.fontSizes.lg,
     fontWeight: 'bold',
-    color: colors.text.primary,
+    color: COLORS.text.primary,
     fontFamily: 'Nunito-Bold',
-    marginBottom: designTokens.spacing.md,
+    marginBottom: DESIGN_SYSTEM.spacing.md,
   },
   sectionText: {
-    fontSize: designTokens.typography.fontSizes.md,
-    color: colors.text.secondary,
+    fontSize: DESIGN_SYSTEM.typography.fontSizes.md,
+    color: COLORS.text.secondary,
     fontFamily: 'Nunito-Regular',
-    lineHeight: designTokens.typography.lineHeights.relaxed * designTokens.typography.fontSizes.md,
+    lineHeight: DESIGN_SYSTEM.typography.lineHeights.relaxed * DESIGN_SYSTEM.typography.fontSizes.md,
   },
 });
 
