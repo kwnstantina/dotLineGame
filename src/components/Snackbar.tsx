@@ -1,6 +1,7 @@
 import React, {useEffect, useRef} from 'react';
 import {Animated, StyleSheet, Text, TouchableOpacity} from 'react-native';
-import {COLORS, DESIGN_SYSTEM} from '../core/theme/designSystem';
+import {DESIGN_SYSTEM} from '../core/theme/designSystem';
+import { useAppTheme } from '../contexts/ThemeContext';
 
 interface SnackbarProps {
   visible: boolean;
@@ -19,9 +20,56 @@ const Snackbar: React.FC<SnackbarProps> = ({
   onDismiss,
   duration = 3000,
 }) => {
+  const { colors } = useAppTheme();
   const translateY = useRef(new Animated.Value(100)).current;
   const opacity = useRef(new Animated.Value(0)).current;
   const scale = useRef(new Animated.Value(0.95)).current;
+
+  const styles = StyleSheet.create({
+    container: {
+      position: 'absolute',
+      left: DESIGN_SYSTEM.spacing.lg,
+      right: DESIGN_SYSTEM.spacing.lg,
+      bottom: DESIGN_SYSTEM.spacing.xxl,
+      backgroundColor: colors.background.surface,
+      borderRadius: DESIGN_SYSTEM.borderRadius.xl,
+      flexDirection: 'row',
+      alignItems: 'center',
+      paddingHorizontal: DESIGN_SYSTEM.spacing.lg,
+      paddingVertical: DESIGN_SYSTEM.spacing.md,
+      minHeight: 64,
+      ...DESIGN_SYSTEM.elevation.high,
+      borderWidth: 1,
+      borderColor: colors.border.primary,
+      zIndex: 1000,
+    },
+    message: {
+      color: colors.text.primary,
+      fontSize: DESIGN_SYSTEM.typography.fontSizes.md,
+      fontFamily: 'Nunito-Medium',
+      lineHeight: DESIGN_SYSTEM.typography.lineHeights.relaxed * DESIGN_SYSTEM.typography.fontSizes.md,
+      flex: 1,
+    },
+    actionButton: {
+      marginLeft: DESIGN_SYSTEM.spacing.lg,
+      paddingHorizontal: DESIGN_SYSTEM.spacing.lg,
+      paddingVertical: DESIGN_SYSTEM.spacing.sm,
+      backgroundColor: colors.interactive.primary,
+      borderRadius: DESIGN_SYSTEM.borderRadius.lg,
+      minWidth: 88,
+      alignItems: 'center',
+      justifyContent: 'center',
+      ...DESIGN_SYSTEM.elevation.subtle,
+    },
+    actionLabel: {
+      color: colors.text.inverse,
+      fontWeight: '600',
+      fontFamily: 'Nunito-SemiBold',
+      fontSize: DESIGN_SYSTEM.typography.fontSizes.sm,
+      textTransform: 'uppercase',
+      letterSpacing: 0.5,
+    },
+  });
 
   useEffect(() => {
     if (visible) {
@@ -95,50 +143,5 @@ const Snackbar: React.FC<SnackbarProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    position: 'absolute',
-    left: DESIGN_SYSTEM.spacing.lg,
-    right: DESIGN_SYSTEM.spacing.lg,
-    bottom: DESIGN_SYSTEM.spacing.xxl,
-    backgroundColor: COLORS.background.surface,
-    borderRadius: DESIGN_SYSTEM.borderRadius.xl,
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: DESIGN_SYSTEM.spacing.lg,
-    paddingVertical: DESIGN_SYSTEM.spacing.md,
-    minHeight: 64,
-    ...DESIGN_SYSTEM.elevation.high,
-    borderWidth: 1,
-    borderColor: COLORS.border.primary,
-    zIndex: 1000,
-  },
-  message: {
-    color: COLORS.text.primary,
-    fontSize: DESIGN_SYSTEM.typography.fontSizes.md,
-    fontFamily: 'Nunito-Medium',
-    lineHeight: DESIGN_SYSTEM.typography.lineHeights.relaxed * DESIGN_SYSTEM.typography.fontSizes.md,
-    flex: 1,
-  },
-  actionButton: {
-    marginLeft: DESIGN_SYSTEM.spacing.lg,
-    paddingHorizontal: DESIGN_SYSTEM.spacing.lg,
-    paddingVertical: DESIGN_SYSTEM.spacing.sm,
-    backgroundColor: COLORS.interactive.primary,
-    borderRadius: DESIGN_SYSTEM.borderRadius.lg,
-    minWidth: 88,
-    alignItems: 'center',
-    justifyContent: 'center',
-    ...DESIGN_SYSTEM.elevation.subtle,
-  },
-  actionLabel: {
-    color: COLORS.text.inverse,
-    fontWeight: '600',
-    fontFamily: 'Nunito-SemiBold',
-    fontSize: DESIGN_SYSTEM.typography.fontSizes.sm,
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
-  },
-});
 
 export default Snackbar;

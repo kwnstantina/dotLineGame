@@ -1,6 +1,7 @@
 import React from 'react';
 import {View, Text, StyleSheet, Animated} from 'react-native';
-import {COLORS, DESIGN_SYSTEM} from '../core/theme/designSystem';
+import {DESIGN_SYSTEM} from '../core/theme/designSystem';
+import { useAppTheme } from '../contexts/ThemeContext';
 
 interface GameProgressProps {
   cellsFilled: number;
@@ -17,6 +18,84 @@ const GameProgress: React.FC<GameProgressProps> = ({
   progressAnim,
   progressColor,
 }) => {
+  const { colors } = useAppTheme();
+
+  const styles = StyleSheet.create({
+    container: {
+      backgroundColor: colors.background.card,
+      borderRadius: DESIGN_SYSTEM.borderRadius.xl,
+      padding: DESIGN_SYSTEM.spacing.lg,
+      marginBottom: DESIGN_SYSTEM.spacing.lg,
+      borderWidth: 1,
+      borderColor: colors.border.subtle,
+      ...DESIGN_SYSTEM.elevation.subtle,
+    },
+    progressSection: {
+      marginBottom: DESIGN_SYSTEM.spacing.md,
+    },
+    progressHeader: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginBottom: DESIGN_SYSTEM.spacing.sm,
+    },
+    progressLabel: {
+      fontSize: DESIGN_SYSTEM.typography.fontSizes.md,
+      fontWeight: '500',
+      color: colors.text.secondary,
+      fontFamily: 'Nunito-Medium',
+    },
+    progressPercentage: {
+      fontSize: DESIGN_SYSTEM.typography.fontSizes.md,
+      fontWeight: '700',
+      color: colors.text.primary,
+      fontFamily: 'Nunito-Bold',
+    },
+    progressBarContainer: {
+      marginTop: DESIGN_SYSTEM.spacing.xs,
+    },
+    progressBarBackground: {
+      height: 8,
+      backgroundColor: colors.border.secondary,
+      borderRadius: DESIGN_SYSTEM.borderRadius.full,
+      overflow: 'hidden',
+    },
+    progressBarFill: {
+      height: '100%',
+      borderRadius: DESIGN_SYSTEM.borderRadius.full,
+    },
+    statsSection: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-around',
+      paddingTop: DESIGN_SYSTEM.spacing.sm,
+    },
+    statItem: {
+      alignItems: 'center',
+      flex: 1,
+    },
+    statValue: {
+      fontSize: DESIGN_SYSTEM.typography.fontSizes.xl,
+      fontWeight: 'bold',
+      color: colors.text.primary,
+      fontFamily: 'Nunito-Bold',
+      lineHeight: DESIGN_SYSTEM.typography.lineHeights.tight * DESIGN_SYSTEM.typography.fontSizes.xl,
+    },
+    statLabel: {
+      fontSize: DESIGN_SYSTEM.typography.fontSizes.sm,
+      color: colors.text.muted,
+      marginTop: DESIGN_SYSTEM.spacing.xs,
+      fontFamily: 'Nunito-Regular',
+      textAlign: 'center',
+    },
+    statDivider: {
+      width: 1,
+      height: 30,
+      backgroundColor: colors.border.secondary,
+      marginHorizontal: DESIGN_SYSTEM.spacing.md,
+    },
+  });
+
   return (
     <View style={styles.container}>
       {/* Progress Bar Section */}
@@ -59,80 +138,5 @@ const GameProgress: React.FC<GameProgressProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: COLORS.background.card,
-    borderRadius: DESIGN_SYSTEM.borderRadius.xl,
-    padding: DESIGN_SYSTEM.spacing.lg,
-    marginBottom: DESIGN_SYSTEM.spacing.lg,
-    borderWidth: 1,
-    borderColor: COLORS.border.subtle,
-    ...DESIGN_SYSTEM.elevation.subtle,
-  },
-  progressSection: {
-    marginBottom: DESIGN_SYSTEM.spacing.md,
-  },
-  progressHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: DESIGN_SYSTEM.spacing.sm,
-  },
-  progressLabel: {
-    fontSize: DESIGN_SYSTEM.typography.fontSizes.md,
-    fontWeight: '500',
-    color: COLORS.text.secondary,
-    fontFamily: 'Nunito-Medium',
-  },
-  progressPercentage: {
-    fontSize: DESIGN_SYSTEM.typography.fontSizes.md,
-    fontWeight: '700',
-    color: COLORS.text.primary,
-    fontFamily: 'Nunito-Bold',
-  },
-  progressBarContainer: {
-    marginTop: DESIGN_SYSTEM.spacing.xs,
-  },
-  progressBarBackground: {
-    height: 8,
-    backgroundColor: COLORS.border.secondary,
-    borderRadius: DESIGN_SYSTEM.borderRadius.full,
-    overflow: 'hidden',
-  },
-  progressBarFill: {
-    height: '100%',
-    borderRadius: DESIGN_SYSTEM.borderRadius.full,
-  },
-  statsSection: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-around',
-    paddingTop: DESIGN_SYSTEM.spacing.sm,
-  },
-  statItem: {
-    alignItems: 'center',
-    flex: 1,
-  },
-  statValue: {
-    fontSize: DESIGN_SYSTEM.typography.fontSizes.xl,
-    fontWeight: 'bold',
-    color: COLORS.text.primary,
-    fontFamily: 'Nunito-Bold',
-    lineHeight: DESIGN_SYSTEM.typography.lineHeights.tight * DESIGN_SYSTEM.typography.fontSizes.xl,
-  },
-  statLabel: {
-    fontSize: DESIGN_SYSTEM.typography.fontSizes.sm,
-    color: COLORS.text.muted,
-    marginTop: DESIGN_SYSTEM.spacing.xs,
-    fontFamily: 'Nunito-Regular',
-    textAlign: 'center',
-  },
-  statDivider: {
-    width: 1,
-    height: 30,
-    backgroundColor: COLORS.border.secondary,
-    marginHorizontal: DESIGN_SYSTEM.spacing.md,
-  },
-});
 
 export default GameProgress;

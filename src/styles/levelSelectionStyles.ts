@@ -1,15 +1,17 @@
 import { Dimensions, StyleSheet } from "react-native";
-import { COLORS, DESIGN_SYSTEM } from "../core/theme/designSystem";
-
+import { DESIGN_SYSTEM } from "../core/theme/designSystem";
 
 const {width} = Dimensions.get('window');
 const CARD_WIDTH = width * 0.85;
 const CARD_HEIGHT = 140;
 
-export const levelSelectionStyles = StyleSheet.create({
+export const createLevelSelectionStyles = (colors: any) => {
+ 
+
+  return StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.background.primary,
+    backgroundColor: colors?.background?.primary || '#FFFFF0',
   },
   header: {
     paddingHorizontal: DESIGN_SYSTEM.spacing.xl,
@@ -31,7 +33,7 @@ export const levelSelectionStyles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: COLORS.interactive.accent,
+    backgroundColor: colors?.interactive?.accent || '#a5b4fc',
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: DESIGN_SYSTEM.spacing.sm,
@@ -39,20 +41,20 @@ export const levelSelectionStyles = StyleSheet.create({
   },
   puzzlePacksButtonText: {
     fontSize: 20,
-    color: COLORS.text.inverse,
+    color: colors?.text?.inverse || '#FFFFF0',
   },
   menuButton: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: COLORS.background.surface,
+    backgroundColor: colors?.background?.surface || '#f1f5f9',
     justifyContent: 'center',
     alignItems: 'center',
     ...DESIGN_SYSTEM.elevation.subtle,
   },
   menuButtonText: {
     fontSize: 18,
-    color: COLORS.text.primary,
+    color: colors?.text?.primary || '#161618',
     fontWeight: 'bold',
   },
   scrollView: {
@@ -102,12 +104,12 @@ export const levelSelectionStyles = StyleSheet.create({
   levelName: {
     fontSize: DESIGN_SYSTEM.typography.fontSizes.xl,
     fontWeight: 'bold',
-    color: COLORS.text.inverse,
+    color: colors?.text?.inverse || '#FFFFF0',
     fontFamily: 'Nunito-Bold',
   },
   levelDifficulty: {
     fontSize: DESIGN_SYSTEM.typography.fontSizes.md,
-    color: COLORS.text.inverse,
+    color: colors?.text?.inverse || '#FFFFF0',
     fontFamily: 'Nunito-Medium',
     opacity: 0.9,
     marginTop: DESIGN_SYSTEM.spacing.xs,
@@ -118,7 +120,7 @@ export const levelSelectionStyles = StyleSheet.create({
   levelNumber: {
     fontSize: DESIGN_SYSTEM.typography.fontSizes.lg,
     fontWeight: 'bold',
-    color: COLORS.text.inverse,
+    color: colors?.text?.inverse || '#FFFFF0',
     fontFamily: 'Nunito-Bold',
     opacity: 0.8,
   },
@@ -132,7 +134,7 @@ export const levelSelectionStyles = StyleSheet.create({
   },
   levelDescription: {
     fontSize: DESIGN_SYSTEM.typography.fontSizes.md,
-    color: COLORS.text.inverse,
+    color: colors?.text?.inverse || '#FFFFF0',
     fontFamily: 'Nunito-Regular',
     opacity: 0.9,
     marginTop: DESIGN_SYSTEM.spacing.sm,
@@ -142,13 +144,13 @@ export const levelSelectionStyles = StyleSheet.create({
   },
   unlockText: {
     fontSize: DESIGN_SYSTEM.typography.fontSizes.sm,
-    color: COLORS.text.inverse,
+    color: colors?.text?.inverse || '#FFFFF0',
     fontFamily: 'Nunito-SemiBold',
     opacity: 0.9,
   },
   bestTime: {
     fontSize: DESIGN_SYSTEM.typography.fontSizes.sm,
-    color: COLORS.text.inverse,
+    color: colors?.text?.inverse || '#FFFFF0',
     fontFamily: 'Nunito-Medium',
     opacity: 0.8,
     textAlign: 'right',
@@ -160,7 +162,7 @@ export const levelSelectionStyles = StyleSheet.create({
   },
   footerText: {
     fontSize: DESIGN_SYSTEM.typography.fontSizes.md,
-    color: COLORS.text.secondary,
+    color: colors?.text?.secondary || '#4338ca',
     fontFamily: 'Nunito-Medium',
     opacity: 0.7,
   },
@@ -192,24 +194,24 @@ export const levelSelectionStyles = StyleSheet.create({
   puzzlePacksTitle: {
     fontSize: DESIGN_SYSTEM.typography.fontSizes.xl,
     fontWeight: 'bold',
-    color: COLORS.text.inverse,
+    color: colors?.text?.inverse || '#FFFFF0',
     fontFamily: 'Nunito-Bold',
   },
   puzzlePacksSubtitle: {
     fontSize: DESIGN_SYSTEM.typography.fontSizes.md,
-    color: COLORS.text.inverse,
+    color: colors?.text?.inverse || '#FFFFF0',
     fontFamily: 'Nunito-Medium',
     opacity: 0.9,
     marginTop: 2,
   },
   puzzlePacksArrow: {
     fontSize: 24,
-    color: COLORS.text.inverse,
+    color: colors?.text?.inverse || '#FFFFF0',
     fontWeight: 'bold',
   },
   puzzlePacksDescription: {
     fontSize: DESIGN_SYSTEM.typography.fontSizes.sm,
-    color: COLORS.text.inverse,
+    color: colors?.text?.inverse || '#FFFFF0',
     fontFamily: 'Nunito-Regular',
     opacity: 0.8,
     marginTop: DESIGN_SYSTEM.spacing.sm,
@@ -218,16 +220,16 @@ export const levelSelectionStyles = StyleSheet.create({
     position: 'absolute',
     bottom: 8,
     right: 8,
-    backgroundColor: COLORS.background.primary,
+    backgroundColor: colors?.background?.primary || '#FFFFF0',
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: DESIGN_SYSTEM.borderRadius.sm,
     borderWidth: 1,
-    borderColor: COLORS.interactive.primary,
+    borderColor: colors?.interactive?.primary || '#212121',
   },
   replayText: {
     fontSize: 11,
-    color: COLORS.interactive.primary,
+    color: colors?.interactive?.primary || '#212121',
     fontWeight: '600',
   },
   loadingContainer: {
@@ -237,8 +239,12 @@ export const levelSelectionStyles = StyleSheet.create({
   },
   loadingText: {
     fontSize: 16,
-    color: COLORS.text.secondary,
+    color: colors?.text?.secondary || '#4338ca',
     textAlign: 'center',
     fontWeight: '500',
   },
-});
+  });
+};
+
+// Legacy export for backward compatibility  
+export const levelSelectionStyles = createLevelSelectionStyles({} as any);

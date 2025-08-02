@@ -9,7 +9,7 @@ import {
   StatusBar,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import { COLORS } from '../core/theme/designSystem';
+import { useAppSettings } from '../contexts/AppProviders';
 import { LEVELS, Level, getDifficultyGradient } from '../utils/levels';
 import Sidebar from '../components/Sidebar';
 import AppHeader from '../components/AppHeader';
@@ -17,12 +17,13 @@ import SolvedBadge from '../components/SolvedBadge';
 import { getUserProgress } from '../core/services/userService';
 import { getLevelsWithProgress } from '../core/services/levelService';
 import { APP_STRINGS, formatPremiumUnlockMessage, formatAdUnlockMessage, formatAdLoadingMessage } from '../constants/strings';
-import { useSettings } from '../contexts/SettingsContext';
 import { UserProgress } from '../core/models/user';
 import { FirebaseLevel } from '../core/models/level';
-import { levelSelectionStyles } from '../styles/levelSelectionStyles';
+import { createLevelSelectionStyles } from '../styles/levelSelectionStyles';
 import useLevelAnimations from '../hooks/useLevelAnimations';
 import { useSnackbar } from '../components/SnackbarProvider';
+import { LightAnimation } from '../components/LightAnimation';
+import ThemeLoadingView from '../components/ThemeLoadingView';
 
 interface LevelSelectionScreenProps {
   onLevelSelect: (level: Level) => void;
@@ -94,8 +95,27 @@ const LevelSelectionScreen: React.FC<LevelSelectionScreenProps> = ({
   const [levelsWithProgress, setLevelsWithProgress] = useState<(FirebaseLevel & { solved?: boolean; completionTime?: number; bestTime?: number })[]>([]);
   const [isLoadingLevels, setIsLoadingLevels] = useState(true);
 
-  // Settings context
-  const { isDarkMode, setIsDarkMode, isSoundEnabled, setIsSoundEnabled } = useSettings();
+  // Theme context for colors
+  const { colors, isLoading: themeLoading } = useAppSettings();
+  
+  // Early return for theme loading
+  if (themeLoading) {
+    return <ThemeLoadingView />;
+  }
+  
+  // Validate colors object before using it
+  const validateColors = (colors: any) => {
+    if (!colors) return false;
+    return !!(colors.background && colors.text && colors.interactive && colors.primary);
+  };
+  
+  if (!validateColors(colors)) {
+    console.warn('Colors not properly initialized:', colors);
+    return <ThemeLoadingView />;
+  }
+  
+  // Styles with theme
+  const levelSelectionStyles = createLevelSelectionStyles(colors);
   
   // Snackbar context
   const { showSnackbar } = useSnackbar();
@@ -242,13 +262,19 @@ const LevelSelectionScreen: React.FC<LevelSelectionScreenProps> = ({
           },
         ]}
       >
-        <TouchableOpacity
+        <LightAnimation
+          type={isLocked ? "light" : isSolved ? "glow" : "pulse"}
+          preset={isLocked ? "minimal" : isSolved ? "medium" : "subtle"}
+          config={{ duration: isLocked ? 3000 : isSolved ? 1200 : 2000 }}
           style={[levelSelectionStyles.levelCard, isLocked && levelSelectionStyles.lockedCard]}
-          onPress={() => handleLevelPress(level)}
-          activeOpacity={isLocked ? 1 : 0.8}
         >
+          <TouchableOpacity
+            style={{ flex: 1 }}
+            onPress={() => handleLevelPress(level)}
+            activeOpacity={isLocked ? 1 : 0.8}
+          >
           <LinearGradient
-            colors={isLocked ? ['#6B7280', '#9CA3AF'] : gradient}
+            colors={isLocked ? [colors.text.muted, colors.interactive.disabled] : gradient}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
             style={levelSelectionStyles.cardGradient}
@@ -299,7 +325,8 @@ const LevelSelectionScreen: React.FC<LevelSelectionScreenProps> = ({
               <Text style={levelSelectionStyles.replayText}>🔄 Tap to replay!</Text>
             </View>
           )}
-        </TouchableOpacity>
+          </TouchableOpacity>
+        </LightAnimation>
       </Animated.View>
     );
   };
@@ -307,7 +334,7 @@ const LevelSelectionScreen: React.FC<LevelSelectionScreenProps> = ({
   // Main render
   return (
     <SafeAreaView style={levelSelectionStyles.container}>
-      <StatusBar barStyle="light-content" backgroundColor={COLORS.background.primary} />
+      <StatusBar barStyle="light-content" backgroundColor={colors.background.primary} />
       <Animated.View
         style={[
           levelSelectionStyles.header,
@@ -352,7 +379,7 @@ const LevelSelectionScreen: React.FC<LevelSelectionScreenProps> = ({
         {onPuzzlePacksSelect && (
           <TouchableOpacity style={levelSelectionStyles.puzzlePacksCard} onPress={onPuzzlePacksSelect}>
             <LinearGradient
-              colors={['#8B5CF6', '#A78BFA']}
+              colors={[colors.primary.purple, colors.primary.purpleLight]}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
               style={levelSelectionStyles.puzzlePacksGradient}
@@ -380,10 +407,6 @@ const LevelSelectionScreen: React.FC<LevelSelectionScreenProps> = ({
       <Sidebar
         isVisible={isSidebarVisible}
         onClose={() => setIsSidebarVisible(false)}
-        isDarkMode={isDarkMode}
-        onToggleDarkMode={() => setIsDarkMode(!isDarkMode)}
-        isSoundEnabled={isSoundEnabled}
-        onToggleSound={() => setIsSoundEnabled(!isSoundEnabled)}
       />
     </SafeAreaView>
   );

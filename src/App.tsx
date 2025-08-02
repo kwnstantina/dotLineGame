@@ -6,7 +6,7 @@ import { SnackbarProvider } from './components/SnackbarProvider';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { initializeFirebase } from './utils/firebase';
 import LoadingView from './components/LoadingView';
-import { SettingsProvider } from './contexts/SettingsContext';
+import { AppProviders } from './contexts/AppProviders';
 
 const AppContent: React.FC = () => {
   const { user, isLoading } = useAuth();
@@ -53,11 +53,11 @@ const AppContent: React.FC = () => {
 const App: React.FC = () => {
   return (
     <AuthProvider>
-      <SettingsProvider>
+      <AppProviders>
         <SnackbarProvider>
           <AppContent />
         </SnackbarProvider>
-      </SettingsProvider>
+      </AppProviders>
     </AuthProvider>
   );
 };

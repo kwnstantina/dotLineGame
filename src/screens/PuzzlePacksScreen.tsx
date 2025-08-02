@@ -7,14 +7,15 @@ import {
   SafeAreaView,
   Animated,
 } from 'react-native';
-import { COLORS } from '../core/theme/designSystem';
+import { useAppSettings } from '../contexts/AppProviders';
 import { PuzzlePack } from '../types';
 import { createPuzzlePacks } from '../utils/puzzleUtils';
 import { savePuzzlePack } from '../utils/firebase';
 import { getUserProgress } from '../core/services/userService';
 import { getPackUnlockStatus } from '../core/services/packProgressionService';
 import LoadingView from '../components/LoadingView';
-import {styles} from '../styles/puzzlePacksStyles';
+import ThemeLoadingView from '../components/ThemeLoadingView';
+import {createPuzzlePacksStyles} from '../styles/puzzlePacksStyles';
 import { APP_STRINGS, formatDynamicSubstitutionMessage } from '../constants/strings';
 import { useSnackbar } from '../components/SnackbarProvider';
 
@@ -29,6 +30,14 @@ const PuzzlePacksScreen: React.FC<PuzzlePacksScreenProps> = ({ onPackSelect, onB
   const [userLevel, setUserLevel] = useState(0);
   
   const { showSnackbar } = useSnackbar();
+  const { colors, isLoading: themeLoading } = useAppSettings();
+
+  // Early return for theme loading
+  if (themeLoading) {
+    return <ThemeLoadingView />;
+  }
+
+  const styles = createPuzzlePacksStyles(colors);
 
   useEffect(() => {
     loadPuzzlePacks();
@@ -101,10 +110,10 @@ const PuzzlePacksScreen: React.FC<PuzzlePacksScreenProps> = ({ onPackSelect, onB
 
   const getThemeColor = (theme: string) => {
     switch (theme) {
-      case 'green': return COLORS.feedback.success;
-      case 'orange': return COLORS.feedback.warning;
-      case 'purple': return COLORS.interactive.accent;
-      default: return COLORS.text.secondary;
+      case 'green': return colors?.feedback?.success || '#0fac78';
+      case 'orange': return colors?.feedback?.warning || '#c4810c';
+      case 'purple': return colors?.interactive?.accent || '#a5b4fc';
+      default: return colors?.text?.secondary || '#4338ca';
     }
   };
 

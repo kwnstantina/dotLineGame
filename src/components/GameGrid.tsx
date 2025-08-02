@@ -19,7 +19,8 @@ import Animated, {
 import Svg, {Path} from 'react-native-svg';
 import GridCell from './GridCell';
 import {Cell, Position} from '../types';
-import { COLORS, DESIGN_SYSTEM } from '../core/theme/designSystem';
+import { DESIGN_SYSTEM } from '../core/theme/designSystem';
+import { useAppTheme } from '../contexts/ThemeContext';
 
 interface GameGridProps {
   cells: Cell[];
@@ -39,6 +40,7 @@ const GameGrid: React.FC<GameGridProps> = ({
   onPathUpdate,
   drawnPath,
 }) => {
+  const { colors } = useAppTheme();
   const cellSize = GRID_WIDTH / gridSize;
   
   // Simple, working state management
@@ -46,6 +48,35 @@ const GameGrid: React.FC<GameGridProps> = ({
   const [highlightedCell, setHighlightedCell] = useState<string | null>(null);
   const [activeCell, setActiveCell] = useState<string | null>(null);
   const [svgPath, setSvgPath] = useState<string>('');
+
+  const styles = StyleSheet.create({
+    gridContainer: {
+      alignSelf: 'center',
+      borderRadius: DESIGN_SYSTEM.borderRadius.md,
+      backgroundColor: colors.background.card,
+      padding: DESIGN_SYSTEM.spacing.md,
+      borderWidth: 1,
+      borderColor: colors.border.subtle,
+      ...DESIGN_SYSTEM.elevation.medium,
+    },
+    grid: {
+      backgroundColor: colors.game.shadow,
+      borderRadius: DESIGN_SYSTEM.borderRadius.md,
+      borderWidth: 1,
+      borderColor: colors.border.secondary,
+      overflow: 'hidden',
+    },
+    svgOverlay: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      zIndex: 1,
+      borderRadius: DESIGN_SYSTEM.borderRadius.md,
+    },
+    cellContainer: {
+      zIndex: 2,
+    },
+  });
   
   const scaleAnim = useSharedValue(1);
   const gridOpacity = useSharedValue(1);
@@ -231,7 +262,7 @@ const GameGrid: React.FC<GameGridProps> = ({
               {/* Glow effect */}
               <Path
                 d={svgPath}
-                stroke={COLORS.game.pathGlow}
+                stroke={colors.game.pathGlow}
                 strokeWidth="5"
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -241,7 +272,7 @@ const GameGrid: React.FC<GameGridProps> = ({
               {/* Main path */}
               <Path
                 d={svgPath}
-                stroke={COLORS.game.pathStroke}
+                stroke={colors.game.pathStroke}
                 strokeWidth="3"
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -282,33 +313,5 @@ const GameGrid: React.FC<GameGridProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  gridContainer: {
-    alignSelf: 'center',
-    borderRadius: DESIGN_SYSTEM.borderRadius.md,
-    backgroundColor: COLORS.background.card,
-    padding: DESIGN_SYSTEM.spacing.md,
-    borderWidth: 1,
-    borderColor: COLORS.border.subtle,
-    ...DESIGN_SYSTEM.elevation.medium,
-  },
-  grid: {
-    backgroundColor: COLORS.game.shadow,
-    borderRadius: DESIGN_SYSTEM.borderRadius.md,
-    borderWidth: 1,
-    borderColor: COLORS.border.secondary,
-    overflow: 'hidden',
-  },
-  svgOverlay: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    zIndex: 1,
-    borderRadius: DESIGN_SYSTEM.borderRadius.md,
-  },
-  cellContainer: {
-    zIndex: 2,
-  },
-});
 
 export default GameGrid;

@@ -1,4 +1,4 @@
-import {colors} from '../theme/colors';
+import { COLORS} from '../core/theme/designSystem';
 import { APP_STRINGS } from '../constants/strings';
 
 export interface Level {
@@ -111,23 +111,23 @@ export const getDifficultyLevel = (size: number) => {
 };
 
 export const getDifficultyColor = (size: number) => {
-  if (size <= 3) { return colors.feedback.success; }
-  if (size <= 5) { return colors.feedback.warning; }
-  if (size <= 7) { return colors.feedback.error; }
-  return colors.interactive.accent;
+  if (size <= 3) { return COLORS.feedback.success; }
+  if (size <= 5) { return COLORS.feedback.warning; }
+  if (size <= 7) { return COLORS.feedback.error; }
+  return COLORS.interactive.accent;
 };
 
 export const getDifficultyGradient = (difficulty: string) => {
   switch (difficulty) {
     case APP_STRINGS.DIFFICULTY.BEGINNER:
-      return ['#10B981', '#34D399'];
+      return [COLORS.background.surface, COLORS.primary.oceanWhite];
     case APP_STRINGS.DIFFICULTY.INTERMEDIATE:
-      return ['#F59E0B', '#FBBF24'];
+      return [COLORS.primary.purpleDark, COLORS.primary.oceanWhite];
     case APP_STRINGS.DIFFICULTY.ADVANCED:
-      return ['#EF4444', '#F87171'];
+      return [COLORS.primary.purple, COLORS.primary.purpleLight];
     case APP_STRINGS.DIFFICULTY.EXPERT:
-      return ['#8B5CF6', '#A78BFA'];
+      return [COLORS.primary.black, COLORS.text.primary];
     default:
-      return ['#6B7280', '#9CA3AF'];
+      return [COLORS.background.primary, COLORS.background.surface];
   }
 };

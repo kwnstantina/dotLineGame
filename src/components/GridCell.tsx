@@ -1,7 +1,9 @@
 import React, {useEffect, useRef} from 'react';
 import {View, Text, StyleSheet, Animated} from 'react-native';
 import {Cell} from '../core/models/game';
-import {DESIGN_SYSTEM, COLORS, SPACING, TYPOGRAPHY, BORDER_RADIUS, ELEVATION, TRANSITIONS, withOpacity} from '../core/theme/designSystem';
+import {TYPOGRAPHY, BORDER_RADIUS, ELEVATION, TRANSITIONS, withOpacity} from '../core/theme/designSystem';
+import { useAppTheme } from '../contexts/ThemeContext';
+import { LightAnimation } from './LightAnimation';
 
 interface GridCellProps {
   cell: Cell;
@@ -18,6 +20,7 @@ const GridCell: React.FC<GridCellProps> = ({
   isActive = false,
   pathIndex
 }) => {
+  const { colors } = useAppTheme();
   const scaleAnim = useRef(new Animated.Value(1)).current;
   const glowAnim = useRef(new Animated.Value(0)).current;
   
@@ -61,16 +64,16 @@ const GridCell: React.FC<GridCellProps> = ({
   }, [isActive, isHighlighted, scaleAnim, glowAnim]);
   const getCellBackgroundColor = () => {
     if (cell.isObstacle) {
-      return COLORS.text.secondary;
+      return colors.text.secondary;
     }
     if (isActive) {
-      return COLORS.interactive.primary;
+      return colors.interactive.primary;
     }
     if (cell.isDrawn) {
       // Create a linear gradient effect from primary to secondary based on path index
       const progress = pathIndex ? Math.min(pathIndex * 0.1, 0.8) : 0;
-      const baseColor = COLORS.primary.ocean;
-      const targetColor = COLORS.primary.purple;
+      const baseColor = colors.primary.black;
+      const targetColor = colors.primary.purple;
       
       // Interpolate between ocean blue and purple based on progress
       const r1 = parseInt(baseColor.slice(1, 3), 16);
@@ -88,27 +91,92 @@ const GridCell: React.FC<GridCellProps> = ({
       return `rgb(${r}, ${g}, ${b})`;
     }
     if (isHighlighted) {
-      return COLORS.game.cellHighlight;
+      return colors.game.cellHighlight;
     }
     if (cell.number) {
-      return COLORS.primary.ocean;
+      return colors.primary.purple;
     }
-    return COLORS.game.cellDefault;
+    return colors.game.cellDefault;
   };
 
   const getBorderColor = () => {
     if (isActive) {
-      return COLORS.interactive.primary;
+      return colors.interactive.primary;
     }
     if (cell.isDrawn) {
       // Use complementary colors for borders to enhance the linear effect
       const progress = pathIndex ? Math.min(pathIndex * 0.15, 0.9) : 0;
-      return progress > 0.5 ? COLORS.primary.purpleLight : COLORS.primary.ocean;
+      return progress > 0.5 ? colors.primary.purpleLight : colors.primary.purple;
     }
     if (cell.number) {
-      return COLORS.interactive.primary;
+      return colors.interactive.primary;
     }
-    return COLORS.border.primary;
+    return colors.border.primary;
+  };
+
+  const styles = StyleSheet.create({
+    cellContainer: {
+      padding: 0.5,
+    },
+    cell: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      borderRadius: BORDER_RADIUS.lg,
+      borderWidth: 1,
+      borderColor: 'transparent',
+    },
+    numberContainer: {
+      backgroundColor: colors.background.card,
+      borderRadius: BORDER_RADIUS.full,
+      width: 32,
+      height: 32,
+      justifyContent: 'center',
+      alignItems: 'center',
+      ...ELEVATION.low,
+      borderWidth: 2,
+      borderColor: colors.interactive.primary,
+    },
+    number: {
+      fontSize: TYPOGRAPHY.fontSizes.md,
+      fontWeight: TYPOGRAPHY.fontWeights.semibold,
+      fontFamily: 'Nunito-Bold',
+      lineHeight: TYPOGRAPHY.lineHeights.tight * TYPOGRAPHY.fontSizes.md,
+    },
+    dot: {
+      width: 12,
+      height: 12,
+      borderRadius: BORDER_RADIUS.full,
+      backgroundColor: colors.primary.purple,
+      ...ELEVATION.subtle,
+      borderWidth: 2,
+      borderColor: colors.primary.purple,
+    },
+    obstacleIcon: {
+      justifyContent: 'center',
+      alignItems: 'center',
+      width: 24,
+      height: 24,
+    },
+    obstacleText: {
+      fontSize: TYPOGRAPHY.fontSizes.xl,
+      fontWeight: TYPOGRAPHY.fontWeights.bold,
+      color: colors.text.inverse,
+    },
+  });
+
+  const getLightAnimationType = () => {
+    if (cell.number) return 'glow';
+    if (isActive) return 'pulse';
+    if (cell.isDrawn) return 'shimmer';
+    return 'light';
+  };
+
+  const getLightPreset = () => {
+    if (cell.number) return 'medium';
+    if (isActive) return 'strong';
+    if (cell.isDrawn) return 'subtle';
+    return 'minimal';
   };
 
   return (
@@ -120,7 +188,14 @@ const GridCell: React.FC<GridCellProps> = ({
           height: cellSize,
         },
       ]}>
-      <Animated.View
+      <LightAnimation
+        type={getLightAnimationType()}
+        preset={getLightPreset()}
+        config={{ 
+          duration: cell.number ? 1000 : isActive ? 800 : 1500,
+          intensity: cell.isDrawn ? 0.6 : 0.8 
+        }}
+        autoStart={isActive || cell.isDrawn || !!cell.number}
         style={[
           styles.cell,
           {
@@ -131,13 +206,14 @@ const GridCell: React.FC<GridCellProps> = ({
             elevation: cell.number ? 4 : 2,
             transform: [{scale: scaleAnim}],
           },
-        ]}>
+        ]}
+      >
         {isActive && (
           <Animated.View
             style={[
               StyleSheet.absoluteFill,
               {
-                backgroundColor: pathIndex && pathIndex > 5 ? COLORS.primary.purpleLight : COLORS.primary.ocean,
+                backgroundColor: pathIndex && pathIndex > 5 ? colors.primary.purpleLight : colors.primary.purple,
                 borderRadius: BORDER_RADIUS.lg,
                 opacity: glowAnim.interpolate({
                   inputRange: [0, 1],
@@ -153,8 +229,8 @@ const GridCell: React.FC<GridCellProps> = ({
               StyleSheet.absoluteFill,
               {
                 backgroundColor: pathIndex && pathIndex > 5 ? 
-                  withOpacity(COLORS.primary.purple, 0.1) : 
-                  withOpacity(COLORS.primary.oceanLight, 0.1),
+                  withOpacity(colors.primary.purple, 0.1) : 
+                  withOpacity(colors.primary.purpleLight, 0.1),
                 borderRadius: BORDER_RADIUS.lg,
                 opacity: 0.6,
               },
@@ -176,7 +252,7 @@ const GridCell: React.FC<GridCellProps> = ({
             ]}>
             <Text style={[
               styles.number,
-              {color: cell.isDrawn ? COLORS.text.primary : COLORS.text.primary}
+              {color: cell.isDrawn ? colors.text.primary : colors.text.primary}
             ]}>
               {cell.number}
             </Text>
@@ -188,66 +264,16 @@ const GridCell: React.FC<GridCellProps> = ({
               styles.dot,
               {
                 transform: [{scale: isActive ? 1.1 : 1}],
-                backgroundColor: pathIndex && pathIndex > 5 ? COLORS.primary.purpleLight : COLORS.primary.oceanLight,
-                borderColor: pathIndex && pathIndex > 5 ? COLORS.primary.purple : COLORS.primary.oceanLight,
+                backgroundColor: pathIndex && pathIndex > 5 ? colors.primary.purpleLight : colors.primary.purple,
+                borderColor: pathIndex && pathIndex > 5 ? colors.primary.purple : colors.primary.purpleLight,
               }
             ]} 
           />
         )}
-      </Animated.View>
+      </LightAnimation>
     </View>
   );
 };
 
-const styles = StyleSheet.create({
-  cellContainer: {
-    padding: 0.5,
-  },
-  cell: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: BORDER_RADIUS.lg,
-    borderWidth: 1,
-    borderColor: 'transparent',
-  },
-  numberContainer: {
-    backgroundColor: COLORS.background.card,
-    borderRadius: BORDER_RADIUS.full,
-    width: 32,
-    height: 32,
-    justifyContent: 'center',
-    alignItems: 'center',
-    ...ELEVATION.low,
-    borderWidth: 2,
-    borderColor: COLORS.interactive.primary,
-  },
-  number: {
-    fontSize: TYPOGRAPHY.fontSizes.md,
-    fontWeight: TYPOGRAPHY.fontWeights.semibold,
-    fontFamily: 'Nunito-Bold',
-    lineHeight: TYPOGRAPHY.lineHeights.tight * TYPOGRAPHY.fontSizes.md,
-  },
-  dot: {
-    width: 12,
-    height: 12,
-    borderRadius: BORDER_RADIUS.full,
-    backgroundColor: COLORS.primary.neutral,
-    ...ELEVATION.subtle,
-    borderWidth: 2,
-    borderColor: COLORS.primary.neutral,
-  },
-  obstacleIcon: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: 24,
-    height: 24,
-  },
-  obstacleText: {
-    fontSize: TYPOGRAPHY.fontSizes.xl,
-    fontWeight: TYPOGRAPHY.fontWeights.bold,
-    color: COLORS.text.inverse,
-  },
-});
 
 export default GridCell;

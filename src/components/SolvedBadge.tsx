@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, Animated } from 'react-native';
-import { COLORS, DESIGN_SYSTEM } from '../core/theme/designSystem';
+import { DESIGN_SYSTEM } from '../core/theme/designSystem';
+import { useAppTheme } from '../contexts/ThemeContext';
 
 interface SolvedBadgeProps {
   solved: boolean;
@@ -13,6 +14,7 @@ const SolvedBadge: React.FC<SolvedBadgeProps> = ({
   completionTime, 
   difficulty 
 }) => {
+  const { colors } = useAppTheme();
   const scaleAnim = useRef(new Animated.Value(solved ? 1 : 0)).current;
   const rotateAnim = useRef(new Animated.Value(0)).current;
   const glowAnim = useRef(new Animated.Value(0)).current;
@@ -53,17 +55,86 @@ const SolvedBadge: React.FC<SolvedBadgeProps> = ({
   const getBadgeColor = () => {
     switch (difficulty) {
       case 'Beginner':
-        return COLORS.feedback.success;
+        return colors.feedback.success;
       case 'Intermediate':
-        return COLORS.feedback.warning;
+        return colors.feedback.warning;
       case 'Advanced':
-        return COLORS.feedback.error;
+        return colors.feedback.error;
       case 'Expert':
-        return COLORS.interactive.accent;
+        return colors.interactive.accent;
       default:
-        return COLORS.primary.ocean;
+        return colors.primary.black;
     }
   };
+
+  const styles = StyleSheet.create({
+    container: {
+      position: 'absolute',
+      top: -5,
+      right: -5,
+      alignItems: 'center',
+      justifyContent: 'center',
+      zIndex: 10,
+    },
+    glowRing: {
+      position: 'absolute',
+      width: 35,
+      height: 35,
+      borderRadius: 17.5,
+      borderWidth: 2,
+      borderColor: colors.feedback.success,
+    },
+    badge: {
+      width: 28,
+      height: 28,
+      borderRadius: 14,
+      backgroundColor: colors.feedback.success,
+      justifyContent: 'center',
+      alignItems: 'center',
+      ...DESIGN_SYSTEM.elevation.medium,
+      borderWidth: 2,
+      borderColor: colors.background.card,
+    },
+    checkmark: {
+      fontSize: 14,
+      color: colors.text.inverse,
+      fontWeight: 'bold',
+      fontFamily: 'Nunito-Bold',
+    },
+    timeContainer: {
+      position: 'absolute',
+      top: 30,
+      backgroundColor: colors.background.card,
+      paddingHorizontal: DESIGN_SYSTEM.spacing.xs,
+      paddingVertical: 2,
+      borderRadius: DESIGN_SYSTEM.borderRadius.sm,
+      borderWidth: 1,
+      borderColor: colors.border.subtle,
+      ...DESIGN_SYSTEM.elevation.subtle,
+    },
+    timeText: {
+      fontSize: 10,
+      fontWeight: '600',
+      fontFamily: 'Nunito-SemiBold',
+      color: colors.feedback.success,
+    },
+    sparkle: {
+      position: 'absolute',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    sparkle1: {
+      top: -10,
+      left: -10,
+    },
+    sparkle2: {
+      bottom: -10,
+      right: -10,
+    },
+    sparkleText: {
+      fontSize: 12,
+    },
+  });
 
   const formatTime = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);
@@ -156,73 +227,5 @@ const SolvedBadge: React.FC<SolvedBadgeProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    position: 'absolute',
-    top: -5,
-    right: -5,
-    alignItems: 'center',
-    justifyContent: 'center',
-    zIndex: 10,
-  },
-  glowRing: {
-    position: 'absolute',
-    width: 35,
-    height: 35,
-    borderRadius: 17.5,
-    borderWidth: 2,
-    borderColor: COLORS.feedback.success,
-  },
-  badge: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    backgroundColor: COLORS.feedback.success,
-    justifyContent: 'center',
-    alignItems: 'center',
-    ...DESIGN_SYSTEM.elevation.medium,
-    borderWidth: 2,
-    borderColor: COLORS.background.card,
-  },
-  checkmark: {
-    fontSize: 14,
-    color: COLORS.text.inverse,
-    fontWeight: 'bold',
-    fontFamily: 'Nunito-Bold',
-  },
-  timeContainer: {
-    position: 'absolute',
-    top: 30,
-    backgroundColor: COLORS.background.card,
-    paddingHorizontal: DESIGN_SYSTEM.spacing.xs,
-    paddingVertical: 2,
-    borderRadius: DESIGN_SYSTEM.borderRadius.sm,
-    borderWidth: 1,
-    borderColor: COLORS.border.subtle,
-    ...DESIGN_SYSTEM.elevation.subtle,
-  },
-  timeText: {
-    fontSize: 10,
-    fontWeight: '600',
-    fontFamily: 'Nunito-SemiBold',
-    color: COLORS.feedback.success,
-  },
-  sparkle: {
-    position: 'absolute',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  sparkle1: {
-    top: -10,
-    left: -10,
-  },
-  sparkle2: {
-    bottom: -10,
-    right: -10,
-  },
-  sparkleText: {
-    fontSize: 12,
-  },
-});
 
 export default SolvedBadge;

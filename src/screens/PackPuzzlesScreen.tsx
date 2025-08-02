@@ -7,12 +7,14 @@ import {
   SafeAreaView,
   Dimensions,
 } from 'react-native';
-import { COLORS, DESIGN_SYSTEM } from '../core/theme/designSystem';
+import { DESIGN_SYSTEM } from '../core/theme/designSystem';
+import { useAppSettings } from '../contexts/AppProviders';
 import { PuzzlePack, Puzzle } from '../types';
 import { getPuzzleCompletions } from '../core/services/userService';
 import { getReplayRecommendations } from '../core/services/packProgressionService';
 import { difficultyCodes } from '../constants/codes';
-import { styles } from '../styles/packPuzzlesStyles';
+import { createPackPuzzlesStyles } from '../styles/packPuzzlesStyles';
+import ThemeLoadingView from '../components/ThemeLoadingView';
 import { APP_STRINGS } from '../constants/strings';
 interface PackPuzzlesScreenProps {
   pack: PuzzlePack;
@@ -24,6 +26,15 @@ const PackPuzzlesScreen: React.FC<PackPuzzlesScreenProps> = ({ pack, onPuzzleSel
   const [completions, setCompletions] = useState<{ [key: string]: any }>({});
   const [_loading, setLoading] = useState(true);
   const [replayRecommendations, setReplayRecommendations] = useState<any[]>([]);
+  
+  const { colors, isLoading: themeLoading } = useAppSettings();
+
+  // Early return for theme loading
+  if (themeLoading) {
+    return <ThemeLoadingView />;
+  }
+
+  const styles = createPackPuzzlesStyles(colors);
 
   useEffect(() => {
     loadCompletions();
@@ -66,11 +77,11 @@ const PackPuzzlesScreen: React.FC<PackPuzzlesScreenProps> = ({ pack, onPuzzleSel
 
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
-      case difficultyCodes.easy: return COLORS.feedback.success;
-      case difficultyCodes.medium: return COLORS.feedback.warning;
-      case difficultyCodes.hard: return COLORS.feedback.error;
-      case difficultyCodes.expert: return COLORS.interactive.accent;
-      default: return COLORS.text.secondary;
+      case difficultyCodes.easy: return colors?.feedback?.success || '#0fac78';
+      case difficultyCodes.medium: return colors?.feedback?.warning || '#c4810c';
+      case difficultyCodes.hard: return colors?.feedback?.error || '#9e2828';
+      case difficultyCodes.expert: return colors?.interactive?.accent || '#a5b4fc';
+      default: return colors?.text?.secondary || '#4338ca';
     }
   };
 

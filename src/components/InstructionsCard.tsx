@@ -1,8 +1,58 @@
 import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
-import {COLORS, DESIGN_SYSTEM} from '../core/theme/designSystem';
+import {DESIGN_SYSTEM} from '../core/theme/designSystem';
+import { useAppTheme } from '../contexts/ThemeContext';
 
 const InstructionsCard: React.FC = () => {
+  const { colors } = useAppTheme();
+
+  const styles = StyleSheet.create({
+    instructionsCard: {
+      backgroundColor: colors.background.card,
+      borderRadius: DESIGN_SYSTEM.borderRadius.xl,
+      padding: DESIGN_SYSTEM.spacing.xl,
+      marginBottom: DESIGN_SYSTEM.spacing.xxl,
+      borderWidth: 1,
+      borderColor: colors.border.subtle,
+      ...DESIGN_SYSTEM.elevation.subtle,
+    },
+    instructionsHeader: {
+      marginBottom: DESIGN_SYSTEM.spacing.md,
+    },
+    instructionsTitle: {
+      fontSize: DESIGN_SYSTEM.typography.fontSizes.lg,
+      fontWeight: '600',
+      fontFamily: 'Nunito-SemiBold',
+      color: colors.text.primary,
+      textAlign: 'center',
+    },
+    instructions: {
+      fontSize: DESIGN_SYSTEM.typography.fontSizes.sm,
+      textAlign: 'center',
+      color: colors.text.muted,
+      lineHeight: DESIGN_SYSTEM.typography.lineHeights.relaxed * DESIGN_SYSTEM.typography.fontSizes.sm,
+      fontFamily: 'Nunito-Regular',
+      marginBottom: DESIGN_SYSTEM.spacing.lg,
+    },
+    instructionsBadges: {
+      flexDirection: 'row',
+      justifyContent: 'center',
+      gap: DESIGN_SYSTEM.spacing.sm,
+    },
+    badge: {
+      backgroundColor: colors.interactive.secondary,
+      paddingHorizontal: DESIGN_SYSTEM.spacing.md,
+      paddingVertical: DESIGN_SYSTEM.spacing.xs,
+      borderRadius: DESIGN_SYSTEM.borderRadius.full,
+    },
+    badgeText: {
+      fontSize: DESIGN_SYSTEM.typography.fontSizes.xs,
+      fontWeight: '600',
+      color: colors.text.inverse,
+      fontFamily: 'Nunito-SemiBold',
+    },
+  });
+
   return (
     <View style={styles.instructionsCard}>
       <View style={styles.instructionsHeader}>
@@ -26,51 +76,5 @@ const InstructionsCard: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  instructionsCard: {
-    backgroundColor: COLORS.background.card,
-    borderRadius: DESIGN_SYSTEM.borderRadius.xl,
-    padding: DESIGN_SYSTEM.spacing.xl,
-    marginBottom: DESIGN_SYSTEM.spacing.xxl,
-    borderWidth: 1,
-    borderColor: COLORS.border.subtle,
-    ...DESIGN_SYSTEM.elevation.subtle,
-  },
-  instructionsHeader: {
-    marginBottom: DESIGN_SYSTEM.spacing.md,
-  },
-  instructionsTitle: {
-    fontSize: DESIGN_SYSTEM.typography.fontSizes.lg,
-    fontWeight: '600',
-    fontFamily: 'Nunito-SemiBold',
-    color: COLORS.text.primary,
-    textAlign: 'center',
-  },
-  instructions: {
-    fontSize: DESIGN_SYSTEM.typography.fontSizes.sm,
-    textAlign: 'center',
-    color: COLORS.text.muted,
-    lineHeight: DESIGN_SYSTEM.typography.lineHeights.relaxed * DESIGN_SYSTEM.typography.fontSizes.sm,
-    fontFamily: 'Nunito-Regular',
-    marginBottom: DESIGN_SYSTEM.spacing.lg,
-  },
-  instructionsBadges: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    gap: DESIGN_SYSTEM.spacing.sm,
-  },
-  badge: {
-    backgroundColor: COLORS.interactive.secondary,
-    paddingHorizontal: DESIGN_SYSTEM.spacing.md,
-    paddingVertical: DESIGN_SYSTEM.spacing.xs,
-    borderRadius: DESIGN_SYSTEM.borderRadius.full,
-  },
-  badgeText: {
-    fontSize: DESIGN_SYSTEM.typography.fontSizes.xs,
-    fontWeight: '600',
-    color: COLORS.text.inverse,
-    fontFamily: 'Nunito-SemiBold',
-  },
-});
 
 export default InstructionsCard;

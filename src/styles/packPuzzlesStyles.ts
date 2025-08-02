@@ -1,10 +1,10 @@
 import { StyleSheet } from "react-native";
-import { COLORS, DESIGN_SYSTEM } from "../core/theme/designSystem";
+import { DESIGN_SYSTEM } from "../core/theme/designSystem";
 
-export const styles = StyleSheet.create({
+export const createPackPuzzlesStyles = (colors: any) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.background.primary,
+    backgroundColor: colors?.background?.primary || '#FFFFF0',
   },
   header: {
     flexDirection: 'row',
@@ -12,7 +12,7 @@ export const styles = StyleSheet.create({
     paddingHorizontal: DESIGN_SYSTEM.spacing.lg,
     paddingVertical: DESIGN_SYSTEM.spacing.md,
     borderBottomWidth: 1,
-    borderBottomColor: COLORS.background.secondary,
+    borderBottomColor: colors?.background?.secondary || '#f8fafc',
   },
   backButton: {
     paddingVertical: DESIGN_SYSTEM.spacing.sm,
@@ -20,19 +20,19 @@ export const styles = StyleSheet.create({
   },
   backButtonText: {
     fontSize: 16,
-    color: COLORS.interactive.primary,
+    color: colors?.interactive?.primary || '#212121',
     fontWeight: '600',
   },
   headerTitle: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: COLORS.text.primary,
+    color: colors?.text?.primary || '#161618',
     flex: 1,
   },
   packInfo: {
     alignItems: 'center',
     paddingVertical: DESIGN_SYSTEM.spacing.lg,
-    backgroundColor: COLORS.background.secondary,
+    backgroundColor: colors?.background?.secondary || '#f8fafc',
   },
   packIcon: {
     fontSize: 48,
@@ -40,13 +40,13 @@ export const styles = StyleSheet.create({
   },
   packDescription: {
     fontSize: 16,
-    color: COLORS.text.secondary,
+    color: colors?.text?.secondary || '#4338ca',
     textAlign: 'center',
     marginBottom: DESIGN_SYSTEM.spacing.sm,
   },
   puzzleCount: {
     fontSize: 14,
-    color: COLORS.text.muted,
+    color: colors?.text?.muted || '#64748b',
     fontWeight: '600',
   },
   scrollView: {
@@ -61,7 +61,7 @@ export const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   puzzleCard: {
-    backgroundColor: COLORS.background.secondary,
+    backgroundColor: colors?.background?.secondary || '#f8fafc',
     borderRadius: DESIGN_SYSTEM.borderRadius.lg,
     padding: DESIGN_SYSTEM.spacing.md,
     marginBottom: DESIGN_SYSTEM.spacing.md,
@@ -69,12 +69,12 @@ export const styles = StyleSheet.create({
   },
   puzzleCardCompleted: {
     borderWidth: 2,
-    borderColor: COLORS.feedback.success,
+    borderColor: colors?.feedback?.success || '#0fac78',
   },
   puzzleCardImprovement: {
     borderWidth: 2,
-    borderColor: COLORS.feedback.warning,
-    backgroundColor: COLORS.background.surface,
+    borderColor: colors?.feedback?.warning || '#c4810c',
+    backgroundColor: colors?.background?.surface || '#f1f5f9',
   },
   puzzleHeader: {
     flexDirection: 'row',
@@ -85,7 +85,7 @@ export const styles = StyleSheet.create({
   puzzleNumber: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: COLORS.text.primary,
+    color: colors?.text?.primary || '#161618',
   },
   difficultyIndicator: {
     width: 12,
@@ -95,7 +95,7 @@ export const styles = StyleSheet.create({
   puzzleTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: COLORS.text.primary,
+    color: colors?.text?.primary || '#161618',
     marginBottom: 4,
   },
   difficulty: {
@@ -112,52 +112,55 @@ export const styles = StyleSheet.create({
   },
   completionTime: {
     fontSize: 12,
-    color: COLORS.text.secondary,
+    color: colors?.text?.secondary || '#4338ca',
     fontWeight: '600',
   },
   playHint: {
     fontSize: 12,
-    color: COLORS.interactive.primary,
+    color: colors?.interactive?.primary || '#212121',
     textAlign: 'center',
     fontStyle: 'italic',
   },
   replayHint: {
     fontSize: 11,
-    color: COLORS.interactive.secondary,
+    color: colors?.interactive?.secondary || '#6366f1',
     textAlign: 'center',
     fontStyle: 'italic',
     marginTop: 4,
   },
   improvementHint: {
     fontSize: 10,
-    color: COLORS.feedback.warning,
+    color: colors.feedback.warning,
     textAlign: 'center',
     fontWeight: '600',
     marginTop: 4,
   },
   recommendationsSection: {
-    backgroundColor: COLORS.background.surface,
+    backgroundColor: colors?.background?.surface || '#f1f5f9',
     borderRadius: DESIGN_SYSTEM.borderRadius.md,
     padding: DESIGN_SYSTEM.spacing.md,
     marginBottom: DESIGN_SYSTEM.spacing.lg,
     borderLeftWidth: 4,
-    borderLeftColor: COLORS.feedback.warning,
+    borderLeftColor: colors?.feedback?.warning || '#c4810c',
   },
   recommendationsTitle: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: COLORS.text.primary,
+    color: colors?.text?.primary || '#161618',
     marginBottom: DESIGN_SYSTEM.spacing.xs,
   },
   recommendationsSubtitle: {
     fontSize: 14,
-    color: COLORS.text.secondary,
+    color: colors?.text?.secondary || '#4338ca',
     marginBottom: DESIGN_SYSTEM.spacing.sm,
   },
   recommendationItem: {
     fontSize: 13,
-    color: COLORS.text.primary,
+    color: colors?.text?.primary || '#161618',
     marginBottom: 4,
     paddingLeft: DESIGN_SYSTEM.spacing.sm,
   },
 });
+
+// Legacy export for backward compatibility
+export const styles = createPackPuzzlesStyles({} as any);

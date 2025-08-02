@@ -11,27 +11,137 @@ import {
 } from 'react-native';
 import { signOut } from '../core/services/authService';
 import { useAuth } from '../contexts/AuthContext';
-import { theme } from '../theme/theme';
+import { useAppSettings } from '../contexts/AppProviders';
+import { TYPOGRAPHY, BORDER_RADIUS, SPACING } from '../core/theme/themeSystem';
+import ThemeLoadingView from './ThemeLoadingView';
 import { APP_STRINGS } from '../constants/strings';
 
 interface SidebarProps {
   isVisible: boolean;
   onClose: () => void;
-  isDarkMode: boolean;
-  onToggleDarkMode: () => void;
-  isSoundEnabled: boolean;
-  onToggleSound: () => void;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({
   isVisible,
   onClose,
-  isDarkMode,
-  onToggleDarkMode,
-  isSoundEnabled,
-  onToggleSound,
 }) => {
   const { user } = useAuth();
+  const { colors, isDarkMode, isLoading: themeLoading, toggleDarkMode, isSoundEnabled, setIsSoundEnabled } = useAppSettings();
+
+  // Early return for theme loading
+  if (themeLoading) {
+    return (
+      <Modal visible={isVisible} transparent animationType="slide">
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <ThemeLoadingView />
+        </View>
+      </Modal>
+    );
+  }
+
+  // Wrapper functions for Switch compatibility
+  const handleDarkModeChange = (value: boolean): void => {
+    toggleDarkMode();
+  };
+
+  const handleSoundChange = (value: boolean): void => {
+    setIsSoundEnabled(value);
+  };
+
+  const createStyles = (colors: any) => StyleSheet.create({
+    overlay: {
+      flex: 1,
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+      justifyContent: 'flex-end',
+    },
+    sidebarContainer: {
+      backgroundColor: colors?.background?.surface || '#f1f5f9',
+      borderTopLeftRadius: BORDER_RADIUS.xl,
+      borderTopRightRadius: BORDER_RADIUS.xl,
+      maxHeight: '90%',
+      minHeight: '60%',
+    },
+    scrollView: {
+      flex: 1,
+    },
+    header: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      paddingHorizontal: SPACING.xxl,
+      paddingVertical: SPACING.xl,
+      borderBottomWidth: 1,
+      borderBottomColor: colors?.border?.primary || '#E5E7EB',
+    },
+    title: {
+      fontSize: TYPOGRAPHY.fontSizes.xxl,
+      fontWeight: TYPOGRAPHY.fontWeights.bold,
+      color: colors?.text?.primary || '#161618',
+    },
+    closeButton: {
+      width: 32,
+      height: 32,
+      borderRadius: BORDER_RADIUS.xl,
+      backgroundColor: colors?.border?.subtle || '#F9FAFB',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    closeButtonText: {
+      fontSize: TYPOGRAPHY.fontSizes.xl,
+      color: colors?.text?.primary || '#161618',
+      fontWeight: TYPOGRAPHY.fontWeights.bold,
+    },
+    userSection: {
+      paddingHorizontal: SPACING.xxl,
+      paddingVertical: SPACING.xl,
+      borderBottomWidth: 1,
+      borderBottomColor: colors?.border?.primary || '#E5E7EB',
+    },
+    userEmail: {
+      fontSize: TYPOGRAPHY.fontSizes.md,
+      color: colors?.text?.muted || '#64748b',
+      marginTop: 4,
+    },
+    section: {
+      paddingHorizontal: SPACING.xxl,
+      paddingVertical: SPACING.xl,
+    },
+    sectionTitle: {
+      fontSize: TYPOGRAPHY.fontSizes.lg,
+      fontWeight: TYPOGRAPHY.fontWeights.semibold,
+      color: colors?.text?.primary || '#161618',
+      marginBottom: SPACING.lg,
+    },
+    settingItem: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      paddingVertical: SPACING.md,
+    },
+    settingLabel: {
+      fontSize: TYPOGRAPHY.fontSizes.md,
+      color: colors?.text?.primary || '#161618',
+    },
+    menuItem: {
+      paddingVertical: SPACING.lg,
+      borderBottomWidth: 1,
+      borderBottomColor: colors?.border?.subtle || '#F9FAFB',
+    },
+    menuItemText: {
+      fontSize: TYPOGRAPHY.fontSizes.md,
+      color: colors?.text?.primary || '#161618',
+    },
+    signOutButton: {
+      marginTop: SPACING.sm,
+      borderBottomWidth: 0,
+    },
+    signOutText: {
+      color: colors?.feedback?.error || '#9e2828',
+      fontWeight: TYPOGRAPHY.fontWeights.semibold,
+    },
+  });
+
+  const styles = createStyles(colors);
 
   const handleSignOut = async () => {
     const { error } = await signOut();
@@ -72,9 +182,9 @@ const Sidebar: React.FC<SidebarProps> = ({
                 <Text style={styles.settingLabel}>{APP_STRINGS.SIDEBAR.PREFERENCES.DARK_MODE}</Text>
                 <Switch
                   value={isDarkMode}
-                  onValueChange={onToggleDarkMode}
-                  trackColor={{ false: theme.colors.border, true: theme.colors.primary }}
-                  thumbColor={isDarkMode ? theme.colors.surface : theme.colors.textSecondary}
+                  onValueChange={handleDarkModeChange}
+                  trackColor={{ false: colors?.border?.primary || '#E5E7EB', true: colors?.primary?.purple || '#6366f1' }}
+                  thumbColor={isDarkMode ? colors?.background?.card || '#ffffff' : colors?.text?.muted || '#64748b'}
                 />
               </View>
 
@@ -82,9 +192,9 @@ const Sidebar: React.FC<SidebarProps> = ({
                 <Text style={styles.settingLabel}>{APP_STRINGS.SIDEBAR.PREFERENCES.SOUND_EFFECTS}</Text>
                 <Switch
                   value={isSoundEnabled}
-                  onValueChange={onToggleSound}
-                  trackColor={{ false: theme.colors.border, true: theme.colors.primary }}
-                  thumbColor={isSoundEnabled ? theme.colors.surface : theme.colors.textSecondary}
+                  onValueChange={handleSoundChange}
+                  trackColor={{ false: colors?.border?.primary || '#E5E7EB', true: colors?.primary?.purple || '#6366f1' }}
+                  thumbColor={isSoundEnabled ? colors?.background?.card || '#ffffff' : colors?.text?.muted || '#64748b'}
                 />
               </View>
             </View>
@@ -143,98 +253,5 @@ const Sidebar: React.FC<SidebarProps> = ({
     </Modal>
   );
 };
-
-const styles = StyleSheet.create({
-  overlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'flex-end',
-  },
-  sidebarContainer: {
-    backgroundColor: theme.colors.surface,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    maxHeight: '90%',
-    minHeight: '60%',
-  },
-  scrollView: {
-    flex: 1,
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 24,
-    paddingVertical: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: theme.colors.border,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: theme.colors.text,
-  },
-  closeButton: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: theme.colors.border,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  closeButtonText: {
-    fontSize: 20,
-    color: theme.colors.text,
-    fontWeight: 'bold',
-  },
-  userSection: {
-    paddingHorizontal: 24,
-    paddingVertical: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: theme.colors.border,
-  },
-  userEmail: {
-    fontSize: 16,
-    color: theme.colors.textSecondary,
-    marginTop: 4,
-  },
-  section: {
-    paddingHorizontal: 24,
-    paddingVertical: 20,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: theme.colors.text,
-    marginBottom: 16,
-  },
-  settingItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 12,
-  },
-  settingLabel: {
-    fontSize: 16,
-    color: theme.colors.text,
-  },
-  menuItem: {
-    paddingVertical: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: theme.colors.border,
-  },
-  menuItemText: {
-    fontSize: 16,
-    color: theme.colors.text,
-  },
-  signOutButton: {
-    marginTop: 8,
-    borderBottomWidth: 0,
-  },
-  signOutText: {
-    color: theme.colors.error,
-    fontWeight: '600',
-  },
-});
 
 export default Sidebar;

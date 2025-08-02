@@ -1,10 +1,10 @@
 import { StyleSheet } from 'react-native';
-import { COLORS, SPACING, TYPOGRAPHY, BORDER_RADIUS } from '../core/theme/designSystem';
+import { SPACING, TYPOGRAPHY, BORDER_RADIUS } from '../core/theme/designSystem';
 
-export const authStyles = StyleSheet.create({
+export const createAuthStyles = (colors: any) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.background.primary,
+    backgroundColor: colors?.background?.primary || '#FFFFF0',
   },
   scrollContainer: {
     flexGrow: 1,
@@ -19,35 +19,35 @@ export const authStyles = StyleSheet.create({
   title: {
     fontSize: TYPOGRAPHY.fontSizes.xxxl - 4, // 28px
     fontWeight: TYPOGRAPHY.fontWeights.bold,
-    color: COLORS.text.primary,
+    color: colors?.text?.primary || '#161618',
     textAlign: 'center',
     marginBottom: SPACING.sm,
   },
   subtitle: {
     fontSize: TYPOGRAPHY.fontSizes.md,
-    color: COLORS.text.secondary,
+    color: colors?.text?.secondary || '#4338ca',
     textAlign: 'center',
     marginBottom: SPACING.xxxl,
   },
   input: {
     borderWidth: 1,
-    borderColor: COLORS.border.primary,
+    borderColor: colors?.border?.primary || '#E5E7EB',
     borderRadius: BORDER_RADIUS.lg,
     padding: SPACING.lg,
     marginBottom: SPACING.lg,
     fontSize: TYPOGRAPHY.fontSizes.md,
-    backgroundColor: COLORS.background.surface,
-    color: COLORS.text.primary,
+    backgroundColor: colors?.background?.surface || '#f1f5f9',
+    color: colors?.text?.primary || '#161618',
   },
   button: {
-    backgroundColor: COLORS.interactive.primary,
+    backgroundColor: colors?.interactive?.primary || '#212121',
     borderRadius: BORDER_RADIUS.lg,
     padding: SPACING.lg,
     alignItems: 'center',
     marginBottom: SPACING.lg,
   },
   buttonText: {
-    color: COLORS.text.inverse,
+    color: colors?.text?.inverse || '#FFFFF0',
     fontSize: TYPOGRAPHY.fontSizes.md,
     fontWeight: TYPOGRAPHY.fontWeights.semibold,
   },
@@ -59,24 +59,24 @@ export const authStyles = StyleSheet.create({
   divider: {
     flex: 1,
     height: 1,
-    backgroundColor: COLORS.border.primary,
+    backgroundColor: colors.border.primary,
   },
   dividerText: {
     marginHorizontal: SPACING.lg,
-    color: COLORS.text.secondary,
+    color: colors?.text?.secondary || '#4338ca',
     fontSize: TYPOGRAPHY.fontSizes.sm,
   },
   googleButton: {
-    backgroundColor: COLORS.background.card,
+    backgroundColor: colors?.background?.card || '#ffffff',
     borderWidth: 1,
-    borderColor: COLORS.feedback.error,
+    borderColor: colors?.feedback?.error || '#9e2828',
     borderRadius: BORDER_RADIUS.lg,
     padding: SPACING.lg,
     alignItems: 'center',
     marginBottom: SPACING.lg,
   },
   googleButtonText: {
-    color: COLORS.feedback.error,
+    color: colors?.feedback?.error || '#9e2828',
     fontSize: TYPOGRAPHY.fontSizes.md,
     fontWeight: TYPOGRAPHY.fontWeights.semibold,
   },
@@ -85,7 +85,10 @@ export const authStyles = StyleSheet.create({
     paddingVertical: SPACING.sm,
   },
   linkText: {
-    color: COLORS.interactive.primary,
+    color: colors?.interactive?.primary || '#212121',
     fontSize: TYPOGRAPHY.fontSizes.sm,
   },
 });
+
+// Legacy export for backward compatibility
+export const authStyles = createAuthStyles({} as any);

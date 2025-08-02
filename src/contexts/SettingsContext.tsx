@@ -1,4 +1,4 @@
-import { Context, createContext, useState, useContext } from "react";
+import {  createContext, useState, useContext } from "react";
 
 // Settings Context
 interface SettingsContextType {

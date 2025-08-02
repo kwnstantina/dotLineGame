@@ -18,12 +18,14 @@ import GameProgress from '../components/GameProgress';
 import GameControls from '../components/GameControls';
 import LoadingView from '../components/LoadingView';
 import ErrorView from '../components/ErrorView';
+import ThemeLoadingView from '../components/ThemeLoadingView';
 import type { GameState } from '../core/models/game';
 import type { Puzzle } from '../core/models/puzzle';
 import type { Level } from '../core/models/level';
 import { createSamplePuzzle } from '../core/services/puzzleService';
 import { validatePuzzleCompletion } from '../core/services/validationService';
-import { COLORS, DESIGN_SYSTEM } from '../core/theme/designSystem';
+import { useAppTheme } from '../contexts/ThemeContext';
+import { DESIGN_SYSTEM } from '../core/theme/designSystem';
 import { useSnackbar } from '../components/SnackbarProvider';
 import InstructionsModal from '../components/InstructionsModal';
 import { saveLevelCompletion } from '../core/services/levelService';
@@ -57,6 +59,56 @@ const GameScreen: React.FC<GameScreenProps> = (props) => {
   const [startTime, setStartTime] = useState<number | null>(null);
 
   const { showSnackbar } = useSnackbar();
+  const { colors, isLoading: themeLoading } = useAppTheme();
+
+  // Early return for theme loading
+  if (themeLoading) {
+    return <ThemeLoadingView />;
+  }
+
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors?.background?.primary || '#FFFFF0',
+    },
+    scrollView: {
+      flex: 1,
+    },
+    scrollContent: {
+      flexGrow: 1,
+      paddingBottom: DESIGN_SYSTEM.spacing.xxxl,
+    },
+    content: {
+      paddingHorizontal: DESIGN_SYSTEM.spacing.xl,
+    },
+    gameGridContainer: {
+      alignItems: 'center',
+      paddingHorizontal: DESIGN_SYSTEM.spacing.lg,
+      marginVertical: DESIGN_SYSTEM.spacing.lg,
+    },
+    headerContainer: {
+      flexDirection: 'row',
+      alignItems: 'flex-start',
+    },
+    subHeaderContainer: {
+      marginVertical: DESIGN_SYSTEM.spacing.md,
+    },
+    backButton: {
+      width: 100,
+      height: 22,
+      borderRadius: 22,
+      backgroundColor: colors?.background?.secondary || '#f8fafc',
+      justifyContent: 'flex-start',
+      alignItems: 'flex-start',
+      marginRight: DESIGN_SYSTEM.spacing.md,
+      ...DESIGN_SYSTEM.elevation.low,
+    },
+    backButtonText: {
+      fontSize: DESIGN_SYSTEM.spacing.xl,
+      color: colors.text.primary,
+      fontWeight: 'bold',
+    },
+  });
 
   useEffect(() => {
     loadPuzzle();
@@ -310,9 +362,9 @@ const GameScreen: React.FC<GameScreenProps> = (props) => {
     const totalCells = gameState.puzzle ? gameState.puzzle.gridSize * gameState.puzzle.gridSize : 25;
     const progress = gameState.drawnPath.length / totalCells;
 
-    if (progress < 0.3) {return COLORS.feedback.error;}
-    if (progress < 0.7) {return COLORS.feedback.warning;}
-    return COLORS.feedback.success;
+    if (progress < 0.3) {return colors.feedback.error;}
+    if (progress < 0.7) {return colors.feedback.warning;}
+    return colors.feedback.success;
   };
 
   if (gameState.isLoading) {
@@ -329,7 +381,7 @@ const GameScreen: React.FC<GameScreenProps> = (props) => {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaView style={styles.container}>
-        <StatusBar barStyle="dark-content" backgroundColor={COLORS.background.primary} />
+        <StatusBar barStyle="dark-content" backgroundColor={colors.background.primary} />
         <ScrollView
           style={styles.scrollView}
           contentContainerStyle={styles.scrollContent}
@@ -389,49 +441,5 @@ const GameScreen: React.FC<GameScreenProps> = (props) => {
     </GestureHandlerRootView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: COLORS.background.primary,
-  },
-  scrollView: {
-    flex: 1,
-  },
-  scrollContent: {
-    flexGrow: 1,
-    paddingBottom: DESIGN_SYSTEM.spacing.xxxl,
-  },
-  content: {
-    paddingHorizontal: DESIGN_SYSTEM.spacing.xl,
-  },
-  gameGridContainer: {
-    alignItems: 'center',
-    paddingHorizontal: DESIGN_SYSTEM.spacing.lg,
-    marginVertical: DESIGN_SYSTEM.spacing.lg,
-  },
-  headerContainer: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-  },
-  subHeaderContainer: {
-    marginVertical: DESIGN_SYSTEM.spacing.md,
-  },
-  backButton: {
-    width: 100,
-    height: 22,
-    borderRadius: 22,
-    backgroundColor: COLORS.background.secondary,
-    justifyContent: 'flex-start',
-    alignItems: 'flex-start',
-    marginRight: DESIGN_SYSTEM.spacing.md,
-    ...DESIGN_SYSTEM.elevation.low,
-  },
-  backButtonText: {
-    fontSize: DESIGN_SYSTEM.spacing.xl,
-    color: COLORS.text.primary,
-    fontWeight: 'bold',
-  },
-});
 
 export default GameScreen;

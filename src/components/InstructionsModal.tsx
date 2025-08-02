@@ -7,7 +7,8 @@ import {
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
-import {COLORS, DESIGN_SYSTEM} from '../core/theme/designSystem';
+import {DESIGN_SYSTEM} from '../core/theme/designSystem';
+import { useAppTheme } from '../contexts/ThemeContext';
 import { APP_STRINGS, formatDifficulty, formatInstructionsCells } from '../constants/strings';
 
 interface InstructionsModalProps {
@@ -21,6 +22,8 @@ const InstructionsModal: React.FC<InstructionsModalProps> = ({
   onClose,
   gridSize,
 }) => {
+  const { colors } = useAppTheme();
+
   const getDifficultyLevel = (size: number) => {
     if (size <= 3) return APP_STRINGS.DIFFICULTY.BEGINNER;
     if (size <= 5) return APP_STRINGS.DIFFICULTY.INTERMEDIATE;
@@ -29,11 +32,91 @@ const InstructionsModal: React.FC<InstructionsModalProps> = ({
   };
 
   const getDifficultyColor = (size: number) => {
-    if (size <= 3) return COLORS.feedback.success;
-    if (size <= 5) return COLORS.feedback.warning;
-    if (size <= 7) return COLORS.feedback.error;
-    return COLORS.interactive.accent;
+    if (size <= 3) return colors.feedback.success;
+    if (size <= 5) return colors.feedback.warning;
+    if (size <= 7) return colors.feedback.error;
+    return colors.interactive.accent;
   };
+
+  const styles = StyleSheet.create({
+    overlay: {
+      flex: 1,
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+      justifyContent: 'center',
+      alignItems: 'center',
+      paddingHorizontal: DESIGN_SYSTEM.spacing.lg,
+    },
+    modal: {
+      backgroundColor: colors.background.primary,
+      borderRadius: DESIGN_SYSTEM.borderRadius.xl,
+      width: '100%',
+      maxWidth: 400,
+      maxHeight: '80%',
+      ...DESIGN_SYSTEM.elevation.high,
+    },
+    header: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      paddingHorizontal: DESIGN_SYSTEM.spacing.xl,
+      paddingTop: DESIGN_SYSTEM.spacing.xl,
+      paddingBottom: DESIGN_SYSTEM.spacing.lg,
+      borderBottomWidth: 1,
+      borderBottomColor: colors.border.accent,
+    },
+    title: {
+      fontSize: DESIGN_SYSTEM.typography.fontSizes.xxl,
+      fontWeight: 'bold',
+      color: colors.text.primary,
+      fontFamily: 'Nunito-Bold',
+    },
+    closeButton: {
+      width: 32,
+      height: 32,
+      borderRadius: 16,
+      backgroundColor: colors.background.secondary,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    closeButtonText: {
+      fontSize: 16,
+      color: colors.text.secondary,
+      fontWeight: 'bold',
+    },
+    content: {
+      paddingHorizontal: DESIGN_SYSTEM.spacing.xl,
+      paddingBottom: DESIGN_SYSTEM.spacing.xl,
+    },
+    difficultyBadge: {
+      backgroundColor: colors.background.secondary,
+      paddingHorizontal: DESIGN_SYSTEM.spacing.lg,
+      paddingVertical: DESIGN_SYSTEM.spacing.md,
+      borderRadius: DESIGN_SYSTEM.borderRadius.lg,
+      alignItems: 'center',
+      marginVertical: DESIGN_SYSTEM.spacing.lg,
+    },
+    difficultyText: {
+      fontSize: DESIGN_SYSTEM.typography.fontSizes.md,
+      fontWeight: '600',
+      fontFamily: 'Nunito-SemiBold',
+    },
+    section: {
+      marginBottom: DESIGN_SYSTEM.spacing.xl,
+    },
+    sectionTitle: {
+      fontSize: DESIGN_SYSTEM.typography.fontSizes.lg,
+      fontWeight: 'bold',
+      color: colors.text.primary,
+      fontFamily: 'Nunito-Bold',
+      marginBottom: DESIGN_SYSTEM.spacing.md,
+    },
+    sectionText: {
+      fontSize: DESIGN_SYSTEM.typography.fontSizes.md,
+      color: colors.text.secondary,
+      fontFamily: 'Nunito-Regular',
+      lineHeight: DESIGN_SYSTEM.typography.lineHeights.relaxed * DESIGN_SYSTEM.typography.fontSizes.md,
+    },
+  });
 
   return (
     <Modal
@@ -93,84 +176,5 @@ const InstructionsModal: React.FC<InstructionsModalProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  overlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: DESIGN_SYSTEM.spacing.lg,
-  },
-  modal: {
-    backgroundColor: COLORS.background.primary,
-    borderRadius: DESIGN_SYSTEM.borderRadius.xl,
-    width: '100%',
-    maxWidth: 400,
-    maxHeight: '80%',
-    ...DESIGN_SYSTEM.elevation.high,
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: DESIGN_SYSTEM.spacing.xl,
-    paddingTop: DESIGN_SYSTEM.spacing.xl,
-    paddingBottom: DESIGN_SYSTEM.spacing.lg,
-    borderBottomWidth: 1,
-    borderBottomColor: COLORS.border.accent,
-  },
-  title: {
-    fontSize: DESIGN_SYSTEM.typography.fontSizes.xxl,
-    fontWeight: 'bold',
-    color: COLORS.text.primary,
-    fontFamily: 'Nunito-Bold',
-  },
-  closeButton: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: COLORS.background.secondary,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  closeButtonText: {
-    fontSize: 16,
-    color: COLORS.text.secondary,
-    fontWeight: 'bold',
-  },
-  content: {
-    paddingHorizontal: DESIGN_SYSTEM.spacing.xl,
-    paddingBottom: DESIGN_SYSTEM.spacing.xl,
-  },
-  difficultyBadge: {
-    backgroundColor: COLORS.background.secondary,
-    paddingHorizontal: DESIGN_SYSTEM.spacing.lg,
-    paddingVertical: DESIGN_SYSTEM.spacing.md,
-    borderRadius: DESIGN_SYSTEM.borderRadius.lg,
-    alignItems: 'center',
-    marginVertical: DESIGN_SYSTEM.spacing.lg,
-  },
-  difficultyText: {
-    fontSize: DESIGN_SYSTEM.typography.fontSizes.md,
-    fontWeight: '600',
-    fontFamily: 'Nunito-SemiBold',
-  },
-  section: {
-    marginBottom: DESIGN_SYSTEM.spacing.xl,
-  },
-  sectionTitle: {
-    fontSize: DESIGN_SYSTEM.typography.fontSizes.lg,
-    fontWeight: 'bold',
-    color: COLORS.text.primary,
-    fontFamily: 'Nunito-Bold',
-    marginBottom: DESIGN_SYSTEM.spacing.md,
-  },
-  sectionText: {
-    fontSize: DESIGN_SYSTEM.typography.fontSizes.md,
-    color: COLORS.text.secondary,
-    fontFamily: 'Nunito-Regular',
-    lineHeight: DESIGN_SYSTEM.typography.lineHeights.relaxed * DESIGN_SYSTEM.typography.fontSizes.md,
-  },
-});
 
 export default InstructionsModal;
