@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { themeManager } from '../core/theme/themeSystem';
-import { useSettings } from './SettingsContext';
 
 interface ThemeContextType {
   colors: typeof themeManager.colors;

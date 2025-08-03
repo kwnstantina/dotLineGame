@@ -4,15 +4,15 @@
 const LIGHT_THEME = {
   primary: {
     black: '#212121',
-    oceanWhite: '#f8fafc',
+    oceanWhite: '#527493ff',
     purple: '#6366f1',
     purpleLight: '#a5b4fc',
     purpleDark: '#4338ca',
   },
   
   background: {
-    primary: '#FFFFF0',
-    secondary: '#f8fafc',
+    primary: '#F8F8FF.',
+    secondary: '#f8fafc8a',
     surface: '#f1f5f9',
     card: '#ffffff',
     overlay: 'rgba(0, 0, 0, 0.05)',
@@ -73,7 +73,7 @@ const LIGHT_THEME = {
 // Dark theme colors
 const DARK_THEME = {
   primary: {
-    black: '#f0ececff',
+    black: '#eeebebff',
     oceanWhite: '#1e293b',
     purple: '#8b5cf6',
     purpleLight: '#c4b5fd',

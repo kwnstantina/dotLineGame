@@ -75,7 +75,7 @@ export class LevelService {
       const levelsSnapshot = await getDocs(levelsQuery);
       const levels: FirebaseLevel[] = [];
       
-      levelsSnapshot.forEach((docSnap) => {
+      levelsSnapshot.forEach((docSnap: { data: () => any; id: string; }) => {
         const data = docSnap.data();
         if (data && data.name && data.difficulty) {
           levels.push({

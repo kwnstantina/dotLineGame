@@ -62,12 +62,13 @@ const GridCell: React.FC<GridCellProps> = ({
       ]).start();
     }
   }, [isActive, isHighlighted, scaleAnim, glowAnim]);
+
   const getCellBackgroundColor = () => {
     if (cell.isObstacle) {
       return colors.text.secondary;
     }
     if (isActive) {
-      return colors.interactive.primary;
+      return colors.interactive.accent;
     }
     if (cell.isDrawn) {
       // Create a linear gradient effect from primary to secondary based on path index
@@ -109,7 +110,7 @@ const GridCell: React.FC<GridCellProps> = ({
       return progress > 0.5 ? colors.primary.purpleLight : colors.primary.purple;
     }
     if (cell.number) {
-      return colors.interactive.primary;
+      return colors.interactive.secondary;
     }
     return colors.border.primary;
   };
@@ -127,7 +128,7 @@ const GridCell: React.FC<GridCellProps> = ({
       borderColor: 'transparent',
     },
     numberContainer: {
-      backgroundColor: colors.background.card,
+      backgroundColor: colors?.background?.card,
       borderRadius: BORDER_RADIUS.full,
       width: 32,
       height: 32,
@@ -135,7 +136,7 @@ const GridCell: React.FC<GridCellProps> = ({
       alignItems: 'center',
       ...ELEVATION.low,
       borderWidth: 2,
-      borderColor: colors.interactive.primary,
+      borderColor: colors?.interactive?.primary,
     },
     number: {
       fontSize: TYPOGRAPHY.fontSizes.md,
@@ -147,10 +148,10 @@ const GridCell: React.FC<GridCellProps> = ({
       width: 12,
       height: 12,
       borderRadius: BORDER_RADIUS.full,
-      backgroundColor: colors.primary.purple,
+      backgroundColor: colors?.primary?.purple,
       ...ELEVATION.subtle,
       borderWidth: 2,
-      borderColor: colors.primary.purple,
+      borderColor: colors?.primary?.purple,
     },
     obstacleIcon: {
       justifyContent: 'center',
@@ -161,7 +162,7 @@ const GridCell: React.FC<GridCellProps> = ({
     obstacleText: {
       fontSize: TYPOGRAPHY.fontSizes.xl,
       fontWeight: TYPOGRAPHY.fontWeights.bold,
-      color: colors.text.inverse,
+      color: colors?.text?.inverse,
     },
   });
 

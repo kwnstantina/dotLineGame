@@ -180,7 +180,7 @@ const PuzzlePacksScreen: React.FC<PuzzlePacksScreenProps> = ({ onPackSelect, onB
             {APP_STRINGS.PACKS.SUBTITLE}
           </Text>
           <Text style={styles.progressText}>
-            {formatDynamicSubstitutionMessage(APP_STRINGS.PACKS.COMPLETED_LEVELS, 'userLevel', userLevel)}
+            {formatDynamicSubstitutionMessage(APP_STRINGS.PACKS.COMPLETED_LEVELS, '{userLevel}', userLevel)}
           </Text>
         </View>
       </ScrollView>

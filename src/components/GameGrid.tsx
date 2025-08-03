@@ -53,17 +53,17 @@ const GameGrid: React.FC<GameGridProps> = ({
     gridContainer: {
       alignSelf: 'center',
       borderRadius: DESIGN_SYSTEM.borderRadius.md,
-      backgroundColor: colors.background.card,
+      backgroundColor: colors?.background?.card,
       padding: DESIGN_SYSTEM.spacing.md,
       borderWidth: 1,
-      borderColor: colors.border.subtle,
+      borderColor: colors?.border?.subtle,
       ...DESIGN_SYSTEM.elevation.medium,
     },
     grid: {
-      backgroundColor: colors.game.shadow,
+      backgroundColor: colors?.game?.shadow,
       borderRadius: DESIGN_SYSTEM.borderRadius.md,
       borderWidth: 1,
-      borderColor: colors.border.secondary,
+      borderColor: colors?.border?.secondary,
       overflow: 'hidden',
     },
     svgOverlay: {
@@ -103,7 +103,7 @@ const GameGrid: React.FC<GameGridProps> = ({
   }, [cellSize]);
 
   const createSvgPath = useCallback((pathIds: string[]): string => {
-    if (pathIds.length < 1) return '';
+    if (pathIds.length < 1) {return '';}
     
     const pathString = pathIds.map((cellId, index) => {
       const cell = cells.find(c => c.id === cellId);
@@ -129,9 +129,9 @@ const GameGrid: React.FC<GameGridProps> = ({
   const isAdjacent = useCallback((cell1Id: string, cell2Id: string): boolean => {
     const cell1 = cells.find(c => c.id === cell1Id);
     const cell2 = cells.find(c => c.id === cell2Id);
-    
-    if (!cell1 || !cell2) return false;
-    
+
+    if (!cell1 || !cell2) { return false; }
+
     const rowDiff = Math.abs(cell1.row - cell2.row);
     const colDiff = Math.abs(cell1.col - cell2.col);
     
@@ -188,9 +188,7 @@ const GameGrid: React.FC<GameGridProps> = ({
 
   // Optimized gesture handlers to prevent memory leaks
   const handleGestureBegin = useCallback((x: number, y: number) => {
-    console.log('Gesture begin at:', x, y, 'cellSize:', cellSize);
     const cell = getCellAtPosition(x, y);
-    console.log('Found cell:', cell?.id, 'at row:', cell?.row, 'col:', cell?.col);
     if (cell) {
       startPath(cell.id);
     }
@@ -250,8 +248,7 @@ const GameGrid: React.FC<GameGridProps> = ({
   return (
     <Animated.View style={[styles.gridContainer, animatedStyle]}>
       <GestureDetector gesture={panGesture}>
-        <View style={[styles.grid, {width: GRID_WIDTH, height: GRID_WIDTH}]}>
-        
+        <View style={[styles.grid, {width: GRID_WIDTH, height: GRID_WIDTH}]}>       
         {/* SVG Path Overlay */}
         <Svg 
           style={styles.svgOverlay}

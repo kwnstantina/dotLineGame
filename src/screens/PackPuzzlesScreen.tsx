@@ -16,6 +16,7 @@ import { difficultyCodes } from '../constants/codes';
 import { createPackPuzzlesStyles } from '../styles/packPuzzlesStyles';
 import ThemeLoadingView from '../components/ThemeLoadingView';
 import { APP_STRINGS } from '../constants/strings';
+
 interface PackPuzzlesScreenProps {
   pack: PuzzlePack;
   onPuzzleSelect: (puzzle: Puzzle) => void;
@@ -30,11 +31,10 @@ const PackPuzzlesScreen: React.FC<PackPuzzlesScreenProps> = ({ pack, onPuzzleSel
   const { colors, isLoading: themeLoading } = useAppSettings();
 
   // Early return for theme loading
-  if (themeLoading) {
+  if (themeLoading || Object.keys(colors).length === 0) {
     return <ThemeLoadingView />;
   }
 
-  const styles = createPackPuzzlesStyles(colors);
 
   useEffect(() => {
     loadCompletions();
@@ -115,6 +115,7 @@ const PackPuzzlesScreen: React.FC<PackPuzzlesScreenProps> = ({ pack, onPuzzleSel
 
   const screenWidth = Dimensions.get('window').width;
   const puzzleCardWidth = (screenWidth - DESIGN_SYSTEM.spacing.lg * 3) / 2;
+  const styles = createPackPuzzlesStyles(colors);
 
   return (
     <SafeAreaView style={styles.container}>

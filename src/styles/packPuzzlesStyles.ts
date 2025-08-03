@@ -130,7 +130,7 @@ export const createPackPuzzlesStyles = (colors: any) => StyleSheet.create({
   },
   improvementHint: {
     fontSize: 10,
-    color: colors.feedback.warning,
+    color: colors?.feedback?.warning || '#c4810c',
     textAlign: 'center',
     fontWeight: '600',
     marginTop: 4,

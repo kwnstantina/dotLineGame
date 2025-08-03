@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, ActivityIndicator, StyleSheet } from 'react-native';
 
 const ThemeLoadingView: React.FC = () => {
+  console.log('ThemeLoadingView rendered');
   return (
     <View style={styles.container}>
       <ActivityIndicator size="large" color="#6366f1" />

@@ -120,7 +120,7 @@ export const getDifficultyColor = (size: number) => {
 export const getDifficultyGradient = (difficulty: string) => {
   switch (difficulty) {
     case APP_STRINGS.DIFFICULTY.BEGINNER:
-      return [COLORS.background.surface, COLORS.primary.oceanWhite];
+      return [COLORS.primary.oceanWhite,COLORS.background.surface];
     case APP_STRINGS.DIFFICULTY.INTERMEDIATE:
       return [COLORS.primary.purpleDark, COLORS.primary.oceanWhite];
     case APP_STRINGS.DIFFICULTY.ADVANCED:
@@ -128,6 +128,6 @@ export const getDifficultyGradient = (difficulty: string) => {
     case APP_STRINGS.DIFFICULTY.EXPERT:
       return [COLORS.primary.black, COLORS.text.primary];
     default:
-      return [COLORS.background.primary, COLORS.background.surface];
+      return [COLORS.feedback.info, COLORS.feedback.info];
   }
 };

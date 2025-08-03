@@ -69,7 +69,7 @@ const GameScreen: React.FC<GameScreenProps> = (props) => {
   const styles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: colors?.background?.primary || '#FFFFF0',
+      backgroundColor: colors?.background?.primary,
     },
     scrollView: {
       flex: 1,
@@ -97,7 +97,7 @@ const GameScreen: React.FC<GameScreenProps> = (props) => {
       width: 100,
       height: 22,
       borderRadius: 22,
-      backgroundColor: colors?.background?.secondary || '#f8fafc',
+      backgroundColor: colors?.background?.primary,
       justifyContent: 'flex-start',
       alignItems: 'flex-start',
       marginRight: DESIGN_SYSTEM.spacing.md,
@@ -105,7 +105,7 @@ const GameScreen: React.FC<GameScreenProps> = (props) => {
     },
     backButtonText: {
       fontSize: DESIGN_SYSTEM.spacing.xl,
-      color: colors.text.primary,
+      color: colors?.text?.primary,
       fontWeight: 'bold',
     },
   });
@@ -381,7 +381,7 @@ const GameScreen: React.FC<GameScreenProps> = (props) => {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaView style={styles.container}>
-        <StatusBar barStyle="dark-content" backgroundColor={colors.background.primary} />
+        <StatusBar barStyle="dark-content" backgroundColor={colors?.background?.primary} />
         <ScrollView
           style={styles.scrollView}
           contentContainerStyle={styles.scrollContent}
