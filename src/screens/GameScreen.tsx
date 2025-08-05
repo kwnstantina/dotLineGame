@@ -172,10 +172,19 @@ const GameScreen: React.FC<GameScreenProps> = (props) => {
   };
 
   const handlePathUpdate = (path: string[]) => {
-    setGameState(prev => ({
-      ...prev,
-      drawnPath: path,
-    }));
+    if (!path || !Array.isArray(path)) {
+      return;
+    }
+    
+    setGameState(prev => {
+      if (!prev) {
+        return prev;
+      }
+      return {
+        ...prev,
+        drawnPath: path,
+      };
+    });
   };
 
   const handleSubmit = () => {
@@ -422,6 +431,7 @@ const GameScreen: React.FC<GameScreenProps> = (props) => {
                 gridSize={gameState.puzzle.gridSize}
                 onPathUpdate={handlePathUpdate}
                 drawnPath={gameState.drawnPath}
+                isPuzzleComplete={gameState.isCompleted}
               />
             </View>
 

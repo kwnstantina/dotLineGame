@@ -11,6 +11,7 @@ interface GridCellProps {
   isHighlighted?: boolean;
   isActive?: boolean;
   pathIndex?: number;
+  isPuzzleComplete?: boolean;
 }
 
 const GridCell: React.FC<GridCellProps> = ({
@@ -18,11 +19,14 @@ const GridCell: React.FC<GridCellProps> = ({
   cellSize, 
   isHighlighted = false,
   isActive = false,
-  pathIndex
+  pathIndex,
+  isPuzzleComplete = false
 }) => {
   const { colors } = useAppTheme();
   const scaleAnim = useRef(new Animated.Value(1)).current;
   const glowAnim = useRef(new Animated.Value(0)).current;
+  const completionAnim = useRef(new Animated.Value(0)).current;
+  const completionAnimRef = useRef(false);
   
   useEffect(() => {
     if (isActive) {
@@ -63,20 +67,44 @@ const GridCell: React.FC<GridCellProps> = ({
     }
   }, [isActive, isHighlighted, scaleAnim, glowAnim]);
 
+  // Completion animation effect
+  useEffect(() => {
+    if (isPuzzleComplete && cell.isDrawn && !completionAnimRef.current) {
+      completionAnimRef.current = true;
+      Animated.sequence([
+        Animated.timing(completionAnim, {
+          toValue: 1,
+          duration: 800,
+          useNativeDriver: false,
+        }),
+        Animated.timing(completionAnim, {
+          toValue: 0.3,
+          duration: 400,
+          useNativeDriver: false,
+        }),
+      ]).start();
+    }
+  }, [isPuzzleComplete, cell.isDrawn, completionAnim]);
+
   const getCellBackgroundColor = () => {
     if (cell.isObstacle) {
       return colors.text.secondary;
     }
     if (isActive) {
-      return colors.interactive.accent;
+      // After completion, use darker tune for active cells
+      if (isPuzzleComplete && completionAnimRef.current) {
+        return colors.primary.black;
+      }
+      // Use darker color for selected cells
+      return colors.primary.purpleDark;
     }
     if (cell.isDrawn) {
-      // Create a linear gradient effect from primary to secondary based on path index
-      const progress = pathIndex ? Math.min(pathIndex * 0.1, 0.8) : 0;
-      const baseColor = colors.primary.black;
-      const targetColor = colors.primary.purple;
+      // Create a smoother linear gradient effect using darker colors from the palette
+      const progress = pathIndex ? Math.min(pathIndex * 0.08, 0.9) : 0;
+      const baseColor = colors.primary.purple; // Darker ocean blue
+      const targetColor = colors.primary.purpleDark; // Darker purple
       
-      // Interpolate between ocean blue and purple based on progress
+      // Interpolate between darker ocean blue and darker purple for smoother gradient
       const r1 = parseInt(baseColor.slice(1, 3), 16);
       const g1 = parseInt(baseColor.slice(3, 5), 16);
       const b1 = parseInt(baseColor.slice(5, 7), 16);
@@ -95,7 +123,7 @@ const GridCell: React.FC<GridCellProps> = ({
       return colors.game.cellHighlight;
     }
     if (cell.number) {
-      return colors.primary.purple;
+      return colors.primary.purpleDark;
     }
     return colors.game.cellDefault;
   };
@@ -105,12 +133,12 @@ const GridCell: React.FC<GridCellProps> = ({
       return colors.interactive.primary;
     }
     if (cell.isDrawn) {
-      // Use complementary colors for borders to enhance the linear effect
-      const progress = pathIndex ? Math.min(pathIndex * 0.15, 0.9) : 0;
-      return progress > 0.5 ? colors.primary.purpleLight : colors.primary.purple;
+      // Use darker complementary colors for borders to enhance the linear effect
+      const progress = pathIndex ? Math.min(pathIndex * 0.12, 0.9) : 0;
+      return progress > 0.5 ? colors.primary.purpleDark : colors.primary.oceanWhite;
     }
     if (cell.number) {
-      return colors.interactive.secondary;
+      return colors.primary.purpleDark;
     }
     return colors.border.primary;
   };
@@ -148,10 +176,10 @@ const GridCell: React.FC<GridCellProps> = ({
       width: 12,
       height: 12,
       borderRadius: BORDER_RADIUS.full,
-      backgroundColor: colors?.primary?.purple,
+      backgroundColor: colors?.primary?.purpleDark,
       ...ELEVATION.subtle,
       borderWidth: 2,
-      borderColor: colors?.primary?.purple,
+      borderColor: colors?.primary?.purpleDark,
     },
     obstacleIcon: {
       justifyContent: 'center',
@@ -168,7 +196,7 @@ const GridCell: React.FC<GridCellProps> = ({
 
   const getLightAnimationType = () => {
     if (cell.number) return 'glow';
-    if (isActive) return 'pulse';
+    if (isActive) return 'light';
     if (cell.isDrawn) return 'shimmer';
     return 'light';
   };
@@ -190,6 +218,7 @@ const GridCell: React.FC<GridCellProps> = ({
         },
       ]}>
       <LightAnimation
+        loop={false}
         type={getLightAnimationType()}
         preset={getLightPreset()}
         config={{ 
@@ -214,12 +243,35 @@ const GridCell: React.FC<GridCellProps> = ({
             style={[
               StyleSheet.absoluteFill,
               {
-                backgroundColor: pathIndex && pathIndex > 5 ? colors.primary.purpleLight : colors.primary.purple,
+                backgroundColor: isPuzzleComplete && completionAnimRef.current ?
+                  colors.primary.black :
+                  (pathIndex && pathIndex > 5 ? colors.primary.purpleDark : colors.primary.oceanWhite),
                 borderRadius: BORDER_RADIUS.lg,
                 opacity: glowAnim.interpolate({
                   inputRange: [0, 1],
-                  outputRange: [0, 0.4],
+                  outputRange: [0, 0.5],
                 }),
+              },
+            ]}
+          />
+        )}
+        {isPuzzleComplete && cell.isDrawn && (
+          <Animated.View
+            style={[
+              StyleSheet.absoluteFill,
+              {
+                backgroundColor: colors.feedback.success,
+                borderRadius: BORDER_RADIUS.lg,
+                opacity: completionAnim.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [0, 0.8],
+                }),
+                transform: [{
+                  scale: completionAnim.interpolate({
+                    inputRange: [0, 0.5, 1],
+                    outputRange: [1, 1.1, 1],
+                  }),
+                }],
               },
             ]}
           />
@@ -230,10 +282,10 @@ const GridCell: React.FC<GridCellProps> = ({
               StyleSheet.absoluteFill,
               {
                 backgroundColor: pathIndex && pathIndex > 5 ? 
-                  withOpacity(colors.primary.purple, 0.1) : 
-                  withOpacity(colors.primary.purpleLight, 0.1),
+                  withOpacity(colors.primary.purpleDark, 0.15) : 
+                  withOpacity(colors.primary.oceanWhite, 0.15),
                 borderRadius: BORDER_RADIUS.lg,
-                opacity: 0.6,
+                opacity: 0.7,
               },
             ]}
           />
@@ -265,8 +317,8 @@ const GridCell: React.FC<GridCellProps> = ({
               styles.dot,
               {
                 transform: [{scale: isActive ? 1.1 : 1}],
-                backgroundColor: pathIndex && pathIndex > 5 ? colors.primary.purpleLight : colors.primary.purple,
-                borderColor: pathIndex && pathIndex > 5 ? colors.primary.purple : colors.primary.purpleLight,
+                backgroundColor: pathIndex && pathIndex > 5 ? colors.primary.purpleDark : colors.primary.oceanWhite,
+                borderColor: pathIndex && pathIndex > 5 ? colors.primary.oceanWhite : colors.primary.purpleDark,
               }
             ]} 
           />

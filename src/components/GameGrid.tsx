@@ -27,6 +27,7 @@ interface GameGridProps {
   gridSize: number;
   onPathUpdate: (path: string[]) => void;
   drawnPath: string[];
+  isPuzzleComplete?: boolean;
 }
 
 const {width: screenWidth} = Dimensions.get('window');
@@ -39,6 +40,7 @@ const GameGrid: React.FC<GameGridProps> = ({
   gridSize,
   onPathUpdate,
   drawnPath,
+  isPuzzleComplete = false,
 }) => {
   const { colors } = useAppTheme();
   const cellSize = GRID_WIDTH / gridSize;
@@ -300,6 +302,7 @@ const GameGrid: React.FC<GameGridProps> = ({
                 isHighlighted={highlightedCell === cell.id}
                 isActive={activeCell === cell.id}
                 pathIndex={pathIndex}
+                isPuzzleComplete={isPuzzleComplete}
               />
             </View>
           );

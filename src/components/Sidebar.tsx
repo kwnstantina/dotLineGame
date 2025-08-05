@@ -55,7 +55,7 @@ const Sidebar: React.FC<SidebarProps> = ({
       justifyContent: 'flex-end',
     },
     sidebarContainer: {
-      backgroundColor: colors?.background?.surface || '#f1f5f9',
+      backgroundColor: colors?.background?.card || '#ffffff',
       borderTopLeftRadius: BORDER_RADIUS.xl,
       borderTopRightRadius: BORDER_RADIUS.xl,
       maxHeight: '90%',

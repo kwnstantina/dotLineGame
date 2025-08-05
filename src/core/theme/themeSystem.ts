@@ -4,7 +4,7 @@
 const LIGHT_THEME = {
   primary: {
     black: '#212121',
-    oceanWhite: '#527493ff',
+    oceanWhite: '#305e88ff',
     purple: '#6366f1',
     purpleLight: '#a5b4fc',
     purpleDark: '#4338ca',

@@ -47,6 +47,27 @@ export class UserService {
     return defaultProgress;
   }
 
+  // Ensure user progress exists, create if needed
+  private async ensureUserProgressExists(userId: string): Promise<UserProgress> {
+    const db = getDb();
+    const userProgressRef = doc(db, 'userProgress', userId);
+    const userProgressDoc = await getDoc(userProgressRef);
+
+    if (userProgressDoc.exists()) {
+      const data = userProgressDoc.data();
+      if (!data) {
+        const newProgress = await this.initializeUserProgress(userId);
+        await setDoc(userProgressRef, newProgress);
+        return newProgress;
+      }
+      return this.sanitizeUserProgress(data, userId);
+    }
+
+    const newProgress = await this.initializeUserProgress(userId);
+    await setDoc(userProgressRef, newProgress);
+    return newProgress;
+  }
+
   // Get user progress from Firestore
   async getUserProgress(): Promise<UserProgress | null> {
     try {
@@ -82,56 +103,47 @@ export class UserService {
       const user = getCurrentUser();
       if (!user) throw new Error('User not authenticated');
 
-      const db = getDb();
-      const userProgressRef = doc(db, 'userProgress', user.uid);
-      const userProgressDoc = await getDoc(userProgressRef);
-      let userProgress: UserProgress;
-      const now = new Date();
+      // Sanitize completion time to avoid undefined values
+      const sanitizedCompletionTime = completionTime || 0;
 
-      if (userProgressDoc.exists()) {
-        const existingProgress = userProgressDoc.data();
-        userProgress = this.sanitizeUserProgress(existingProgress || {}, user.uid);
-        
-        const levelKey = levelId.toString();
-        const currentLevelProgress = userProgress.levelProgress[levelKey];
-        
-        if (currentLevelProgress) {
-          userProgress.levelProgress[levelKey] = {
-            ...currentLevelProgress,
-            solved: true,
-            completionTime,
-            bestTime: currentLevelProgress.bestTime
-              ? Math.min(currentLevelProgress.bestTime, completionTime)
-              : completionTime,
-            attempts: currentLevelProgress.attempts + 1,
-            lastCompletedAt: now,
-          };
-        } else {
-          userProgress.levelProgress[levelKey] = {
-            solved: true,
-            completionTime,
-            bestTime: completionTime,
-            attempts: 1,
-            firstCompletedAt: now,
-            lastCompletedAt: now,
-          };
-          userProgress.totalLevelsCompleted += 1;
-        }
-      } else {
-        userProgress = await this.initializeUserProgress(user.uid);
-        userProgress.levelProgress[levelId.toString()] = {
+      const userProgress = await this.ensureUserProgressExists(user.uid);
+      const now = new Date();
+      const levelKey = levelId.toString();
+      const currentLevelProgress = userProgress.levelProgress[levelKey];
+      
+      if (currentLevelProgress) {
+        userProgress.levelProgress[levelKey] = {
+          ...currentLevelProgress,
           solved: true,
-          completionTime,
-          bestTime: completionTime,
+          completionTime: sanitizedCompletionTime,
+          bestTime: currentLevelProgress.bestTime
+            ? Math.min(currentLevelProgress.bestTime, sanitizedCompletionTime)
+            : sanitizedCompletionTime,
+          attempts: currentLevelProgress.attempts + 1,
+          lastCompletedAt: now,
+        };
+      } else {
+        userProgress.levelProgress[levelKey] = {
+          solved: true,
+          completionTime: sanitizedCompletionTime,
+          bestTime: sanitizedCompletionTime,
           attempts: 1,
           firstCompletedAt: now,
           lastCompletedAt: now,
         };
-        userProgress.totalLevelsCompleted = 1;
+        userProgress.totalLevelsCompleted += 1;
       }
 
       userProgress.lastUpdated = now;
-      await setDoc(userProgressRef, userProgress);
+      const db = getDb();
+      const userProgressRef = doc(db, 'userProgress', user.uid);
+      
+      // Filter out undefined values before saving to Firestore
+      const sanitizedUserProgress = Object.fromEntries(
+        Object.entries(userProgress).filter(([_, value]) => value !== undefined)
+      );
+      
+      await setDoc(userProgressRef, sanitizedUserProgress);
       return { success: true, error: null };
     } catch (error: any) {
       return { success: false, error: error.message };
@@ -150,18 +162,18 @@ export class UserService {
         throw new Error('User not authenticated');
       }
 
-      const userProgressRef = doc(getDb(), 'userProgress', user.uid);
-      const userProgressDoc = await getDoc(userProgressRef);
+      const userProgress = await this.ensureUserProgressExists(user.uid);
       const now = new Date();
 
-      let userProgress: UserProgress;
-      
-      if (userProgressDoc.exists()) {
-        const existingProgress = userProgressDoc.data();
-        userProgress = this.sanitizeUserProgress(existingProgress || {}, user.uid);
-      } else {
-        userProgress = await this.initializeUserProgress(user.uid);
-      }
+      // Sanitize completion result to ensure no undefined values
+      const sanitizedResult = {
+        isValid: completionResult.isValid || false,
+        completionTime: completionResult.completionTime || 0,
+        moveCount: completionResult.moveCount || 0,
+        efficiency: completionResult.efficiency || 0,
+        stars: completionResult.stars || 0,
+        errors: completionResult.errors || []
+      };
 
       // Update or create puzzle completion record
       const existingCompletion = userProgress.puzzleCompletions[puzzleId];
@@ -172,31 +184,31 @@ export class UserService {
         userProgress.puzzleCompletions[puzzleId] = {
           ...existingCompletion,
           attempts: existingCompletion.attempts + 1,
-          bestTime: Math.min(existingCompletion.bestTime, completionResult.completionTime || 0),
-          bestStars: Math.max(existingCompletion.bestStars, completionResult.stars || 0),
-          bestEfficiency: Math.max(existingCompletion.bestEfficiency, completionResult.efficiency || 0),
+          bestTime: Math.min(existingCompletion.bestTime, sanitizedResult.completionTime),
+          bestStars: Math.max(existingCompletion.bestStars, sanitizedResult.stars),
+          bestEfficiency: Math.max(existingCompletion.bestEfficiency, sanitizedResult.efficiency),
           lastCompletedAt: now,
           // Update current completion data
-          isValid: completionResult.isValid || false,
-          completionTime: completionResult.completionTime || 0,
-          moveCount: completionResult.moveCount || 0,
-          efficiency: completionResult.efficiency || 0,
-          stars: completionResult.stars || 0,
+          isValid: sanitizedResult.isValid,
+          completionTime: sanitizedResult.completionTime,
+          moveCount: sanitizedResult.moveCount,
+          efficiency: sanitizedResult.efficiency,
+          stars: sanitizedResult.stars,
         };
       } else {
         // Create new completion record
         userProgress.puzzleCompletions[puzzleId] = {
           puzzleId,
           packId: packId || undefined,
-          isValid: completionResult.isValid || false,
-          completionTime: completionResult.completionTime || 0,
-          moveCount: completionResult.moveCount || 0,
-          efficiency: completionResult.efficiency || 0,
-          stars: completionResult.stars || 0,
+          isValid: sanitizedResult.isValid,
+          completionTime: sanitizedResult.completionTime,
+          moveCount: sanitizedResult.moveCount,
+          efficiency: sanitizedResult.efficiency,
+          stars: sanitizedResult.stars,
           attempts: 1,
-          bestTime: completionResult.completionTime || 0,
-          bestStars: completionResult.stars || 0,
-          bestEfficiency: completionResult.efficiency || 0,
+          bestTime: sanitizedResult.completionTime,
+          bestStars: sanitizedResult.stars,
+          bestEfficiency: sanitizedResult.efficiency,
           firstCompletedAt: now,
           lastCompletedAt: now,
         };
@@ -225,7 +237,7 @@ export class UserService {
         packProgress.averageEfficiency = Math.round(
           packCompletions.reduce((sum, comp) => sum + comp.bestEfficiency, 0) / packCompletions.length
         );
-        packProgress.totalPlayTime += completionResult.completionTime || 0;
+        packProgress.totalPlayTime += sanitizedResult.completionTime;
         
         userProgress.packProgress[packId] = packProgress;
       }
@@ -239,13 +251,21 @@ export class UserService {
         ? Math.round(allCompletions.reduce((sum, comp) => sum + comp.bestEfficiency, 0) / allCompletions.length)
         : 0;
       
-      userProgress.totalPlayTime += completionResult.completionTime || 0;
+      userProgress.totalPlayTime += sanitizedResult.completionTime;
       
       // Check for newly unlocked packs
       const newlyUnlockedPacks = await this.checkAndUnlockPacks(userProgress);
       
       userProgress.lastUpdated = now;
-      await setDoc(userProgressRef, userProgress);
+      const db = getDb();
+      const userProgressRef = doc(db, 'userProgress', user.uid);
+      
+      // Filter out undefined values before saving to Firestore
+      const sanitizedUserProgress = Object.fromEntries(
+        Object.entries(userProgress).filter(([_, value]) => value !== undefined)
+      );
+      
+      await setDoc(userProgressRef, sanitizedUserProgress);
 
       // Save individual completion record for detailed history
       const completionRef = doc(
@@ -254,16 +274,12 @@ export class UserService {
         `${user.uid}_${puzzleId}_${Date.now()}`
       );
       
-      // Filter out undefined values to avoid Firestore errors
-      const sanitizedCompletionResult = Object.fromEntries(
-        Object.entries(completionResult).filter(([_, value]) => value !== undefined)
-      );
-      
+      // Use the already sanitized result for the completion record
       await setDoc(completionRef, {
         userId: user.uid,
         puzzleId,
         packId: packId || undefined,
-        ...sanitizedCompletionResult,
+        ...sanitizedResult,
         completedAt: now,
       });
 
@@ -410,7 +426,7 @@ export class UserService {
       };
     }
 
-    return {
+    const sanitized: any = {
       userId,
       levelProgress: (data.levelProgress && typeof data.levelProgress === 'object') ? data.levelProgress : {},
       packProgress: (data.packProgress && typeof data.packProgress === 'object') ? data.packProgress : {},
@@ -422,9 +438,17 @@ export class UserService {
       averageEfficiency: typeof data.averageEfficiency === 'number' ? data.averageEfficiency : 0,
       totalPlayTime: typeof data.totalPlayTime === 'number' ? data.totalPlayTime : 0,
       lastUpdated: data.lastUpdated?.toDate?.() || new Date(),
-      lastUnlockedPack: typeof data.lastUnlockedPack === 'string' ? data.lastUnlockedPack : undefined,
-      nextUnlockRequirement: data.nextUnlockRequirement || undefined,
     };
+
+    // Only add optional fields if they have valid values
+    if (typeof data.lastUnlockedPack === 'string') {
+      sanitized.lastUnlockedPack = data.lastUnlockedPack;
+    }
+    if (data.nextUnlockRequirement) {
+      sanitized.nextUnlockRequirement = data.nextUnlockRequirement;
+    }
+
+    return sanitized;
   }
 }
 
