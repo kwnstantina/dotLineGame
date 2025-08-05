@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   View,
   Text,
@@ -24,14 +24,13 @@ import useLevelAnimations from '../hooks/useLevelAnimations';
 import { useSnackbar } from '../components/SnackbarProvider';
 import { LightAnimation } from '../components/LightAnimation';
 import ThemeLoadingView from '../components/ThemeLoadingView';
+import BackgroundCurve from '../components/BackgroundCurve';
 
 interface LevelSelectionScreenProps {
   onLevelSelect: (level: Level) => void;
   onPuzzlePacksSelect?: () => void;
   refreshTrigger?: number;
 }
-
-
 
 // Create fallback levels if Firebase data is not available
 const createFallbackLevels = () =>
@@ -46,7 +45,7 @@ const createEmergencyLevels = () => [
   {
     id: 1,
     name: 'Level 1',
-    difficulty: APP_STRINGS.DIFFICULTY.BEGINNER ,
+    difficulty: APP_STRINGS.DIFFICULTY.BEGINNER,
     gridSize: 3,
     unlocked: true,
     requiresPayment: false,
@@ -63,7 +62,7 @@ const createEmergencyLevels = () => [
   {
     id: 2,
     name: 'Level 2',
-    difficulty:APP_STRINGS.DIFFICULTY.BEGINNER,
+    difficulty: APP_STRINGS.DIFFICULTY.BEGINNER,
     gridSize: 3,
     unlocked: true,
     requiresPayment: false,
@@ -97,26 +96,26 @@ const LevelSelectionScreen: React.FC<LevelSelectionScreenProps> = ({
 
   // Theme context for colors
   const { colors, isLoading: themeLoading } = useAppSettings();
-  
+
   // Early return for theme loading
   if (themeLoading) {
     return <ThemeLoadingView />;
   }
-  
+
   // Validate colors object before using it
   const validateColors = (colors: any) => {
     if (!colors) return false;
     return !!(colors.background && colors.text && colors.interactive && colors.primary);
   };
-  
+
   if (!validateColors(colors)) {
     console.warn('Colors not properly initialized:', colors);
     return <ThemeLoadingView />;
   }
-  
+
   // Styles with theme
   const levelSelectionStyles = createLevelSelectionStyles(colors);
-  
+
   // Snackbar context
   const { showSnackbar } = useSnackbar();
 
@@ -139,14 +138,6 @@ const LevelSelectionScreen: React.FC<LevelSelectionScreenProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [refreshTrigger]);
 
-  // Animate level cards when they are loaded
-  useEffect(() => {
-    if (!isLoadingLevels && levelsWithProgress.length > 0 && levelAnimations.length > 0) {
-      animateLevelCards();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoadingLevels, levelsWithProgress.length, levelAnimations.length]);
-
   // Animation helpers
   const animateScreen = () => {
     Animated.parallel([
@@ -154,17 +145,6 @@ const LevelSelectionScreen: React.FC<LevelSelectionScreenProps> = ({
       Animated.spring(slideAnim, { toValue: 0, tension: 100, friction: 8, useNativeDriver: true }),
       Animated.spring(scaleAnim, { toValue: 1, tension: 100, friction: 8, useNativeDriver: true }),
     ]).start();
-  };
-
-  const animateLevelCards = () => {
-    const staggered = levelAnimations.map((anim, idx) =>
-      Animated.parallel([
-        Animated.timing(anim.opacity, { toValue: 1, duration: 600, delay: idx * 100, useNativeDriver: true }),
-        Animated.spring(anim.scale, { toValue: 1, tension: 100, friction: 8, delay: idx * 100, useNativeDriver: true }),
-        Animated.spring(anim.translateY, { toValue: 0, tension: 100, friction: 8, delay: idx * 100, useNativeDriver: true }),
-      ])
-    );
-    Animated.parallel(staggered).start();
   };
 
   // Data loading logic
@@ -208,13 +188,7 @@ const LevelSelectionScreen: React.FC<LevelSelectionScreenProps> = ({
       }
       return;
     }
-    const idx = levelsWithProgress.findIndex(l => l.id === level.id);
-    Animated.sequence([
-      Animated.timing(levelAnimations[idx].scale, { toValue: 0.95, duration: 100, useNativeDriver: true }),
-      Animated.timing(levelAnimations[idx].scale, { toValue: 1.05, duration: 200, useNativeDriver: true }),
-      Animated.timing(levelAnimations[idx].scale, { toValue: 1, duration: 100, useNativeDriver: true }),
-    ]).start();
-    setTimeout(() => onLevelSelect(level), 400);
+    onLevelSelect(level);
   };
 
   const handlePremiumUnlock = () => {
@@ -235,54 +209,59 @@ const LevelSelectionScreen: React.FC<LevelSelectionScreenProps> = ({
     );
   };
 
-  // Render helpers
-  const renderStars = (stars: number) =>
-    Array.from({ length: stars }, (_, i) => (
-      <Text key={i} style={[levelSelectionStyles.star, { opacity: i < stars ? 1 : 0.3 }]}>⭐</Text>
+  // Enhanced render functions
+  const renderStars = (difficulty: number, maxStars = 5) => {
+    return Array.from({ length: maxStars }, (_, index) => (
+      <Text
+        key={index}
+        style={[
+          levelSelectionStyles.star,
+          index < difficulty ? levelSelectionStyles.filledStar : levelSelectionStyles.emptyStar
+        ]}
+      >
+        ★
+      </Text>
     ));
+  };
 
   const renderLevelCard = (level: Level, index: number) => {
     if (!level?.id || !level.name) return null;
     const isLocked = !level.unlocked;
     const isSolved = !!level.solved;
-    const gradient = getDifficultyGradient(level.difficulty || APP_STRINGS.DIFFICULTY.BEGINNER);
-    const animation = levelAnimations[index] || {
-      scale: new Animated.Value(1),
-      opacity: new Animated.Value(1),
-      translateY: new Animated.Value(0),
+    const difficultyStars = level.stars || 1;
+    const progress = 0; // Could be calculated from level completion data if available
+
+    // Dynamic gradient colors based on level state
+    const getGradientColors = () => {
+      if (isSolved) {
+        return ['rgba(16, 185, 129,1)', 'rgba(5, 150, 105,1)'];
+      } else if (isLocked) {
+        return ['rgba(75, 85, 99, 1)', 'rgba(55, 65, 81, 1)'];
+      } else {
+        return ['rgba(139, 92, 246, 1)', 'rgba(124, 58, 237, 1)'];
+      }
     };
+
     return (
-      <Animated.View
-        key={level.id}
-        style={[
-          levelSelectionStyles.levelCardContainer,
-          {
-            opacity: animation.opacity,
-            transform: [{ scale: animation.scale }, { translateY: animation.translateY }],
-          },
-        ]}
-      >
-        <LightAnimation
-          type={isLocked ? "light" : isSolved ? "glow" : "pulse"}
-          preset={isLocked ? "minimal" : isSolved ? "medium" : "subtle"}
-          config={{ duration: isLocked ? 3000 : isSolved ? 1200 : 2000 }}
+      <View key={level.id} style={levelSelectionStyles.levelCardContainer}>
+        <TouchableOpacity
           style={[levelSelectionStyles.levelCard, isLocked && levelSelectionStyles.lockedCard]}
+          onPress={() => handleLevelPress(level)}
+          activeOpacity={1}
         >
-          <TouchableOpacity
-            style={{ flex: 1 }}
-            onPress={() => handleLevelPress(level)}
-            activeOpacity={isLocked ? 1 : 0.8}
-          >
           <LinearGradient
-            colors={isLocked ? [colors.text.muted, colors.interactive.disabled] : gradient}
+            colors={getGradientColors()}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
-            style={levelSelectionStyles.cardGradient}
+            style={[
+              levelSelectionStyles.cardGradient,
+              isSolved && levelSelectionStyles.completedCardGradient
+            ]}
           >
             <View style={levelSelectionStyles.cardHeader}>
               <View style={levelSelectionStyles.levelInfo}>
                 <Text style={levelSelectionStyles.levelIcon}>
-                  {isLocked ? '🔒' : isSolved ? '✅' : level.icon || '🎮'}
+                  {isLocked ? '🔒' : level.icon || '🎯'}
                 </Text>
                 <View style={levelSelectionStyles.levelDetails}>
                   <Text style={levelSelectionStyles.levelName}>
@@ -291,43 +270,74 @@ const LevelSelectionScreen: React.FC<LevelSelectionScreenProps> = ({
                   <Text style={levelSelectionStyles.levelDifficulty}>
                     {level.difficulty || APP_STRINGS.DIFFICULTY.BEGINNER} • {level.gridSize || 3}×{level.gridSize || 3}
                   </Text>
+                  {level.description && (
+                    <Text style={levelSelectionStyles.levelDescription}>{level.description}</Text>
+                  )}
                 </View>
               </View>
               <View style={levelSelectionStyles.levelMeta}>
                 <Text style={levelSelectionStyles.levelNumber}>#{level.id}</Text>
-                {level.unlocked && (
-                  <View style={levelSelectionStyles.starsContainer}>{renderStars(level.stars)}</View>
-                )}
+                <View style={levelSelectionStyles.starsContainer}>
+                  {renderStars(difficultyStars)}
+                </View>
               </View>
             </View>
-            <Text style={levelSelectionStyles.levelDescription}>{level.description}</Text>
+
+            {/* Progress indicator for partially completed levels */}
+            {progress > 0 && progress < 100 && (
+              <View style={levelSelectionStyles.progressBar}>
+                <View 
+                  style={[levelSelectionStyles.progressFill, { width: `${progress}%` }]}
+                />
+              </View>
+            )}
+
+            {/* Unlock requirements */}
             {!level.unlocked && (
               <View style={levelSelectionStyles.unlockInfo}>
                 {level.requiresPayment && (
-                  <Text style={levelSelectionStyles.unlockText}>{APP_STRINGS.LEVEL_SELECTION.PREMIUM_REQUIRED}</Text>
+                  <Text style={levelSelectionStyles.unlockText}>💎 {APP_STRINGS.LEVEL_SELECTION.PREMIUM_REQUIRED}</Text>
                 )}
                 {level.requiresAd && (
-                  <Text style={levelSelectionStyles.unlockText}>📺 Watch {level.adDuration}s Ad</Text>
+                  <Text style={levelSelectionStyles.unlockText}>📺 Watch {level.adDuration}s Ad to unlock</Text>
                 )}
               </View>
             )}
+
+            {/* Best time */}
             {typeof level.bestTime === 'number' && (
               <Text style={levelSelectionStyles.bestTime}>Best: {level.bestTime}s</Text>
             )}
+
+            {/* Replay indicator */}
+            {/* {level.unlocked && level.solved && (
+              <View style={levelSelectionStyles.replayContainer}>
+                <Text style={levelSelectionStyles.replayText}>🔄 REPLAY</Text>
+              </View>
+            )} */}
           </LinearGradient>
+
+          {/* Completion badge */}
+          {isSolved && (
+            <View style={levelSelectionStyles.completedBadge}>
+              <Text style={levelSelectionStyles.completedBadgeText}>✓</Text>
+            </View>
+          )}
+
+          {/* Lock badge */}
+          {isLocked && (
+            <View style={levelSelectionStyles.lockedBadge}>
+              <Text style={levelSelectionStyles.lockedBadgeText}>🔒</Text>
+            </View>
+          )}
+
           <SolvedBadge
             solved={!!level.solved}
             completionTime={level.completionTime}
             difficulty={level.difficulty || APP_STRINGS.DIFFICULTY.BEGINNER}
           />
-          {level.unlocked && level.solved && (
-            <View style={levelSelectionStyles.replayContainer}>
-              <Text style={levelSelectionStyles.replayText}>🔄 Tap to replay!</Text>
-            </View>
-          )}
-          </TouchableOpacity>
-        </LightAnimation>
-      </Animated.View>
+        </TouchableOpacity>
+      </View>
     );
   };
 
@@ -335,6 +345,10 @@ const LevelSelectionScreen: React.FC<LevelSelectionScreenProps> = ({
   return (
     <SafeAreaView style={levelSelectionStyles.container}>
       <StatusBar barStyle="light-content" backgroundColor={colors.background.primary} />
+      
+      {/* Background Curve */}
+      <BackgroundCurve />
+      
       <Animated.View
         style={[
           levelSelectionStyles.header,
@@ -342,10 +356,15 @@ const LevelSelectionScreen: React.FC<LevelSelectionScreenProps> = ({
         ]}
       >
         <View style={levelSelectionStyles.headerTop}>
-          <AppHeader
-            title={APP_STRINGS.LEVEL_SELECTION.HEADER_TITLE}
-            subtitle={APP_STRINGS.LEVEL_SELECTION.HEADER_SUBTITLE}
-          />
+          <View style={levelSelectionStyles.headerTitle}>
+            <Text style={levelSelectionStyles.mainTitle}>
+              {APP_STRINGS.LEVEL_SELECTION.HEADER_TITLE}
+            </Text>
+            <Text style={levelSelectionStyles.subtitle}>
+              {APP_STRINGS.LEVEL_SELECTION.HEADER_SUBTITLE}
+            </Text>
+          </View>
+          
           <View style={levelSelectionStyles.headerButtons}>
             {onPuzzlePacksSelect && (
               <TouchableOpacity
@@ -364,6 +383,7 @@ const LevelSelectionScreen: React.FC<LevelSelectionScreenProps> = ({
           </View>
         </View>
       </Animated.View>
+
       <ScrollView
         style={levelSelectionStyles.scrollView}
         contentContainerStyle={levelSelectionStyles.scrollContent}
@@ -371,15 +391,16 @@ const LevelSelectionScreen: React.FC<LevelSelectionScreenProps> = ({
       >
         {isLoadingLevels ? (
           <View style={levelSelectionStyles.loadingContainer}>
-            <Text style={levelSelectionStyles.loadingText}>🔄 Loading levels from Firebase...</Text>
+            <Text style={levelSelectionStyles.loadingText}>🎮 Loading your adventure...</Text>
           </View>
         ) : (
           levelsWithProgress.map((level, index) => renderLevelCard(level, index))
         )}
+
         {onPuzzlePacksSelect && (
           <TouchableOpacity style={levelSelectionStyles.puzzlePacksCard} onPress={onPuzzlePacksSelect}>
             <LinearGradient
-              colors={[colors.primary.purple, colors.primary.purpleLight]}
+              colors={['rgba(139, 92, 246, 1)', 'rgba(124, 58, 237,1)']}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
               style={levelSelectionStyles.puzzlePacksGradient}
@@ -387,7 +408,7 @@ const LevelSelectionScreen: React.FC<LevelSelectionScreenProps> = ({
               <View style={levelSelectionStyles.puzzlePacksHeader}>
                 <Text style={levelSelectionStyles.puzzlePacksIcon}>🧩</Text>
                 <View style={levelSelectionStyles.puzzlePacksInfo}>
-                  <Text style={levelSelectionStyles.puzzlePacksTitle}>Puzzle Packs</Text>
+                  <Text style={levelSelectionStyles.puzzlePacksTitle}>{APP_STRINGS.PACKS.TITLE}</Text>
                   <Text style={levelSelectionStyles.puzzlePacksSubtitle}>
                     {APP_STRINGS.LEVEL_SELECTION.LEVELS.EXTRA_CHALLENGES.description}
                   </Text>
@@ -400,10 +421,12 @@ const LevelSelectionScreen: React.FC<LevelSelectionScreenProps> = ({
             </LinearGradient>
           </TouchableOpacity>
         )}
+
         <View style={levelSelectionStyles.footer}>
           <Text style={levelSelectionStyles.footerText}>{APP_STRINGS.LEVEL_SELECTION.FOOTER_TEXT}</Text>
         </View>
       </ScrollView>
+
       <Sidebar
         isVisible={isSidebarVisible}
         onClose={() => setIsSidebarVisible(false)}

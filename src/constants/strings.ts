@@ -9,6 +9,7 @@ export const APP_STRINGS = {
   RECOMMEND_REPLAY: '💡 Recommended Replays',
   RECOMMEND_REPLAY_SUBTITLE: 'Improve your scores on these puzzles:',
   PERFECT_SCORE: 'Perfect score!',
+  LOADING_ADVENTURE: '🎮 Loading your adventure...',
 
   PACKS:{
     STARTER_PACK: '🌟 Welcome to Puzzle Packs! Start with these beginner-friendly challenges.',
