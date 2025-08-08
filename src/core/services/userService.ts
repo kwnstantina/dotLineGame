@@ -101,7 +101,9 @@ export class UserService {
   async saveLevelCompletion(levelId: number, completionTime: number): Promise<{ success: boolean; error: string | null }> {
     try {
       const user = getCurrentUser();
-      if (!user) throw new Error('User not authenticated');
+      if (!user){
+        throw new Error('User not authenticated');
+      }
 
       // Sanitize completion time to avoid undefined values
       const sanitizedCompletionTime = completionTime || 0;
@@ -138,10 +140,8 @@ export class UserService {
       const db = getDb();
       const userProgressRef = doc(db, 'userProgress', user.uid);
       
-      // Filter out undefined values before saving to Firestore
-      const sanitizedUserProgress = Object.fromEntries(
-        Object.entries(userProgress).filter(([_, value]) => value !== undefined)
-      );
+      // Deeply filter out undefined values before saving to Firestore
+      const sanitizedUserProgress = this.deepFilterUndefined(userProgress);
       
       await setDoc(userProgressRef, sanitizedUserProgress);
       return { success: true, error: null };
@@ -197,9 +197,8 @@ export class UserService {
         };
       } else {
         // Create new completion record
-        userProgress.puzzleCompletions[puzzleId] = {
+        const newCompletion: any = {
           puzzleId,
-          packId: packId || undefined,
           isValid: sanitizedResult.isValid,
           completionTime: sanitizedResult.completionTime,
           moveCount: sanitizedResult.moveCount,
@@ -212,6 +211,13 @@ export class UserService {
           firstCompletedAt: now,
           lastCompletedAt: now,
         };
+        
+        // Only add packId if it has a value
+        if (packId) {
+          newCompletion.packId = packId;
+        }
+        
+        userProgress.puzzleCompletions[puzzleId] = newCompletion;
         
         userProgress.totalPuzzlesCompleted += 1;
       }
@@ -260,10 +266,8 @@ export class UserService {
       const db = getDb();
       const userProgressRef = doc(db, 'userProgress', user.uid);
       
-      // Filter out undefined values before saving to Firestore
-      const sanitizedUserProgress = Object.fromEntries(
-        Object.entries(userProgress).filter(([_, value]) => value !== undefined)
-      );
+      // Deeply filter out undefined values before saving to Firestore
+      const sanitizedUserProgress = this.deepFilterUndefined(userProgress);
       
       await setDoc(userProgressRef, sanitizedUserProgress);
 
@@ -275,19 +279,31 @@ export class UserService {
       );
       
       // Use the already sanitized result for the completion record
-      await setDoc(completionRef, {
+      const completionRecord: any = {
         userId: user.uid,
         puzzleId,
-        packId: packId || undefined,
         ...sanitizedResult,
         completedAt: now,
-      });
-
-      return { 
-        success: true, 
-        error: null, 
-        newlyUnlockedPacks: newlyUnlockedPacks.length > 0 ? newlyUnlockedPacks : undefined 
       };
+      
+      // Only add packId if it has a value
+      if (packId) {
+        completionRecord.packId = packId;
+      }
+      
+      await setDoc(completionRef, completionRecord);
+
+      const result: { success: boolean; error: string | null; newlyUnlockedPacks?: string[] } = { 
+        success: true, 
+        error: null
+      };
+      
+      // Only add newlyUnlockedPacks if there are any
+      if (newlyUnlockedPacks.length > 0) {
+        result.newlyUnlockedPacks = newlyUnlockedPacks;
+      }
+      
+      return result;
     } catch (error: any) {
       return { success: false, error: error.message };
     }
@@ -449,6 +465,33 @@ export class UserService {
     }
 
     return sanitized;
+  }
+
+  // Deep filter undefined values from nested objects
+  private deepFilterUndefined(obj: any): any {
+    if (obj === null || obj === undefined) {
+      return obj;
+    }
+    
+    if (Array.isArray(obj)) {
+      return obj.map(item => this.deepFilterUndefined(item));
+    }
+    
+    if (obj instanceof Date) {
+      return obj;
+    }
+    
+    if (typeof obj === 'object') {
+      const filtered: any = {};
+      for (const [key, value] of Object.entries(obj)) {
+        if (value !== undefined) {
+          filtered[key] = this.deepFilterUndefined(value);
+        }
+      }
+      return filtered;
+    }
+    
+    return obj;
   }
 }
 

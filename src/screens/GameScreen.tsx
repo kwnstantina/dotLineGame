@@ -57,6 +57,8 @@ const GameScreen: React.FC<GameScreenProps> = (props) => {
   const progressAnim = useRef(new Animated.Value(0)).current;
   const [showInstructions, setShowInstructions] = useState(false);
   const [startTime, setStartTime] = useState<number | null>(null);
+  const [elapsedTime, setElapsedTime] = useState<number>(0);
+  const [accumulatedTime, setAccumulatedTime] = useState<number>(0);
 
   const { showSnackbar } = useSnackbar();
   const { colors, isLoading: themeLoading } = useAppTheme();
@@ -108,6 +110,16 @@ const GameScreen: React.FC<GameScreenProps> = (props) => {
       color: colors?.text?.primary,
       fontWeight: 'bold',
     },
+    timerContainer: {
+      alignItems: 'center',
+      marginVertical: DESIGN_SYSTEM.spacing.sm,
+    },
+    timerText: {
+      fontSize: DESIGN_SYSTEM.typography.fontSizes.sm,
+      color: colors?.text?.secondary,
+      fontWeight: '600',
+      fontFamily: 'monospace',
+    },
   });
 
   useEffect(() => {
@@ -140,6 +152,31 @@ const GameScreen: React.FC<GameScreenProps> = (props) => {
     }).start();
   }, [gameState.drawnPath, gameState.puzzle]);
 
+  // Timer useEffect
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    
+    if (startTime && !gameState.isCompleted) {
+      interval = setInterval(() => {
+        setElapsedTime(accumulatedTime + (Date.now() - startTime));
+      }, 100); // Update every 100ms for smooth display
+    }
+    
+    return () => {
+      if (interval) {
+        clearInterval(interval);
+      }
+    };
+  }, [startTime, gameState.isCompleted, accumulatedTime]);
+
+  // Format elapsed time for display
+  const formatTime = (timeMs: number): string => {
+    const seconds = Math.floor(timeMs / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const displaySeconds = seconds % 60;
+    return `${minutes.toString().padStart(2, '0')}:${displaySeconds.toString().padStart(2, '0')}`;
+  };
+
  const loadPuzzle = () => {
     setGameState(prev => ({...prev, isLoading: true}));
     // Simulate loading delay for better UX
@@ -166,7 +203,9 @@ const GameScreen: React.FC<GameScreenProps> = (props) => {
         isLoading: false,
       }));
       
-      // Set start time when puzzle is loaded
+      // Reset timer for new puzzle
+      setAccumulatedTime(0);
+      setElapsedTime(0);
       setStartTime(Date.now());
     }, 500);
   };
@@ -355,7 +394,10 @@ const GameScreen: React.FC<GameScreenProps> = (props) => {
       isCompleted: false,
     }));
     
-    // Reset start time for new attempt
+    // Accumulate the time from current session and reset start time for new attempt
+    if (startTime) {
+      setAccumulatedTime(prev => prev + (Date.now() - startTime));
+    }
     setStartTime(Date.now());
 
     // Reset animation
@@ -418,6 +460,11 @@ const GameScreen: React.FC<GameScreenProps> = (props) => {
               level={gameMode === 'pack' ? undefined : level?.id || 1}
               onHelpPress={() => setShowInstructions(true)}
             /></View>
+            {startTime && (
+              <View style={styles.timerContainer}>
+                <Text style={styles.timerText}>{formatTime(elapsedTime)}</Text>
+              </View>
+            )}
             <GameProgress
               cellsFilled={gameState.drawnPath.length}
               totalCells={totalCells}

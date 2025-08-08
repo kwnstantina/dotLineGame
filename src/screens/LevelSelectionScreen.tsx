@@ -10,9 +10,8 @@ import {
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { useAppSettings } from '../contexts/AppProviders';
-import { LEVELS, Level, getDifficultyGradient } from '../utils/levels';
+import { LEVELS, Level } from '../utils/levels';
 import Sidebar from '../components/Sidebar';
-import AppHeader from '../components/AppHeader';
 import SolvedBadge from '../components/SolvedBadge';
 import { getUserProgress } from '../core/services/userService';
 import { getLevelsWithProgress } from '../core/services/levelService';
@@ -20,9 +19,7 @@ import { APP_STRINGS, formatPremiumUnlockMessage, formatAdUnlockMessage, formatA
 import { UserProgress } from '../core/models/user';
 import { FirebaseLevel } from '../core/models/level';
 import { createLevelSelectionStyles } from '../styles/levelSelectionStyles';
-import useLevelAnimations from '../hooks/useLevelAnimations';
 import { useSnackbar } from '../components/SnackbarProvider';
-import { LightAnimation } from '../components/LightAnimation';
 import ThemeLoadingView from '../components/ThemeLoadingView';
 import BackgroundCurve from '../components/BackgroundCurve';
 
@@ -118,9 +115,6 @@ const LevelSelectionScreen: React.FC<LevelSelectionScreenProps> = ({
 
   // Snackbar context
   const { showSnackbar } = useSnackbar();
-
-  // Animations for each level card
-  const levelAnimations = useLevelAnimations(levelsWithProgress.length);
 
   // Initial load and animation
   useEffect(() => {
@@ -345,10 +339,7 @@ const LevelSelectionScreen: React.FC<LevelSelectionScreenProps> = ({
   return (
     <SafeAreaView style={levelSelectionStyles.container}>
       <StatusBar barStyle="light-content" backgroundColor={colors.background.primary} />
-      
-      {/* Background Curve */}
-      <BackgroundCurve />
-      
+      <BackgroundCurve />     
       <Animated.View
         style={[
           levelSelectionStyles.header,
@@ -391,7 +382,7 @@ const LevelSelectionScreen: React.FC<LevelSelectionScreenProps> = ({
       >
         {isLoadingLevels ? (
           <View style={levelSelectionStyles.loadingContainer}>
-            <Text style={levelSelectionStyles.loadingText}>🎮 Loading your adventure...</Text>
+            <Text style={levelSelectionStyles.loadingText}>{APP_STRINGS.LOADING_ADVENTURE}</Text>
           </View>
         ) : (
           levelsWithProgress.map((level, index) => renderLevelCard(level, index))
