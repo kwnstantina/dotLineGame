@@ -27,6 +27,12 @@ interface LevelSelectionScreenProps {
   onLevelSelect: (level: Level) => void;
   onPuzzlePacksSelect?: () => void;
   refreshTrigger?: number;
+  onNavigateToStatistics?: () => void;
+  onNavigateToAchievements?: () => void;
+  onNavigateToHelpTutorial?: () => void;
+  onNavigateToContactUs?: () => void;
+  onNavigateToPrivacyPolicy?: () => void;
+  onNavigateToTermsOfService?: () => void;
 }
 
 // Create fallback levels if Firebase data is not available
@@ -79,6 +85,12 @@ const LevelSelectionScreen: React.FC<LevelSelectionScreenProps> = ({
   onLevelSelect,
   onPuzzlePacksSelect,
   refreshTrigger,
+  onNavigateToStatistics,
+  onNavigateToAchievements,
+  onNavigateToHelpTutorial,
+  onNavigateToContactUs,
+  onNavigateToPrivacyPolicy,
+  onNavigateToTermsOfService,
 }) => {
   // Animation states
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -421,6 +433,12 @@ const LevelSelectionScreen: React.FC<LevelSelectionScreenProps> = ({
       <Sidebar
         isVisible={isSidebarVisible}
         onClose={() => setIsSidebarVisible(false)}
+        onNavigateToStatistics={onNavigateToStatistics}
+        onNavigateToAchievements={onNavigateToAchievements}
+        onNavigateToHelpTutorial={onNavigateToHelpTutorial}
+        onNavigateToContactUs={onNavigateToContactUs}
+        onNavigateToPrivacyPolicy={onNavigateToPrivacyPolicy}
+        onNavigateToTermsOfService={onNavigateToTermsOfService}
       />
     </SafeAreaView>
   );

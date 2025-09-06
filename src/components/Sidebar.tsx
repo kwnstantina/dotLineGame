@@ -19,11 +19,23 @@ import { APP_STRINGS } from '../constants/strings';
 interface SidebarProps {
   isVisible: boolean;
   onClose: () => void;
+  onNavigateToStatistics?: () => void;
+  onNavigateToAchievements?: () => void;
+  onNavigateToHelpTutorial?: () => void;
+  onNavigateToContactUs?: () => void;
+  onNavigateToPrivacyPolicy?: () => void;
+  onNavigateToTermsOfService?: () => void;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({
   isVisible,
   onClose,
+  onNavigateToStatistics,
+  onNavigateToAchievements,
+  onNavigateToHelpTutorial,
+  onNavigateToContactUs,
+  onNavigateToPrivacyPolicy,
+  onNavigateToTermsOfService,
 }) => {
   const { user } = useAuth();
   const { colors, isDarkMode, isLoading: themeLoading, toggleDarkMode, isSoundEnabled, setIsSoundEnabled } = useAppSettings();
@@ -151,6 +163,13 @@ const Sidebar: React.FC<SidebarProps> = ({
     onClose();
   };
 
+  const handleNavigationAndClose = (navigationHandler?: () => void) => {
+    if (navigationHandler) {
+      navigationHandler();
+    }
+    onClose();
+  };
+
   return (
     <Modal
       visible={isVisible}
@@ -202,7 +221,11 @@ const Sidebar: React.FC<SidebarProps> = ({
             <View style={styles.section}>
               <Text style={styles.sectionTitle}>{APP_STRINGS.SIDEBAR.GAME_SECTION.title}</Text>
               
-              <Pressable style={styles.menuItem}>
+              <Pressable style={styles.menuItem} onPress={() => handleNavigationAndClose(onNavigateToStatistics)}>
+                <Text style={styles.menuItemText}>{APP_STRINGS.SIDEBAR.GAME_SECTION.STATISTICS}</Text>
+              </Pressable>
+
+              <Pressable style={styles.menuItem} onPress={() => handleNavigationAndClose(onNavigateToAchievements)}>
                 <Text style={styles.menuItemText}>{APP_STRINGS.SIDEBAR.GAME_SECTION.ACHIEVEMENTS}</Text>
               </Pressable>
       
@@ -211,19 +234,19 @@ const Sidebar: React.FC<SidebarProps> = ({
             <View style={styles.section}>
               <Text style={styles.sectionTitle}>{APP_STRINGS.SIDEBAR.SUPPORT.title}</Text>
               
-              <Pressable style={styles.menuItem}>
+              <Pressable style={styles.menuItem} onPress={() => handleNavigationAndClose(onNavigateToHelpTutorial)}>
                 <Text style={styles.menuItemText}>{APP_STRINGS.SIDEBAR.SUPPORT.HELP_TUTORIAL}</Text>
               </Pressable>
 
-              <Pressable style={styles.menuItem}>
+              <Pressable style={styles.menuItem} onPress={() => handleNavigationAndClose(onNavigateToContactUs)}>
                 <Text style={styles.menuItemText}>{APP_STRINGS.SIDEBAR.SUPPORT.CONTACT_US}</Text>
               </Pressable>
 
-              <Pressable style={styles.menuItem}>
+              <Pressable style={styles.menuItem} onPress={() => handleNavigationAndClose(onNavigateToPrivacyPolicy)}>
                 <Text style={styles.menuItemText}>{APP_STRINGS.SIDEBAR.SUPPORT.PRIVACY_POLICY}</Text>
               </Pressable>
 
-              <Pressable style={styles.menuItem}>
+              <Pressable style={styles.menuItem} onPress={() => handleNavigationAndClose(onNavigateToTermsOfService)}>
                 <Text style={styles.menuItemText}>{APP_STRINGS.SIDEBAR.SUPPORT.TERMS_OF_SERVICE}</Text>
               </Pressable>
             </View>

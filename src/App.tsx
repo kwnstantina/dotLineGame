@@ -7,6 +7,7 @@ import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { initializeFirebase } from './utils/firebase';
 import LoadingView from './components/LoadingView';
 import { AppProviders } from './contexts/AppProviders';
+import { initializeBackgroundTasks } from './core/services/backgroundTaskScheduler';
 
 const AppContent: React.FC = () => {
   const { user, isLoading } = useAuth();
@@ -18,6 +19,13 @@ const AppContent: React.FC = () => {
       try {
         await initializeFirebase();
         console.log('✅ Firebase initialization complete');
+        
+        // Initialize background tasks after Firebase is ready
+        if (user) {
+          console.log('🔄 Initializing background statistics tasks...');
+          initializeBackgroundTasks();
+        }
+        
         setFirebaseInitialized(true);
       } catch (error: any) {
         console.error('❌ Firebase initialization error:', error);
@@ -28,7 +36,7 @@ const AppContent: React.FC = () => {
     };
 
     initializeApp();
-  }, []);
+  }, [user]);
 
   if (isLoading || !firebaseInitialized) {
     const fadeAnim = new Animated.Value(0);

@@ -6,6 +6,8 @@ import type { UserProgress} from '../models/user';
 import type { CompletionResult } from '../models/game';
 import { PACK_UNLOCK_REQUIREMENTS } from '../constants/game';
 import { getCurrentUser } from '../../utils/auth';
+import { updateUserAchievements } from './achievementService';
+import { triggerImmediateStatsUpdate } from './backgroundTaskScheduler';
 
 // Firestore Database Reference
 const getDb = () => getFirestore(getApp());
@@ -144,6 +146,22 @@ export class UserService {
       const sanitizedUserProgress = this.deepFilterUndefined(userProgress);
       
       await setDoc(userProgressRef, sanitizedUserProgress);
+      
+      // Update achievements based on new progress
+      try {
+        await updateUserAchievements(userProgress);
+      } catch (achievementError) {
+        console.warn('Failed to update achievements:', achievementError);
+        // Don't fail the main operation if achievement update fails
+      }
+
+      // Trigger background statistics update
+      try {
+        triggerImmediateStatsUpdate();
+      } catch (statsError) {
+        console.warn('Failed to trigger stats update:', statsError);
+      }
+      
       return { success: true, error: null };
     } catch (error: any) {
       return { success: false, error: error.message };
@@ -292,6 +310,21 @@ export class UserService {
       }
       
       await setDoc(completionRef, completionRecord);
+      
+      // Update achievements based on new progress
+      try {
+        await updateUserAchievements(userProgress);
+      } catch (achievementError) {
+        console.warn('Failed to update achievements:', achievementError);
+        // Don't fail the main operation if achievement update fails
+      }
+
+      // Trigger background statistics update
+      try {
+        triggerImmediateStatsUpdate();
+      } catch (statsError) {
+        console.warn('Failed to trigger stats update:', statsError);
+      }
 
       const result: { success: boolean; error: string | null; newlyUnlockedPacks?: string[] } = { 
         success: true, 

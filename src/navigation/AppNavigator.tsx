@@ -4,6 +4,12 @@ import LevelSelectionScreen from '../screens/LevelSelectionScreen';
 import PuzzlePacksScreen from '../screens/PuzzlePacksScreen';
 import PackPuzzlesScreen from '../screens/PackPuzzlesScreen';
 import GameScreen from '../screens/GameScreen';
+import AchievementsScreen from '../screens/AchievementsScreen';
+import StatisticsScreen from '../screens/StatisticsScreen';
+import HelpTutorialScreen from '../screens/HelpTutorialScreen';
+import ContactUsScreen from '../screens/ContactUsScreen';
+import PrivacyPolicyScreen from '../screens/PrivacyPolicyScreen';
+import TermsOfServiceScreen from '../screens/TermsOfServiceScreen';
 import { Level } from '../utils/levels';
 import { PuzzlePack, Puzzle } from '../types';
 
@@ -11,7 +17,13 @@ type NavigationState =
   | { screen: 'levelSelection' }
   | { screen: 'puzzlePacks' }
   | { screen: 'packPuzzles'; pack: PuzzlePack }
-  | { screen: 'game'; level?: Level; puzzle?: Puzzle; gameMode: 'level' | 'pack' };
+  | { screen: 'game'; level?: Level; puzzle?: Puzzle; gameMode: 'level' | 'pack' }
+  | { screen: 'statistics' }
+  | { screen: 'achievements' }
+  | { screen: 'helpTutorial' }
+  | { screen: 'contactUs' }
+  | { screen: 'privacyPolicy' }
+  | { screen: 'termsOfService' };
 
 const AppNavigator: React.FC = () => {
   const [navigationState, setNavigationState] = useState<NavigationState>({ screen: 'levelSelection' });
@@ -42,6 +54,30 @@ const AppNavigator: React.FC = () => {
     setNavigationState({ screen: 'puzzlePacks' });
   };
 
+  const handleNavigateToStatistics = () => {
+    setNavigationState({ screen: 'statistics' });
+  };
+
+  const handleNavigateToAchievements = () => {
+    setNavigationState({ screen: 'achievements' });
+  };
+
+  const handleNavigateToHelpTutorial = () => {
+    setNavigationState({ screen: 'helpTutorial' });
+  };
+
+  const handleNavigateToContactUs = () => {
+    setNavigationState({ screen: 'contactUs' });
+  };
+
+  const handleNavigateToPrivacyPolicy = () => {
+    setNavigationState({ screen: 'privacyPolicy' });
+  };
+
+  const handleNavigateToTermsOfService = () => {
+    setNavigationState({ screen: 'termsOfService' });
+  };
+
 
   const handleLevelComplete = async (levelId: number, completionTime: number) => {
     // Pack unlock notifications are handled in GameScreen
@@ -60,6 +96,12 @@ const AppNavigator: React.FC = () => {
             onLevelSelect={handleLevelSelect}
             onPuzzlePacksSelect={handlePuzzlePacksSelect}
             refreshTrigger={refreshTrigger}
+            onNavigateToStatistics={handleNavigateToStatistics}
+            onNavigateToAchievements={handleNavigateToAchievements}
+            onNavigateToHelpTutorial={handleNavigateToHelpTutorial}
+            onNavigateToContactUs={handleNavigateToContactUs}
+            onNavigateToPrivacyPolicy={handleNavigateToPrivacyPolicy}
+            onNavigateToTermsOfService={handleNavigateToTermsOfService}
           />
         );
 
@@ -104,6 +146,24 @@ const AppNavigator: React.FC = () => {
             />
           );
         }
+
+      case 'statistics':
+        return <StatisticsScreen onBack={handleBackToLevels} />;
+
+      case 'achievements':
+        return <AchievementsScreen onBack={handleBackToLevels} />;
+
+      case 'helpTutorial':
+        return <HelpTutorialScreen onBack={handleBackToLevels} />;
+
+      case 'contactUs':
+        return <ContactUsScreen onBack={handleBackToLevels} />;
+
+      case 'privacyPolicy':
+        return <PrivacyPolicyScreen onBack={handleBackToLevels} />;
+
+      case 'termsOfService':
+        return <TermsOfServiceScreen onBack={handleBackToLevels} />;
 
       default:
         return null;

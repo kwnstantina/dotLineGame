@@ -6,7 +6,7 @@ const ThemeLoadingView: React.FC = () => {
   return (
     <View style={styles.container}>
       <ActivityIndicator size="large" color="#6366f1" />
-      <Text style={styles.loadingText}>Initializing theme...</Text>
+      <Text style={styles.loadingText}>Loading...</Text>
     </View>
   );
 };
@@ -16,7 +16,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#FFFFF0', // fallback background
+    //backgroundColor: '#FFFFF0', // fallback background
   },
   loadingText: {
     marginTop: 16,
