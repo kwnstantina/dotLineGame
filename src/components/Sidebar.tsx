@@ -203,16 +203,9 @@ const Sidebar: React.FC<SidebarProps> = ({
               <Text style={styles.sectionTitle}>{APP_STRINGS.SIDEBAR.GAME_SECTION.title}</Text>
               
               <Pressable style={styles.menuItem}>
-                <Text style={styles.menuItemText}>{APP_STRINGS.SIDEBAR.GAME_SECTION.STATISTICS}</Text>
-              </Pressable>
-
-              <Pressable style={styles.menuItem}>
                 <Text style={styles.menuItemText}>{APP_STRINGS.SIDEBAR.GAME_SECTION.ACHIEVEMENTS}</Text>
               </Pressable>
-
-              <Pressable style={styles.menuItem}>
-                <Text style={styles.menuItemText}>{APP_STRINGS.SIDEBAR.GAME_SECTION.LEADERBOARD}</Text>
-              </Pressable>
+      
             </View>
 
             <View style={styles.section}>
